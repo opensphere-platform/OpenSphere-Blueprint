@@ -2,7 +2,7 @@
 
 OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 저장소다. 2026-11-17부터 OpenSphere 설계 문서의 정본 위치다. 이전 위치는 OpenSphere 저장소 `governance/architecture/`였다.
 
-문서 상태는 문서마다 다르다. **결정 대장(D-1~D-81)에 들어간 것만 결정**이고, 나머지는 초안·방향안이다. 어느 것도 구현 승인으로 읽지 않는다.
+문서 상태는 문서마다 다르다. **결정 대장(D-1~D-82)에 들어간 것만 결정**이고, 나머지는 초안·방향안이다. 어느 것도 구현 승인으로 읽지 않는다.
 
 ## 1. 구조 방향 (최신)
 
@@ -27,7 +27,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 
 | 문서 | 내용 |
 |---|---|
-| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-81**, 미결 O-1~O-10 |
+| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-82**, 미결 O-1~O-10 |
 | [계층 지도](docs/architecture/OPENSPHERE-LAYER-MAP.html) | 영역 × 계층 지도, 통신·통제 흐름, 제품 대장, 업무 코어 후보(화면) |
 | [계층 구조 검토 v0.1](docs/architecture/OPENSPHERE-LAYER-STRUCTURE-REVIEW-v0.1.md) | 기준선 이전의 아카이브 구조 검토 |
 | [O-2 PFSS 경계](docs/architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md) | Backbone과 Governance의 공유 서비스(구 PFSS) 제어 분리, Claim 확장, 서명 Grant |

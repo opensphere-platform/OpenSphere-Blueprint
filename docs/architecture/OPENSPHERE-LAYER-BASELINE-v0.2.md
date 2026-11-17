@@ -329,6 +329,7 @@ OpenSphere는 **admin 영역**과 **사원 영역**으로 나뉜다. 두 영역�
 | D-46 | 자율 실행 = 상시 위임(할당 ∩ 위임자 현재 권한 ∩ 자율 상한), 위임자 권한 상실 시 정지, 만료 필수 | 유효 — 에이전트 신원 문서 |
 | D-47 | 에이전트 간 호출 허용, 사슬 교집합, 최대 깊이 2(설정) | 유효 — 에이전트 신원 문서 |
 | D-48 | 책임자 이탈 시 즉시 정지 → 승계 요청 → 미수락 시 폐기 | 유효 — 에이전트 신원 문서 |
+| D-81 | **Governance 표기·정의.** 제품명은 OpenSphere Governance, 문서 안에서는 영문 "Governance"로 제품만 가리킨다. 한글 "거버넌스"는 프로젝트 원칙·활동에만 쓴다. 정의: 대상은 접근·자원·비용·준수(D-10), 하는 일은 정의·할당·결재·재검토·회수·승격의 판단과 원장. 집행·분석·보고 엔진은 Fabric 부품에 맡긴다. OpenSphere 저장소의 프로젝트 원칙·정책 폴더 `governance/`는 `policies/`로 바꾼다 | 유효 — 2026-11-17 |
 | D-80 | **공유 구성요소 집합의 공식 명칭 = OpenSphere Fabric**(문서 안 약칭 Fabric). 가칭 Middle-earth를 대체한다. 공급 면(날실)과 사용 면(씨실)이 엮인 원단이라는 뜻으로 정의한다. 대외 표기는 "OpenSphere Fabric"으로만 하고, 쓰기 전에 상표를 확인한다([용어 대응표](../overview/GLOSSARY.md)) | 유효 — 2026-11-17 |
 | D-79 | **계층 용어 정리.** HISS·PSSS·PFSS, L1~L6 번호, "공통 기반"은 상위 구조어로 쓰지 않는다. 상위 구조어는 Backbone·Middle-earth(가칭)·Governance·Workspace. Middle-earth 안의 묶음은 기반(구 HISS)·배포 지원(구 PSSS)·공유 서비스(구 PFSS)로 부른다. 코드·계약 식별자는 다음 메이저 버전까지 유지. Foundation은 Backbone의 공급 면 관리 도구 이름으로 남긴다. 구조 변경은 별도 결정([용어 대응표](../overview/GLOSSARY.md)) | 유효 — 2026-11-17 |
 | D-78 | **Percona MongoDB(`percona-psmdb`, `data.document.mongodb`)는 예비 설치한다.** 현재 소비자는 없다. 엔진은 Middle-earth 공급 면으로 설치해 두고, 소비자 Claim은 Governance 승인으로 연다 | 유효 — 2026-11-17 |

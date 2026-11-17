@@ -10,6 +10,7 @@
 - 모듈은 OSR에 무엇을 등록해야 OpenSphere의 멤버가 되는가. 형식적 멤버와 실질적 멤버는 어떻게 다른가.
 - 매뉴얼, OS Shell 명령, OCI 산출물, RAG 등록의 규격은 무엇인가.
 - GHCR 발행에서 OpenSphere가 확장(설치)되기까지의 흐름은 무엇인가.
+- 지금 Backbone은 이 기여를 받을 준비가 되어 있는가(부록 A).
 
 ---
 
@@ -336,3 +337,68 @@
 - 헌법은 설치 때 매뉴얼 수집을 요구했지만 실제는 실행 중 읽기만 했다 → OSR-E.
 - GHCR 발견이 닫힌 목록 3개 모듈뿐이었다 → 채널 카탈로그(§10).
 - "PFSS Provider 표준 v1" 원문은 아카이브에 없다. 이 규격의 `provider` 클래스 요건으로 대신 정의한다.
+
+## 부록 A. Backbone 준비도 점검 — 필수 기여 네 가지 (2026-11-17)
+
+**기준:** Backbone main `f04476e`를 읽기만 하고 점검했다. 운영 설치본은 보지 않았다. 판정은 "외부 모듈이 이 기여를 제출하면 Backbone이 받아서 검증 · 저장 · 사용할 수 있는가"다.
+
+**결론:** 네 가지 모두 아직 받을 수 없다. 외부 모듈이 제출할 입구와 원장이 없고, 카탈로그 · 지식 · 설치 대상이 소스에 고정돼 있다. 무엇을 더하든 Backbone PR과 Console · Core 재빌드가 필요하다. 다시 쓸 수 있는 부품은 있다.
+
+| 기여 | 받는 입구 | 검증 | 저장 | 쓰는 쪽 | 판정 |
+|---|---|---|---|---|---|
+| 매뉴얼 | 없음 | 없음 | 없음 | 없음 | 처음부터 만들어야 함 |
+| OS Shell 명령 | 없음 | 없음 | 없음 | 카탈로그 읽기만 | 부품만. 모듈 명령 실행 경로 없음 |
+| OCI 산출물 · 명령 | 없음 | digest 존재 확인만 | 없음 | Backbone 구성요소만 | 부품만. 서명 · SBOM · 모듈 저장소 미지원 |
+| RAG 등록 | 없음 | 빌드 때만 | 바이너리에 고정 | R2D2 읽기 | 부품만. 설치 때 수집 불가 |
+
+### A.1 매뉴얼
+
+- **지금:** 매뉴얼 원장 · 테이블 · API · 화면이 없다. 소스의 "manual"은 Magpie의 수동 모델 등록, Swallow 마이그레이션 이름, Setup 수동 절차 문구로 다른 뜻이다. 문서는 저장소 `docs/`의 Markdown뿐이고 설치본으로 들어가지 않는다.
+- **부족한 것:** 매뉴얼 묶음 수신 · 검증(메타데이터 · 체크섬 · 필수 문서 유형), 관리 PG 매뉴얼 원장(모듈 · 판 · 문서 · 수집 영수증), 설치 때 수집 단계, Console 매뉴얼 화면, 매뉴얼 속 명령 예시가 명령 계약을 가리키는지 확인하는 검사.
+- **다시 쓸 것:** Backbone에는 없다. 아카이브의 `manual-seed.opensphere.io/v1alpha1`과 OSAA 매뉴얼 데이터 모델을 가져온다.
+
+### A.2 OS Shell 명령
+
+- **지금:**
+  - 서버 카탈로그(`backend/server/src/contracts.rs`)의 command 액션은 `synthetic.echo` 하나다. 나머지 9개는 query · event다. `bus::command`는 Echo 외에 422를 돌려준다(`bus.rs`).
+  - Backbone 모드 OS CLI는 `os shell commands`만 동작하고, 그것도 `/console-api/modules` 읽기다. 다른 명령은 501 `BackboneCommandUnavailable`이다(`cli/cmd/os/backbone.go`).
+  - 정책(`policy.rs`)은 plane별 고정 허용 목록이다.
+- **부족한 것:** owner-commands 계약 수신 · 검증(ID 접두어 · kind · mutation 규칙 · 크기 한도), 명령 원장, 모듈 owner 엔드포인트로의 전달(서버가 정한 actor · `reviewRevision` · 멱등), 쓰기 명령과 Execution Core 승인 연결, 정책 허용 목록에 모듈 명령을 더하는 규칙, 표준 명령 8개 확인.
+- **충돌:** 정책 digest가 Console · Core 바이너리에 함께 들어가고 두 digest 일치를 시험이 확인한다(Backbone `AGENTS.md`). 모듈 명령을 동적으로 더하려면 고정 부분(`core`)과 동적 부분(OSR 레코드)의 digest를 나누는 설계가 필요하다.
+- **다시 쓸 것:** 이전 CLI에서 물려받은 `cli/cmd/os/shell_commands.go`(`reviewRevision` 전송), `module_update.go`, `module_rollback.go`, `extension_installation.go`. Nexus의 사전 감사 · 예산 · 현재 권한 확인. Core의 승인 · 멱등 · outbox.
+
+### A.3 OCI 산출물과 OCI 명령
+
+- **지금:**
+  - 발행(`.gitea/workflows/publish-images.yaml`, `scripts/step3/publish-images.mjs`)에 서명 · SBOM · 출처 증명이 없다. edge 채널만 발행한다.
+  - Setup의 GHCR 확인(`setup/src/registry-reader.mjs`)은 manifest 존재를 HEAD로만 본다. 저장소 이름은 `opensphere-platform/opensphere-backbone-[a-z0-9]+`만 허용해서 §5의 `opensphere-<class>-<slug>` 모듈은 거절된다.
+  - 채널 포인터(`releases/channels/edge.json`)는 Backbone 구성요소 8개 고정이다. 서버는 GHCR를 조회하지 않는다. OS CLI에 `oci` · `osr` 명령이 없다.
+- **부족한 것:** 모듈 저장소 이름 허용, 서명 봉투 생성 · 검증과 모듈별 신뢰 키 목록, 인덱스 안 산출물 해시 검증, 모듈 전체를 담는 채널 카탈로그, `os oci inspect / verify / pull`과 `os osr register`, 발행 파이프라인의 SBOM · 출처 생성, 일반 설치 명령 `apply-module`.
+- **다시 쓸 것:** 불변 버전 원장(`YY.MDD.HHMM.BUILD`, BUILD 재사용 금지)과 OCI 라벨, 영향받은 구성요소만 발행, Setup의 digest 고정 적용 · 설치 지문 · writer lock · 같은 작업 재개, `read:packages` 전용 읽기 자격 검사.
+
+### A.4 RAG 등록
+
+- **지금:**
+  - 지식 팩(`infra/r2d2/knowledge/pack.json`)은 문서 12개(Backbone 11 · Source-Catalog 1)다. 출처는 `scripts/r2d2/knowledge/build-pack.py`의 `SOURCES`에 하드코딩돼 있고 `include_str!`로 서버 바이너리에 들어간다(`knowledge.rs`).
+  - 지식 API는 조회만 있고 수집 API가 없다. 실시간 소스 읽기는 Backbone 저장소 수용 main의 허용 경로로만 한정된다.
+  - 관리 PG 이미지에 pgvector가 있지만 지식에 쓰지 않는다. 검색은 bounded 텍스트 검색이다.
+- **부족한 것:** 지식 묶음 수신 · 검증(출처 · 해시 · 라이선스 · 비밀값 패턴), PG의 모듈 범위 지식 원장(바이너리 고정 → DB 수집), 설치 때 수집 단계와 영수증, 모듈 범위 격리, 결과 출처 표시(릴리스 문서 vs 실제 관측)의 일관 적용. 의미 검색(pgvector)은 별도 결정(OSR-F).
+- **다시 쓸 것:** 팩의 출처 필드(`repository` · `path` · `sha256` · `sourceRevision`)와 `bundleDigest`, 별도 토큰 · plane의 읽기 전용 MCP(`opensphere_knowledge`), 기억 레코드의 출처 필드.
+
+### A.5 공통으로 먼저 필요한 것
+
+1. **OSR 원장.** 모듈 · 릴리스 · 판정 · 설치본 · 회수 테이블과 등록 · 판정 API. 가장 가까운 Nexus 인벤토리(`bus_inventory.rs`)는 소스 고정 `KNOWN` 목록과 비교해 상태를 정하고, 실행 검증을 `unverified`로 고정해 둔다.
+2. **고정 카탈로그와 동적 레코드의 분리.** 지금 카탈로그 · 정책은 바이너리 상수라 "등록하면 멤버가 된다"와 맞지 않는다.
+3. **일반 설치 경로.** 모듈마다 고정 프로필 명령(`apply-native-modules`, `apply-bus-inspection` 등)을 쓰고 있다. Backbone 규칙상 설치 · 확장은 공개 Setup CLI로만 하므로 `apply-module`은 Setup 릴리스로 나가야 한다.
+4. **모듈 신뢰 키 체계.** Core 승인 키를 다시 쓰지 않는다는 원칙이 있으므로 따로 둔다.
+
+### A.6 권하는 순서
+
+§13의 단계에 맞춘다.
+
+1. OSR 원장 · 읽기 API, 지금 고정 카탈로그를 `core` 레코드로 이관(단계 1).
+2. OCI 검증 경로: 저장소 정규식 확장, 서명 봉투 · 신뢰 키 · 산출물 해시 검증, `os oci`, 발행 파이프라인 SBOM · 출처(단계 2).
+3. 명령 계약 검증과 owner 전달 경로, Core 승인 연결(단계 2~3).
+4. 매뉴얼 · 지식의 PG 원장 수집과 일반 설치 명령 `apply-module`(단계 3).
+
+첫 실증 대상은 PostgreSQL Provider 하나다.

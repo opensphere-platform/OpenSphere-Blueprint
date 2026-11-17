@@ -80,7 +80,7 @@ company:acme
        │    └─ mailbox:kim          parent: assembly:mail,  owner: user:kim
        ├─ assembly:business-core    parent: tenant:employee
        │    └─ ledger:sales         parent: assembly:business-core
-       └─ app:kim/webmail           parent: tenant:employee, owner: user:kim, level: L1
+       └─ app:kim/webmail           parent: tenant:employee, owner: user:kim, level: 1
 
 unit:sales-hq   member: user:kim          (AD에서 수집)
 role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
@@ -89,7 +89,7 @@ role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
 | 질의 | 계산 |
 |---|---|
 | kim이 `mailbox:kim`을 읽을 수 있는가 | owner 관계 |
-| kim의 웹메일 앱이 `mailbox:kim`을 읽을 수 있는가 | 앱 owner = kim ∩ 위임 범위 ∩ 앱 가드레일(L1: 소유자 자원만) |
+| kim의 웹메일 앱이 `mailbox:kim`을 읽을 수 있는가 | 앱 owner = kim ∩ 위임 범위 ∩ 앱 가드레일(1단계: 소유자 자원만) |
 | 영업 담당이 `ledger:sales`를 볼 수 있는가 | role 할당 → 어셈블리 권한 상속 + 조건(근무 시간·위치 등 ABAC) |
 | 누가 `assembly:mail`을 관리할 수 있는가(역질의) | 재검토·감사용 |
 
@@ -102,7 +102,7 @@ role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
 | # | 시나리오 | 보는 것 |
 |---|---|---|
 | S8 | 회사 → 테넌트 → 어셈블리 → 자원 계층 상속, 하위는 좁히기만 가능 | 계층 상속과 거부 우선 표현 |
-| S9 | 사원 앱 L1 → L2 → L3 승격 시 실행 신원·권한 전환 | 소유자 위임 → 서비스 신원 전환의 일관성 |
+| S9 | 사원 앱 1 → 2 → 3단계 승격 시 실행 신원·권한 전환 | 소유자 위임 → 서비스 신원 전환의 일관성 |
 | S10 | 연결 객체 승인 판단(T-6): 어떤 연결이 고위험인가 | 자원 속성·연결 유형 기반 규칙 |
 
 **PDP 어댑터 인터페이스를 AuthZEN에 맞춘다:** 최소 설계 §9의 `decide(subject, action, resource, context)`는 AuthZEN의 Access Evaluation 형태와 같은 모양이다. 필드 이름과 응답 형식을 AuthZEN에 맞추면 엔진을 교체하기 쉬워진다. `explain`과 `reverseQuery`는 AuthZEN 검색 API 계열과 엔진 고유 기능으로 보완한다.
@@ -131,7 +131,7 @@ role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
 | G1 | 결재, 셀프 신청, 대표 앱 어댑터, 대조기 | 연결 결재(T-6) |
 | G2 | 공유 서비스 배분, 서비스 배분, showback | 어셈블리 Claim 승인, 연결 drift 대조 |
 | G3 | 재검토, 판단 엔진 채택, 에이전트 단위 | S8~S10 포함 비교, AuthZEN 어댑터 |
-| G4 | 외부 AD 모드, 추가 어댑터 | 사원 앱 승격 관문(L1~L3) |
+| G4 | 외부 AD 모드, 추가 어댑터 | 사원 앱 승격 관문(1~3단계) |
 
 ## 9. 미결
 

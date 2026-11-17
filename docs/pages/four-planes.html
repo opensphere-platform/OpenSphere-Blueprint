@@ -385,13 +385,13 @@ a{color:var(--me)}
   <h2 id="h-app">사원 앱: 승격 3단계</h2>
   <p class="lead">승격할 때 <b>실행 신원과 소유</b>가 바뀌어야 한다. 그렇지 않으면 만든 사람이 퇴사하는 날 회사 앱이 멈춘다. <span class="s pr">제안</span></p>
   <div class="promo">
-    <div class="stage"><h3><span class="lv">L1</span>개인 앱</h3>
+    <div class="stage"><h3><span class="lv">1단계</span>개인 앱</h3>
       <dl><dt>실행 신원</dt><dd>소유자 위임(소유자 권한 이하)</dd><dt>자원</dt><dd>소유자 몫</dd><dt>접근</dt><dd>소유자 본인</dd><dt>주소</dt><dd><code>kim.회사-apps.net</code></dd></dl>
       <span class="gate">관문: 자동(가드레일 통과)</span></div>
-    <div class="stage"><h3><span class="lv">L2</span>팀 앱</h3>
+    <div class="stage"><h3><span class="lv">2단계</span>팀 앱</h3>
       <dl><dt>실행 신원</dt><dd>팀 신원</dd><dt>자원</dt><dd>팀 몫</dd><dt>접근</dt><dd>팀원</dd><dt>주소</dt><dd><code>팀.회사-apps.net</code></dd></dl>
       <span class="gate">관문: 팀장 승인 + 가벼운 검토</span></div>
-    <div class="stage"><h3><span class="lv">L3</span>회사 앱</h3>
+    <div class="stage"><h3><span class="lv">3단계</span>회사 앱</h3>
       <dl><dt>실행 신원</dt><dd><b>서비스 신원</b></dd><dt>자원</dt><dd>Governance 서비스 배분(D-30)</dd><dt>접근</dt><dd>역할 기반, 전사</dd><dt>주소</dt><dd><code>앱.회사도메인</code></dd></dl>
       <span class="gate">관문: 보안 검토 + 운영 책임 이전 + 회사 도메인 발급</span></div>
   </div>
@@ -416,7 +416,7 @@ a{color:var(--me)}
     <div class="box no"><b style="color:var(--cut)">쓰지 않는다</b><div class="addr">사용자ID.회사도메인</div>
       <ul class="muted" style="font-size:13px"><li>상위 도메인의 회사 SSO 쿠키를 하위 앱이 읽거나 덮어쓸 수 있다</li><li><code>hr-login.kim.회사도메인</code> 같은 주소가 진짜 회사 페이지처럼 보인다</li><li>개인 앱 하나가 악성으로 분류되면 회사 도메인 평판이 같이 떨어진다</li></ul></div>
     <div class="box yes"><b style="color:var(--ws)">쓴다</b><div class="addr">사용자ID.회사-apps.net</div>
-      <ul class="muted" style="font-size:13px"><li>별도 등록 도메인. Public Suffix List에 등록해 앱끼리 쿠키를 분리한다</li><li>회사 도메인 아래 주소는 L3 회사 앱으로 승격된 뒤에만 준다</li><li>도메인 이름과 와일드카드 인증서 운영 방식은 정해야 한다 <span class="s tbd">미정</span></li></ul></div>
+      <ul class="muted" style="font-size:13px"><li>별도 등록 도메인. Public Suffix List에 등록해 앱끼리 쿠키를 분리한다</li><li>회사 도메인 아래 주소는 3단계 회사 앱으로 승격된 뒤에만 준다</li><li>도메인 이름과 와일드카드 인증서 운영 방식은 정해야 한다 <span class="s tbd">미정</span></li></ul></div>
   </div>
 </section>
 

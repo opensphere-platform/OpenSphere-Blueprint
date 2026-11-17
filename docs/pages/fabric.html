@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenSphere Fabric 구조</title>
+<style>
+
+/* 레이아웃: 핵심 문장 → 네 면 도식(우측에 고객 영역) → 면별 정의 → Fabric 두 얼굴 → Backbone 경계 → Workspace 리소스 풀 → 사원 앱(승격·가드레일·도메인) → 바뀌는 결정 */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b1f24; --muted:#5b6470; --line:#d9dee5; --soft:#eef1f5;
+  --bb:#4f46e5; --bb-bg:#eef0ff;
+  --me:#0e7490; --me-bg:#e3f4f8;
+  --gov:#b45309; --gov-bg:#fdf3e2;
+  --ws:#0f8a5f; --ws-bg:#e7f6ef;
+  --cust:#c2410c; --cust-bg:#fdf0e7;
+  --cut:#be123c; --cut-bg:#fdecef;
+  --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+    --bb:#a5b4fc; --bb-bg:#1e1f3a; --me:#67e8f9; --me-bg:#0f2a31; --gov:#fbbf24; --gov-bg:#33270f;
+    --ws:#5eead4; --ws-bg:#10291f; --cust:#fdba74; --cust-bg:#33200f; --cut:#fb7185; --cut-bg:#3a1520;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+  --bb:#a5b4fc; --bb-bg:#1e1f3a; --me:#67e8f9; --me-bg:#0f2a31; --gov:#fbbf24; --gov-bg:#33270f;
+  --ws:#5eead4; --ws-bg:#10291f; --cust:#fdba74; --cust-bg:#33200f; --cut:#fb7185; --cut-bg:#3a1520;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 var(--sans)}
+.wrap{max-width:1160px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:30px}
+h1{font-size:24px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0 0 4px;text-wrap:balance}
+h3{font-size:14.5px;margin:0}
+p{margin:0}
+ul{margin:0;padding-left:18px}
+.lead{color:var(--muted);margin-bottom:12px}
+.meta{color:var(--muted);font-size:12.5px;margin-top:4px}
+.muted{color:var(--muted)}
+small{font-size:12.5px}
+code{font-family:var(--mono);font-size:12.5px;background:var(--soft);padding:0 5px;border-radius:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+
+/* 상태 표시 */
+.s{display:inline-block;font-size:11.5px;font-weight:600;padding:0 8px;border-radius:999px;vertical-align:1px;white-space:nowrap}
+.s.ok{background:var(--ws-bg);color:var(--ws)}
+.s.pr{background:var(--me-bg);color:var(--me)}
+.s.tbd{background:var(--soft);color:var(--muted)}
+.s.risk{background:var(--cut-bg);color:var(--cut)}
+
+/* 핵심 문장 */
+.thesis{border-left:5px solid var(--me);display:flex;flex-direction:column;gap:8px}
+.thesis .big{font-size:18.5px;font-weight:700;line-height:1.5;text-wrap:balance}
+
+/* 도식 */
+.dia{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:12px;align-items:stretch}
+.stack{display:flex;flex-direction:column;gap:0}
+.band{border-radius:12px;padding:12px 14px;border:1px solid var(--c);background:var(--cb);display:flex;flex-direction:column;gap:6px}
+.band>.hd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.band>.hd b{color:var(--c);font-size:15px}
+.band>.hd span{color:var(--muted);font-size:12.5px}
+.bb{--c:var(--bb);--cb:var(--bb-bg)} .me{--c:var(--me);--cb:var(--me-bg)} .gov{--c:var(--gov);--cb:var(--gov-bg)} .ws{--c:var(--ws);--cb:var(--ws-bg)} .cu{--c:var(--cust);--cb:var(--cust-bg)}
+.flow{font-size:12.5px;color:var(--muted);padding:5px 0 5px 22px;position:relative}
+.flow::before{content:"";position:absolute;left:12px;top:0;bottom:0;border-left:2px solid var(--line)}
+.flow b{color:var(--ink);font-weight:600}
+.faces{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:stretch}
+.face{background:var(--panel);border-radius:9px;padding:9px 11px;border:1px solid var(--line);font-size:13px}
+.face b{display:block;font-size:12.5px;margin-bottom:2px}
+.face.sup b{color:var(--bb)} .face.use b{color:var(--ws)}
+.cutline{writing-mode:vertical-rl;text-orientation:upright;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--cut);border-left:2px dashed var(--cut);border-right:2px dashed var(--cut);background:var(--cut-bg);padding:6px 3px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:12px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:1px 9px}
+.slices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.slice{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.slice b{font-size:13px}
+.slice.base{border-style:dashed}
+.side{display:flex;flex-direction:column;gap:8px}
+.side .band{flex:1}
+.xg{border:2px dashed var(--cut);border-radius:12px;padding:10px 12px;background:var(--cut-bg);font-size:12.5px}
+.xg b{color:var(--cut)}
+
+/* 정의 표 */
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{font-size:12.5px;color:var(--muted);font-weight:600;background:var(--soft)}
+td.nm{font-weight:700;white-space:nowrap}
+td.nm i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px;vertical-align:0}
+.t-def{min-width:820px}
+.t-me{min-width:760px}
+.t-me td.sup{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-me td.mid{background:var(--cut-bg);color:var(--ink)}
+.t-me td.use{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+
+/* 그리드 */
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.box .k{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.rule{padding:10px 14px;border-radius:10px;background:var(--soft);font-size:13.5px;margin-top:10px}
+
+/* 메일 예시 흐름 */
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;counter-reset:st}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:13px;position:relative;min-width:0}
+.step::before{counter-increment:st;content:counter(st);display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--ws);color:var(--panel);font-size:11.5px;font-weight:700;align-items:center;justify-content:center;margin-bottom:6px}
+.step b{display:block;margin-bottom:2px}
+
+/* 승격 */
+.promo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.stage{padding:14px;display:flex;flex-direction:column;gap:8px;border-right:1px solid var(--line);min-width:0}
+.stage:last-child{border-right:0}
+.stage h3{display:flex;align-items:center;gap:8px}
+.stage h3 .lv{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.stage dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:0;font-size:13px}
+.stage dt{color:var(--muted)} .stage dd{margin:0}
+.stage .gate{font-size:12.5px;padding:6px 9px;border-radius:8px;background:var(--gov-bg);color:var(--gov);font-weight:600}
+
+/* 도메인 비교 */
+.dom{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dom .box.no{border-color:var(--cut)}
+.dom .box.yes{border-color:var(--ws)}
+.addr{font-family:var(--mono);font-size:13px;padding:6px 9px;border-radius:7px;background:var(--soft);overflow-wrap:anywhere}
+
+/* 결정 표 */
+.t-dec{min-width:720px}
+
+/* 세 층 도식 · 한 줄 도식 · 경계선 표 */
+.tier{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-bottom:12px}
+.tier>div{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.2fr);gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-size:13px}
+.tier b{font-size:13.5px}
+.tier .who{font-weight:600}
+.tier .t1{border-left:5px solid var(--bb)} .tier .t1 .who{color:var(--bb)}
+.tier .t2{border-left:5px solid var(--cut);background:var(--cut-bg)} .tier .t2 .who{color:var(--cut)}
+.tier .t3{border-left:5px solid var(--ws)} .tier .t3 .who{color:var(--ws)}
+.oneline{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:pre;line-height:1.85;margin-top:10px}
+.oneline .a{color:var(--bb)} .oneline .u{color:var(--ws)} .oneline .h{color:var(--cut);font-weight:700}
+.t-bd{min-width:780px}
+.t-bd td.in{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-bd td.hand{background:var(--cut-bg);color:var(--cut);font-weight:600;font-size:12.5px;text-align:center;border-left:2px dashed var(--cut);border-right:2px dashed var(--cut)}
+.t-bd td.out{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+.t-bd tr.key td{font-weight:600}
+@media (max-width:680px){.tier>div{grid-template-columns:minmax(0,1fr);gap:2px}}
+.t-pf{min-width:980px}
+.t-pf td.sup{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-pf td.use{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+.t-pf td.nm{vertical-align:top;background:var(--soft)}
+.other{margin-bottom:4px}
+footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:4px}
+a{color:var(--me)}
+
+@media (max-width:900px){
+  .dia{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:680px){
+  .g2,.g3,.g4,.dom,.slices,.steps{grid-template-columns:minmax(0,1fr)}
+  .promo{grid-template-columns:minmax(0,1fr)}
+  .stage{border-right:0;border-bottom:1px solid var(--line)}
+  .stage:last-child{border-bottom:0}
+  .faces{grid-template-columns:minmax(0,1fr)}
+  .cutline{writing-mode:horizontal-tb;border:0;border-top:2px dashed var(--cut);border-bottom:2px dashed var(--cut)}
+  h1{font-size:21px}
+}
+
+.t-gov{min-width:880px}
+.t-gov td.ev{font-weight:700}
+.t-gov td.cf{background:color-mix(in srgb,var(--me-bg) 55%,var(--panel))}
+.t-gov td.cg{background:color-mix(in srgb,var(--gov-bg) 55%,var(--panel))}
+
+/* ---- Fabric 페이지 ---- */
+.fx{display:grid;grid-template-columns:120px minmax(0,1fr) 150px;gap:10px;align-items:stretch}
+.fx-side{border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;justify-content:center;text-align:center}
+.fx-side b{font-size:13.5px}
+.fx-bb{border:2px dashed var(--bb);background:var(--bb-bg);color:var(--bb)}
+.fx-dp{border:2px solid var(--me);background:var(--panel)}
+.fx-dp b{color:var(--me)}
+.fx-dp .chip{display:block;text-align:center}
+.fabric{border:3px solid var(--me);border-radius:16px;padding:10px 12px 12px;background:var(--me-bg);display:flex;flex-direction:column;gap:8px;min-width:0}
+.fabric>.hd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.fabric>.hd b{color:var(--me);font-size:16px}
+.fabric>.hd span{color:var(--muted);font-size:12.5px}
+.grp{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.grp .gh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.grp .gh b{font-size:14.5px;color:var(--c)}
+.grp .gh span{font-size:12px;color:var(--muted)}
+.g-eng{--c:var(--ws)} .g-sh{--c:var(--me)} .g-base{--c:var(--muted)}
+.sub{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.sub>div{border:1px dashed var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;min-width:0}
+.sub>div small{display:block;color:var(--muted);font-size:11.5px;font-weight:700;margin-bottom:2px}
+.outside{border:2px dashed var(--ink);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--panel)}
+.outside .hd b{font-size:15px}
+.outside .hd span{color:var(--muted);font-size:12.5px;margin-left:6px}
+.flowx{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}
+.flowx .n{padding:4px 10px;border-radius:8px;border:1px solid var(--c);background:var(--cb);color:var(--c);font-weight:700}
+.n-t{--c:var(--me);--cb:var(--me-bg)} .n-g{--c:var(--gov);--cb:var(--gov-bg)} .n-w{--c:var(--ws);--cb:var(--ws-bg)}
+.uparrow{text-align:center;font-size:12.5px;color:var(--muted)}
+.ex{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.excol{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.eng{border:2px solid var(--ws);border-radius:10px;padding:8px 10px;background:var(--panel);font-size:13px}
+.eng b{color:var(--ws)}
+.links{display:flex;flex-direction:column;gap:4px;font-size:12.5px;padding-left:14px;border-left:2px solid var(--me)}
+.links span{display:block}
+.links code{font-size:11.5px}
+.shared{border:2px solid var(--me);border-radius:12px;padding:10px 12px;background:var(--me-bg);font-size:13px;display:flex;flex-direction:column;gap:6px}
+.shared b{color:var(--me)}
+.inst{display:flex;gap:8px;flex-wrap:wrap}
+.inst div{border:1px dashed var(--me);border-radius:8px;padding:6px 9px;background:var(--panel);font-size:12.5px}
+@media (max-width:900px){.fx{grid-template-columns:minmax(0,1fr)}.sub{grid-template-columns:repeat(2,minmax(0,1fr))}.ex{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:680px){.sub{grid-template-columns:minmax(0,1fr)}}
+</style>
+<script src="../../assets/js/logos.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>OpenSphere Fabric 구조</h1>
+  <p class="meta">2026-11-17 · Fabric과 공유 서비스는 어떻게 다른가 · 공유 서비스·엔진·어셈블리·리소스 유형 네 층 · 근거: D-79(용어), D-80(Fabric 명칭), D-82~D-85</p>
+  <p class="meta"><span class="s ok">결정</span> 결정 대장에 있음 &nbsp; <span class="s pr">제안</span> 아직 결정 전 &nbsp; <span class="s tbd">미정</span> 정해야 할 것</p>
+</header>
+
+<section class="card thesis" aria-label="핵심">
+  <p class="big"><span style="color:var(--me)">Fabric</span>은 공급되는 모든 부품의 집합이고, <span style="color:var(--me)">공유 서비스</span>는 그 안에서 엔진들이 <b>쪼개 나눠 받는</b> 바탕 묶음이다. <span class="s pr">제안</span></p>
+  <ul>
+    <li>Fabric 안에는 네 묶음이 있다: <b>기반</b> · <b>배포 지원</b> · <b>공유 서비스</b> · <b>엔진</b>.</li>
+    <li>엔진(Stalwart)은 공유 서비스(PostgreSQL · Samba AD · OpenSearch · Keycloak)를 받아 기능(메일)을 만든다.</li>
+    <li>테넌트는 Fabric이 아니다. 테넌트는 Fabric의 공유 서비스와 엔진을 <b>어셈블리</b>로 엮어 리소스 유형을 내놓는 회사 쪽 구성이다.</li>
+    <li>Fabric을 말할 때는 "누가 공급하고 누가 쓰나(두 얼굴)", 공유 서비스를 말할 때는 "무엇을 쪼개 나눠 주나(Claim·연결·용량)"를 따진다.</li>
+  </ul>
+</section>
+
+<!-- 도식 -->
+<section aria-labelledby="h-map">
+  <h2 id="h-map">Fabric 도식</h2>
+  <p class="lead">위로 갈수록 사람에 가깝고, 아래로 갈수록 바탕에 가깝다. 왼쪽은 공급하는 쪽(Backbone), 오른쪽은 부품을 올리는 도구(배포 지원)다.</p>
+
+  <div class="outside" style="margin-bottom:8px">
+    <div class="hd"><b>Fabric 밖 · 테넌트(회사 하나)</b><span>회사 관리 콘솔에서 고르고 엮고 나눠 준다</span></div>
+    <div class="flowx">
+      <span class="n n-t">어셈블리</span><span>메일 · 메신저 · 파일·문서 · 업무 코어 · 데이터 서비스 · 개발 · 에이전트 자리 · 사원 앱 실행 환경 …</span>
+    </div>
+    <div class="flowx">
+      <span class="n n-t">구성 구역</span><span class="arr">→ 리소스 유형·용량 인계 →</span><span class="n n-g">배분 구역 (Governance)</span><span class="arr">→ 할당 →</span><span class="n n-w">Workspace (사원)</span>
+      <span class="muted">예: <code>mail.mailbox</code> → 김OO 10GB</span>
+    </div>
+  </div>
+  <div class="uparrow">▲ 어셈블리는 아래 Fabric의 엔진과 공유 서비스를 엮어 만든다</div>
+
+  <div class="fx">
+    <div class="fx-side fx-bb"><b>Backbone</b>공급 면<br>엔진·버전·용량·수명주기를 공급한다<br><small>Admin Console</small></div>
+    <div class="fabric">
+      <div class="hd"><b>OpenSphere Fabric</b><span>공급 면(날실)과 사용 면(씨실)이 엮인 공유 구성요소 · D-80</span></div>
+
+      <div class="grp g-eng">
+        <div class="gh"><b>엔진</b><span>판별: 공유 서비스를 받아 <b>사람이 쓰는 기능</b>을 만드는가</span></div>
+        <div class="chips"><span class="chip">Stalwart — 메일·일정·주소록</span><span class="chip">Mattermost — 메신저</span><span class="chip">Univer — 문서 편집</span><span class="chip">Odoo — 업무 코어</span><span class="chip">GitLab — 개발</span><span class="chip">Temporal — 업무 자동화</span><span class="chip">Governance — 배분 판단</span><span class="chip">사원 앱 런타임</span></div>
+      </div>
+
+      <div class="grp g-sh">
+        <div class="gh"><b>공유 서비스</b><span>판별: Claim → 인스턴스 → 연결로 <b>쪼개 나눠 받는가</b>, 다른 엔진이 바탕으로 쓰는가</span></div>
+        <div class="sub">
+          <div><small>데이터</small>PostgreSQL · OpenSearch · Valkey · RustFS · MongoDB(예비)</div>
+          <div><small>신원</small>Samba AD(LDAP) · Keycloak(SSO) · 외부 디렉터리 연결</div>
+          <div><small>연산</small>KubeVirt VM · 모델 게이트웨이</div>
+          <div><small>보호·관측</small>백업 서비스 · 관측 서비스</div>
+          <div><small>판단·신뢰</small>OpenFGA <span class="s pr">제안</span> · 테넌트 KMS · 내부 CA · SPIRE</div>
+        </div>
+      </div>
+
+      <div class="grp g-base">
+        <div class="gh"><b>기반</b><span>판별: 나눠 받지 않고 모든 것이 <b>그 위에서 도는가</b></span></div>
+        <div class="chips"><span class="chip">Kubernetes</span><span class="chip">CNI · 네트워크 정책</span><span class="chip">ingress 컨트롤러</span><span class="chip">cert-manager · DNS</span><span class="chip">저장 엔진</span><span class="chip">KVM 노드</span><span class="chip">Kyverno admission <span class="s pr">제안</span></span></div>
+      </div>
+    </div>
+    <div class="fx-side fx-dp"><b>배포 지원</b><small class="muted">판별: 부품을 올리고 바꾸는 도구인가</small><span class="chip">Argo CD</span><span class="chip">Crossplane</span><span class="chip">Velero 설치</span></div>
+  </div>
+</section>
+
+<!-- 네 묶음의 두 얼굴 -->
+<section aria-labelledby="h-faces">
+  <h2 id="h-faces">네 묶음의 두 얼굴</h2>
+  <p class="lead">Fabric의 모든 묶음은 공급 면(Backbone)과 사용 면(테넌트)을 함께 가진다. 경계는 묶음과 묶음 사이가 아니라 각 묶음 한가운데의 인도 지점을 지난다.</p>
+  <div class="scroll card" style="padding:0">
+    <table class="t-bd">
+      <thead><tr><th>묶음</th><th>공급 면 · Backbone</th><th style="text-align:center">인도 지점</th><th>사용 면 · 테넌트</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">엔진</td><td class="in">엔진 버전, 이미지, 호환 행렬</td><td class="hand">엔진 인스턴스</td><td class="out">엔진 설정, 관리자 역할, 데이터</td></tr>
+        <tr class="key"><td class="nm">공유 서비스</td><td class="in">Provider, operator, 공급 풀, 인스턴스 수명주기</td><td class="hand">Claim → 연결(Binding)</td><td class="out">연결 자격(DB·역할·버킷·읽기 계정), 데이터</td></tr>
+        <tr><td class="nm">배포 지원</td><td class="in">Argo·Crossplane 엔진</td><td class="hand">영역 인스턴스</td><td class="out">영역 Argo AppProject, 배포 서명 키</td></tr>
+        <tr><td class="nm">기반</td><td class="in">노드, 클러스터, 네트워크, 저장 엔진, 영역 사이 칸막이</td><td class="hand">네임스페이스 생성</td><td class="out">네임스페이스 안의 내용, 영역 내부 정책</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 예: 메일과 메신저 -->
+<section aria-labelledby="h-ex">
+  <h2 id="h-ex">예: 메일과 메신저가 PostgreSQL을 함께 쓰는 모습</h2>
+  <p class="lead">같은 <b>공유 서비스</b>(PostgreSQL)를 쓰지만, 엔진마다 <b>자기 연결</b>(자기 DB와 역할)을 받는다.</p>
+  <div class="ex">
+    <div class="excol">
+      <div class="eng"><b>메일 어셈블리</b> · 엔진 Stalwart</div>
+      <div class="links">
+        <span>→ PostgreSQL · <code>store · owner</code> · DB <code>mail</code></span>
+        <span>→ Samba AD · <code>directory · read</code> · 읽기 계정</span>
+        <span>→ OpenSearch · <code>index · write</code> · 인덱스 <code>mail-*</code></span>
+        <span>→ RustFS · <code>blob · owner</code> · 버킷 <code>mail</code></span>
+        <span>→ Keycloak · <code>sso</code> · 클라이언트 <code>stalwart</code></span>
+      </div>
+      <div class="muted" style="font-size:12.5px">내놓는 리소스 유형: <code>mail.mailbox</code> · <code>calendar.calendar</code> · <code>contacts.addressbook</code> …</div>
+    </div>
+    <div class="excol">
+      <div class="eng"><b>메신저 어셈블리</b> · 엔진 Mattermost</div>
+      <div class="links">
+        <span>→ PostgreSQL · <code>store · owner</code> · DB <code>chat</code></span>
+        <span>→ OpenSearch · <code>index · write</code> · 인덱스 <code>chat-*</code></span>
+        <span>→ RustFS · <code>blob · owner</code> · 버킷 <code>chat</code></span>
+        <span>→ Keycloak · <code>sso</code> · 클라이언트 <code>mattermost</code></span>
+      </div>
+      <div class="muted" style="font-size:12.5px">내놓는 리소스 유형: <code>chat.team</code> · <code>chat.channel</code> · <code>chat.bot</code> …</div>
+    </div>
+  </div>
+  <div class="shared" style="margin-top:10px">
+    <div><b>PostgreSQL 공유 서비스</b> · Provider <code>postgres</code> · StackGres operator</div>
+    <div class="inst">
+      <div>인스턴스 A · DB <code>mail</code>(Stalwart 연결)</div>
+      <div>인스턴스 A 또는 B · DB <code>chat</code>(Mattermost 연결)</div>
+    </div>
+    <span class="muted" style="font-size:12.5px">두 연결이 같은 인스턴스(클러스터)에 있을지 따로일지는 정하지 않았다 <span class="s tbd">미정 T-Q4</span>. 어느 쪽이든 이름 체계는 같다.</span>
+  </div>
+
+  <h3 style="margin:16px 0 8px">"PostgreSQL"의 세 가지 뜻</h3>
+  <div class="scroll card" style="padding:0">
+    <table>
+      <thead><tr><th>뜻</th><th>이름</th><th>예</th><th>누가 정하나</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">종류</td><td><b>공유 서비스</b></td><td>PostgreSQL 공유 서비스(엔진 버전, operator)</td><td>Backbone(공급)</td></tr>
+        <tr><td class="nm">실제로 떠 있는 것</td><td><b>인스턴스</b></td><td>PostgreSQL 클러스터 하나</td><td>테넌트 Claim → Backbone 생성</td></tr>
+        <tr><td class="nm">엔진 하나가 받는 몫</td><td><b>연결</b>(Binding)</td><td>Stalwart용 DB와 역할, Mattermost용 DB와 역할</td><td>어셈블리 정의 → 테넌트 관리자 승인</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 네 층 -->
+<section aria-labelledby="h-layers">
+  <h2 id="h-layers">네 층의 이름과 정의하는 곳</h2>
+  <p class="lead">사람에게 닿기까지 네 층을 지난다. 앞의 둘은 Fabric 안, 뒤의 둘은 테넌트 안이다. <span class="s pr">제안</span></p>
+  <div class="scroll card" style="padding:0">
+    <table class="t-gov">
+      <thead><tr><th>층</th><th>이름</th><th>예</th><th>정의(만드는 곳)</th><th>사용(고르는 곳)</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">1</td><td class="ev">공유 서비스</td><td>PostgreSQL, Samba AD, Keycloak, OpenSearch</td><td class="cf">Admin 카탈로그(공급사 릴리스 → Admin 채택)</td><td class="cf">어셈블리가 연결로 받는다</td></tr>
+        <tr><td class="nm">2</td><td class="ev">엔진</td><td>Stalwart, Mattermost, Odoo, GitLab</td><td class="cf">Admin 카탈로그</td><td class="cf">어셈블리에 들어간다</td></tr>
+        <tr><td class="nm">3</td><td class="ev">어셈블리</td><td>메일 = Stalwart + PostgreSQL + Samba AD + OpenSearch + Keycloak</td><td class="cf">Admin 카탈로그</td><td class="cg">회사 관리 콘솔 · 구성 구역에서 선택·용량 설정</td></tr>
+        <tr><td class="nm">4</td><td class="ev">리소스 유형</td><td><code>mail.mailbox</code>, <code>calendar.calendar</code></td><td class="cf">어셈블리 정의에 포함</td><td class="cg">회사 관리 콘솔 · 배분 구역에서 할당 → Workspace</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="rule">정의는 Admin(Backbone)에서, 사용은 테넌트에서 한다. 정의에는 회사 데이터나 키가 없으므로 Backbone이 만들어도 B-2·B-3을 어기지 않는다. Backbone은 <b>고를 수 있는 선택지</b>만 공급하고, 무엇을 고를지는 회사가 정한다. 외부 리소스는 Admin 카탈로그의 <b>연결기 틀</b>에 회사가 값만 채워 편입한다. 회사가 만든 앱(사원 앱 3단계)은 어셈블리가 아니라 사원 앱 실행 환경 위의 앱이다.</p>
+</section>
+
+<!-- 용어 -->
+<section aria-labelledby="h-terms">
+  <h2 id="h-terms">혼동하기 쉬운 말</h2>
+  <div class="g2">
+    <div class="box"><b>Fabric ≠ 공유 서비스</b><span class="muted">Fabric은 네 묶음 전체, 공유 서비스는 그중 하나. "PostgreSQL은 Fabric의 공유 서비스다", "Stalwart는 Fabric의 엔진이다".</span></div>
+    <div class="box"><b>Fabric ≠ 테넌트</b><span class="muted">Fabric은 공급되는 부품, 테넌트는 그 부품을 엮은 회사 쪽 구성. 테넌트는 회사 하나(D-83).</span></div>
+    <div class="box"><b>구성요소</b><span class="muted">어셈블리 안에 들어간 공유 서비스 인스턴스와 엔진 인스턴스를 함께 부르는 말. 종류를 가릴 때는 공유 서비스, 엔진이라고 쓴다.</span></div>
+    <div class="box"><b>카탈로그 정의 ≠ Governance 정의</b><span class="muted">카탈로그 정의는 Admin의 조합 틀(어셈블리를 어떻게 엮나), Governance 정의(D-27)는 배분 구역의 정책(누구에게 어떤 조건으로 주나).</span></div>
+  </div>
+</section>
+
+<footer>
+  <span>제안 표시 항목(네 묶음, 네 층의 이름, 카탈로그 정의 위치)은 아직 결정 대장에 올리지 않았다.</span>
+  <span>관련: <a href="four-planes.html">네 면 구조</a> · <a href="tenant.html">테넌트 구조</a> · <a href="../overview/GLOSSARY.html">용어 대응표</a> · <a href="../specs/ASSEMBLY-CATALOG-v0.1.html">어셈블리 카탈로그</a> · <a href="../specs/TENANT-ASSEMBLY-SPEC-v0.1.html">테넌트·어셈블리 구성 명세</a></span>
+</footer>
+
+</div>
+</body>
+</html>

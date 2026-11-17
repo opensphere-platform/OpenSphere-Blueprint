@@ -10,6 +10,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 |---|---|---|
 | [네 면 구조](docs/overview/FOUR-PLANES.md) · [페이지](docs/pages/four-planes.html) | Backbone · Fabric · Governance · Workspace. Workspace = 리소스 풀, 사원 앱 승격, 전용 도메인 | 방향안(일부 합의) |
 | [용어 대응표](docs/overview/GLOSSARY.md) | 상위 구조어, 쓰지 않는 용어(HISS·PSSS·PFSS 등)와 바꿔 쓸 말, 남겨 두는 구 식별자(D-79) | 결정 |
+| [Fabric 구조](docs/pages/fabric.html) | Fabric의 네 묶음(기반·배포 지원·공유 서비스·엔진), 공유 서비스와 Fabric의 차이, 공유 서비스·엔진·어셈블리·리소스 유형 네 층 | 제안 |
 | [Backbone 경계 제안](docs/pages/backbone-boundary.html) | 영역의 키가 태어나는 지점까지가 Backbone. 네 면 구조에 흡수됨 | 이전 판 |
 
 ## 2. 명세 초안

@@ -4,8 +4,8 @@
 **작성:** 2026-11-17 · Claude(설계 검토 AI), 사용자 요구 반영
 **상위 기준:**
 - [네 면 구조](../overview/FOUR-PLANES.md): Backbone · Middle-earth · Governance · Workspace
-- OpenSphere 기준선 v0.2(`OpenSphere/governance/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md`): B-1~B-4, D-14, D-30~D-33, D-54, D-57, D-58
-- O-2 PFSS 경계(`OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md`): Plan → Claim → Instance → Binding
+- OpenSphere 기준선 v0.2([OPENSPHERE-LAYER-BASELINE-v0.2.md](../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md)): B-1~B-4, D-14, D-30~D-33, D-54, D-57, D-58
+- O-2 PFSS 경계([OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md](../architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md)): Plan → Claim → Instance → Binding
 
 **짝 문서:**
 - [테넌트 내부 통신 규칙](TENANT-COMMUNICATION-RULES-v0.1.md)

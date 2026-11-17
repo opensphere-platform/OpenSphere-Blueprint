@@ -6,7 +6,7 @@
 **상위 기준:**
 - [테넌트·어셈블리 구성 명세](TENANT-ASSEMBLY-SPEC-v0.1.md)
 - [테넌트 내부 통신 규칙](TENANT-COMMUNICATION-RULES-v0.1.md)
-- OpenSphere `governance/architecture/OPENSPHERE-GOVERNANCE-MIN-DESIGN-v0.1.md`: §9 판단 엔진 비교, §13 G0~G4 단계
+- [OPENSPHERE-GOVERNANCE-MIN-DESIGN-v0.1.md](../architecture/OPENSPHERE-GOVERNANCE-MIN-DESIGN-v0.1.md): §9 판단 엔진 비교, §13 G0~G4 단계
 - OpenSphere `governance/AUTHORIZATION-GOVERNANCE-TOOLS-RESEARCH-2026-11-13.md`: 도구 조사 1.2.0
 
 ---

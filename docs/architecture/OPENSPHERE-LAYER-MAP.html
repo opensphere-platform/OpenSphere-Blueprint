@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenSphere 계층 지도</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b1f24; --muted:#5b6470; --line:#d9dee5; --soft:#eef1f5;
+  --admin:#4f46e5; --admin-bg:#eef0ff;
+  --user:#0f8a5f; --user-bg:#e7f6ef;
+  --cust:#c2410c; --cust-bg:#fdf0e7;
+  --base:#475569; --base-bg:#eef2f6;
+  --ctrl:#4f46e5; --data:#0e7490; --alloc:#b45309; --deploy:#6b7280; --bound:#be123c;
+  --ok:#0f8a5f; --cand:#b45309; --tbd:#6b7280;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+    --admin:#a5b4fc; --admin-bg:#1e1f3a;
+    --user:#5eead4; --user-bg:#10291f;
+    --cust:#fdba74; --cust-bg:#33200f;
+    --base:#cbd5e1; --base-bg:#1d232b;
+    --ctrl:#a5b4fc; --data:#67e8f9; --alloc:#fbbf24; --deploy:#9ca3af; --bound:#fb7185;
+    --ok:#5eead4; --cand:#fbbf24; --tbd:#9ca3af;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+header{padding:20px 24px 8px;max-width:1200px;margin:0 auto}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:13px}
+nav{max-width:1200px;margin:8px auto 0;padding:0 24px;display:flex;gap:6px;flex-wrap:wrap}
+nav button{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 14px;border-radius:8px;font:inherit;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+main{max-width:1200px;margin:0 auto;padding:16px 24px 40px}
+section[hidden]{display:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.hint{color:var(--muted);font-size:12.5px;margin:0 0 10px}
+
+/* ---- map ---- */
+.map{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.area-h{font-weight:700;font-size:13px;padding:6px 10px;border-radius:8px}
+.area-h small{display:block;font-weight:400;color:var(--muted)}
+.a-admin{background:var(--admin-bg);color:var(--admin)}
+.a-user{background:var(--user-bg);color:var(--user)}
+.a-cust{background:var(--cust-bg);color:var(--cust)}
+.layer{border:1px solid var(--line);border-left:5px solid var(--c);background:var(--panel);border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.layer:hover,.layer:focus-visible{outline:2px solid var(--c);outline-offset:1px}
+.layer[aria-pressed="true"]{background:var(--soft)}
+.layer b{display:block;font-size:14px}
+.layer .role{color:var(--muted);font-size:12.5px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.chip{font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:1px 8px;background:var(--bg);display:inline-flex;align-items:center;gap:5px}
+.chip.lg2{padding-left:3px}
+.logo{width:36px;height:36px;flex:0 0 36px;border-radius:9px;background:#fff;border:1px solid #e3e7ec;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;vertical-align:middle}
+.logo img{width:28px;height:28px;object-fit:contain;display:block}
+.logo.mono{background:var(--soft);border-color:var(--line);color:var(--muted);font-size:14px;font-weight:700}
+.logo.big{width:44px;height:44px;flex-basis:44px;border-radius:11px}.logo.big img{width:34px;height:34px}
+.chip.lg2{padding:3px 10px 3px 3px;gap:7px}
+.pl,.tprod{align-items:center}
+.pl{display:flex;align-items:flex-start;gap:7px;margin:4px 0;list-style:none}
+.dgrid ul.plist{padding-left:0}
+.pnote{display:block;color:var(--muted);font-size:11.5px}
+.tprod{display:flex;align-items:flex-start;gap:6px;margin:3px 0}
+/* selected = area color, candidate = grey */
+.chip.sel{background:color-mix(in srgb,var(--c) 16%,var(--panel));border:1.5px solid var(--c);color:var(--ink);font-weight:600}
+.chip.cand{background:var(--soft);border:1px dashed var(--line);color:var(--muted)}
+.pbox{border-radius:10px;padding:6px 8px;margin:5px 0}
+.pbox.sel{background:color-mix(in srgb,var(--c) 14%,var(--panel));border:1.5px solid var(--c)}
+.pbox.cand{background:var(--soft);border:1px dashed var(--line);color:var(--muted)}
+.cand .logo img{filter:grayscale(1);opacity:.55}
+.cand .logo{background:var(--bg)}
+.scm.cand{background:var(--soft);border-style:dashed}
+.legend .sw{display:inline-block;width:30px;height:16px;border-radius:6px;vertical-align:-3px;margin-right:4px}
+.sw.sel{background:color-mix(in srgb,var(--user) 16%,var(--panel));border:1.5px solid var(--user)}
+.sw.cand{background:var(--soft);border:1px dashed var(--line)}
+.scmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.scmh{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.scm dl{display:grid;grid-template-columns:64px 1fr;gap:3px 8px;margin:0;font-size:12.5px}
+.scm dt{color:var(--muted)} .scm dd{margin:0}
+.full{grid-column:1/-1}
+.stack{display:flex;flex-direction:column;gap:10px}
+.c-admin{--c:var(--admin)} .c-user{--c:var(--user)} .c-cust{--c:var(--cust)} .c-base{--c:var(--base)} .c-exch{--c:var(--bound)}
+.span23{grid-column:2/4;background:linear-gradient(90deg,var(--user-bg),var(--cust-bg))}
+@media (max-width:820px){.span23{grid-column:1/-1}}
+.detail{margin-top:14px}
+.detail h2{font-size:17px;margin:0 0 6px}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.dgrid h3{font-size:13px;margin:0 0 4px;color:var(--muted);font-weight:600}
+.dgrid ul{margin:0;padding-left:18px}
+.dgrid li{margin:2px 0}
+.badge{display:inline-block;font-size:11px;border-radius:5px;padding:0 6px;margin-left:4px;border:1px solid currentColor}
+.b-ok{color:var(--ok)} .b-cand{color:var(--cand)} .b-tbd{color:var(--tbd)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* ---- flow ---- */
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--ink);font-size:12.5px}
+svg .t-muted{fill:var(--muted);font-size:11.5px}
+svg .t-h{font-weight:700;font-size:13.5px}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.rules .card h3{font-size:14px;margin:0 0 6px}
+.rules ol,.rules ul{margin:0;padding-left:18px}
+.lg{display:inline-flex;align-items:center;gap:6px}
+.lg i{display:inline-block;width:26px;height:0;border-top:2.5px solid var(--k)}
+.lg i.dash{border-top-style:dashed}
+
+/* ---- table ---- */
+.tbl{width:100%;min-width:1080px;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.tbl col.c1{width:150px}.tbl col.c2{width:60px}.tbl col.c3{width:22%}.tbl col.c4{width:26%}.tbl col.c5{width:20%}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:8px 8px;vertical-align:top;text-align:left}
+.tbl th{color:var(--muted);font-weight:600;font-size:12px;position:sticky;top:0;background:var(--panel)}
+.tbl td:first-child{font-weight:700;white-space:nowrap}
+.tblwrap{overflow-x:auto}
+
+@media (max-width:820px){
+  .map{grid-template-columns:1fr}
+  .dgrid,.rules{grid-template-columns:1fr}
+  header,main,nav{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>OpenSphere 계층 지도</h1>
+  <div class="sub">기준선 v0.2 · 결정 D-1~D-76 반영 · 업무 코어·SCM 후보 v0.1 · 2026-11-17 · 설계 기준이며 구현·운영 완료를 뜻하지 않음 · 로고: OpenSphere Logos(logos.opl.io.kr, Statically CDN). 로고가 없는 제품은 글자 표식</div>
+</header>
+<nav role="tablist" aria-label="보기 선택">
+  <button role="tab" aria-selected="true" aria-controls="v-map" id="t-map">① 영역 × 계층 지도</button>
+  <button role="tab" aria-selected="false" aria-controls="v-flow" id="t-flow">② 통신 · 통제 흐름</button>
+  <button role="tab" aria-selected="false" aria-controls="v-tbl" id="t-tbl">③ 제품 대장</button>
+  <button role="tab" aria-selected="false" aria-controls="v-scm" id="t-scm">④ 업무 코어(ERP·SCM) 업스트림 후보</button>
+</nav>
+<main>
+
+<!-- ============ 1. MAP ============ -->
+<section id="v-map" role="tabpanel" aria-labelledby="t-map">
+  <p class="hint">위쪽 세 열은 신원·데이터가 분리된 <b>세 영역</b>, 아래 세 줄은 모든 영역이 함께 쓰는 <b>공통 기반 계층</b>입니다. 계층을 누르면 아래에 역할·제품·통신·통제가 나옵니다.</p>
+  <div class="map">
+    <div class="area-h a-admin">admin 영역<small>플랫폼 운영자 · admin 신원(Supabase Auth)</small></div>
+    <div class="area-h a-user">사원 영역<small>회사 사원 · 사원 신원(Samba AD DC → Keycloak)</small></div>
+    <div class="area-h a-cust">고객 영역<small>회사의 고객 · 고객 신원(별도 Keycloak CIAM)</small></div>
+
+    <div class="stack"><button class="layer c-admin" data-k="backbone" aria-pressed="false"><b>Backbone</b><span class="role">OpenSphere를 구성·운영·복구하는 관리 영역 (구 BBSS · L2+L3)</span>
+      <div class="chips" data-chips="backbone"></div></button></div>
+
+    <div class="stack">
+      <button class="layer c-user" data-k="governance" aria-pressed="false"><b>Governance</b><span class="role">누가 무엇을 얼마나 쓰는가의 정본·판단·검증</span>
+        <div class="chips" data-chips="governance"></div></button>
+      <button class="layer c-user" data-k="workspace" aria-pressed="false"><b>Workspace</b><span class="role">사원용 업무 제품 전체 (구 L6 흡수)</span>
+        <div class="chips" data-chips="workspace"></div></button>
+      <button class="layer c-user" data-k="core" aria-pressed="false"><b>업무 코어 · ERP·SCM</b><span class="role">회사 업무 데이터의 정본 — Workspace·고객 영역·에이전트가 API로 소비 (D-74)</span>
+        <div class="chips" data-chips="core"></div></button>
+    </div>
+
+    <div class="stack"><button class="layer c-cust" data-k="customer" aria-pressed="false"><b>고객 영역</b><span class="role">고객 신원·포털·공개 웹·고객용 앱과 에이전트</span>
+      <div class="chips" data-chips="customer"></div></button></div>
+
+    <button class="layer c-exch span23" data-k="exchange" aria-pressed="false"><b>교류 계층 · Exchange</b><span class="role">사원 영역 ↔ 고객 영역의 유일한 통과 지점 — 교류 객체·신원 연결·규칙 집행·이벤트 연결 (자체 신원·정본 없음, D-75)</span>
+      <div class="chips" data-chips="exchange"></div></button>
+
+    <button class="layer c-base full" data-k="pfss" aria-pressed="false"><b>PFSS · L5 Foundation</b><span class="role">공유 자원을 만들고 권한을 투영 — 공급(Backbone) · 배분(Governance) · 집행(PFSS)</span>
+      <div class="chips" data-chips="pfss"></div></button>
+    <button class="layer c-base full" data-k="psss" aria-pressed="false"><b>PSSS · L4 Platform Support</b><span class="role">배포·동기화·adapter·백업 — 모든 영역의 안전망</span>
+      <div class="chips" data-chips="psss"></div></button>
+    <button class="layer c-base full" data-k="hiss" aria-pressed="false"><b>HISS · L1 Host Infrastructure</b><span class="role">클러스터 공통 실행 기반</span>
+      <div class="chips" data-chips="hiss"></div></button>
+  </div>
+
+  <div class="card detail" id="detail" aria-live="polite"></div>
+  <div class="legend"><span><i class="sw sel"></i>선택된 제품(영역 색)</span><span><i class="sw cand"></i>후보·미정(회색)</span><span><span class="badge b-ok">결정</span> 기준선에서 확정</span><span><span class="badge b-cand">후보</span> PoC·협상·선정 진행</span><span><span class="badge b-tbd">재선정</span> 현 시점 기준으로 다시 고름</span></div>
+</section>
+
+<!-- ============ 2. FLOW ============ -->
+<section id="v-flow" role="tabpanel" aria-labelledby="t-flow" hidden>
+  <p class="hint">세 영역은 신원과 채널을 공유하지 않습니다. 영역 안에서는 <b>Shell → 판단 → 소유 모듈</b>로 통제되고, 영역 사이는 <b>등록된 경계 API</b>만 지납니다. 공통 기반은 <b>공급·배분·배포</b> 경로로 연결됩니다.</p>
+  <div class="card">
+  <svg viewBox="0 0 1000 690" role="img" aria-label="OpenSphere 통신과 통제 흐름도">
+    <defs>
+      <marker id="m-ctrl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--ctrl)"/></marker>
+      <marker id="m-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--data)"/></marker>
+      <marker id="m-alloc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--alloc)"/></marker>
+      <marker id="m-bound" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--bound)"/></marker>
+      <marker id="m-deploy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--deploy)"/></marker>
+    </defs>
+
+    <!-- area boxes -->
+    <rect x="16" y="14" width="300" height="300" rx="12" fill="var(--admin-bg)" stroke="var(--admin)"/>
+    <rect x="350" y="14" width="300" height="300" rx="12" fill="var(--user-bg)" stroke="var(--user)"/>
+    <rect x="684" y="14" width="300" height="300" rx="12" fill="var(--cust-bg)" stroke="var(--cust)"/>
+    <text x="30" y="38" class="t-h" style="fill:var(--admin)">admin 영역 · Backbone</text>
+    <text x="364" y="38" class="t-h" style="fill:var(--user)">사원 영역 · Workspace + Governance</text>
+    <text x="698" y="38" class="t-h" style="fill:var(--cust)">고객 영역</text>
+
+    <!-- node helper: rect + text -->
+    <g>
+      <!-- admin column -->
+      <rect x="32" y="52" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="44" y="75">운영자 화면 · CLI · R2D2</text>
+      <rect x="32" y="104" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--admin)"/><text x="44" y="127">OS Shell (공통 제어 입구)</text>
+      <rect x="32" y="156" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="44" y="179">정책 게이트 · 소유 모듈 · Core</text>
+      <rect x="32" y="208" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--data)"/><text x="44" y="231">채널: Rust 버스 · outbox · Temporal</text>
+      <rect x="32" y="262" width="268" height="36" rx="7" fill="var(--soft)" stroke="var(--line)" stroke-dasharray="4 3"/><text x="44" y="285" class="t-muted">신원: admin (Supabase Auth)</text>
+
+      <!-- user column -->
+      <rect x="366" y="52" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="378" y="75">Workspace 앱 · 셀프서비스 · 에이전트 VM</text>
+      <rect x="366" y="104" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--user)"/><text x="378" y="127">사원 영역 Shell (같은 계약, 별도)</text>
+      <rect x="366" y="156" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="378" y="179">Governance 판단 · 소유 모듈</text>
+      <rect x="366" y="208" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--data)"/><text x="378" y="231">채널: Dapr(PoC) + 영역 브로커</text>
+      <rect x="366" y="262" width="268" height="36" rx="7" fill="var(--soft)" stroke="var(--line)" stroke-dasharray="4 3"/><text x="378" y="285" class="t-muted">신원: 사원 (AD → Keycloak)</text>
+
+      <!-- customer column -->
+      <rect x="700" y="52" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="712" y="75">고객 포털 · 웹 · 고객 앱 · 고객 AI</text>
+      <rect x="700" y="104" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--cust)"/><text x="712" y="127">공개 진입점 (WAF · 속도 제한)</text>
+      <rect x="700" y="156" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="712" y="179">고객 토큰 판단 · 업무 API 조회</text>
+      <rect x="700" y="208" width="268" height="36" rx="7" fill="var(--panel)" stroke="var(--data)"/><text x="712" y="231">채널: Dapr(PoC) + 영역 브로커</text>
+      <rect x="700" y="262" width="268" height="36" rx="7" fill="var(--soft)" stroke="var(--line)" stroke-dasharray="4 3"/><text x="712" y="285" class="t-muted">신원: 고객 (Keycloak CIAM 별도)</text>
+    </g>
+
+    <!-- control arrows within areas -->
+    <g stroke="var(--ctrl)" stroke-width="2" fill="none" marker-end="url(#m-ctrl)">
+      <line x1="166" y1="88" x2="166" y2="102"/><line x1="166" y1="140" x2="166" y2="154"/>
+      <line x1="500" y1="88" x2="500" y2="102"/><line x1="500" y1="140" x2="500" y2="154"/>
+      <line x1="834" y1="88" x2="834" y2="102"/><line x1="834" y1="140" x2="834" y2="154"/>
+    </g>
+    <g stroke="var(--data)" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#m-data)">
+      <line x1="166" y1="192" x2="166" y2="206"/><line x1="500" y1="192" x2="500" y2="206"/><line x1="834" y1="192" x2="834" y2="206"/>
+    </g>
+
+    <!-- boundary API between areas -->
+    <g stroke="var(--bound)" stroke-width="2.5" fill="none" marker-end="url(#m-bound)" marker-start="url(#m-bound)">
+      <line x1="300" y1="174" x2="364" y2="174"/>
+      <line x1="634" y1="174" x2="698" y2="174"/>
+    </g>
+    <text x="306" y="164" class="t-muted" style="fill:var(--bound)">경계 API</text>
+    <text x="636" y="164" class="t-muted" style="fill:var(--bound);font-weight:700">교류 계층</text>
+
+    <!-- shared base -->
+    <rect x="16" y="370" width="968" height="110" rx="12" fill="var(--base-bg)" stroke="var(--base)"/>
+    <text x="30" y="394" class="t-h">PFSS · L5 Foundation — 공급 · 배분 · 집행</text>
+    <rect x="32" y="408" width="280" height="56" rx="7" fill="var(--panel)" stroke="var(--alloc)"/><text x="44" y="430">공급 풀 (Backbone 설정)</text><text x="44" y="450" class="t-muted">vCPU·메모리·저장·연결 한도, 과할당 비율</text>
+    <rect x="360" y="408" width="280" height="56" rx="7" fill="var(--panel)" stroke="var(--alloc)"/><text x="372" y="430">Grant 검증 → Claim → 자원</text><text x="372" y="450" class="t-muted">서명 오프라인 검증 · quota 강제</text>
+    <rect x="688" y="408" width="280" height="56" rx="7" fill="var(--panel)" stroke="var(--alloc)"/><text x="700" y="430">Binding (엔드포인트 · Secret 참조)</text><text x="700" y="450" class="t-muted">사용량 보고 · drift 대조</text>
+    <g stroke="var(--alloc)" stroke-width="2" fill="none" marker-end="url(#m-alloc)">
+      <line x1="312" y1="436" x2="358" y2="436"/><line x1="640" y1="436" x2="686" y2="436"/>
+    </g>
+
+    <rect x="16" y="500" width="968" height="76" rx="12" fill="var(--base-bg)" stroke="var(--base)"/>
+    <text x="30" y="524" class="t-h">PSSS · L4 — 배포 · 동기화 · 백업</text>
+    <text x="30" y="548">Backbone: Gitea Actions(자기 관리)   ·   사원·고객 영역: GitLab CI → Argo CD   ·   Crossplane · 백업·복원</text>
+    <text x="30" y="566" class="t-muted">변경은 소스(Gitea/GitLab) → 검토 → 고정 산출물 → 배포. 에이전트는 PR까지만(D-16)</text>
+
+    <rect x="16" y="596" width="968" height="76" rx="12" fill="var(--base-bg)" stroke="var(--base)"/>
+    <text x="30" y="620" class="t-h">HISS · L1 — 클러스터 공통 실행 기반</text>
+    <text x="30" y="644">RKE2 · CNI · DNS · 저장·CSI · ingress · cert-manager · 관측 stack · StackGres operator · KubeVirt operator·KVM 노드</text>
+    <text x="30" y="662" class="t-muted">Backbone의 Cluster Manager가 진단·설치·canary로 Ready 판정</text>
+
+    <!-- allocation arrows from areas to PFSS -->
+    <path d="M110 298 L110 406" stroke="var(--alloc)" stroke-width="2" fill="none" marker-end="url(#m-alloc)"/>
+    <text x="118" y="344" class="t-muted" style="fill:var(--alloc)">공급 설정</text>
+    <path d="M440 298 L440 406" stroke="var(--alloc)" stroke-width="2" fill="none" marker-end="url(#m-alloc)"/>
+    <text x="448" y="344" class="t-muted" style="fill:var(--alloc)">서명 Grant · Claim</text>
+    <path d="M828 406 L828 300" stroke="var(--alloc)" stroke-width="2" fill="none" stroke-dasharray="2 4" marker-end="url(#m-alloc)"/>
+    <text x="836" y="344" class="t-muted" style="fill:var(--alloc)">Binding 사용</text>
+    <path d="M560 406 L560 300" stroke="var(--alloc)" stroke-width="2" fill="none" stroke-dasharray="2 4" marker-end="url(#m-alloc)"/>
+    <text x="568" y="358" class="t-muted" style="fill:var(--alloc)">Binding 사용</text>
+
+    <!-- operate arrow -->
+    <path d="M250 298 C 250 340, 250 340, 250 368" stroke="var(--deploy)" stroke-width="2" fill="none" marker-end="url(#m-deploy)"/>
+    <text x="258" y="344" class="t-muted">설치·운영·복구</text>
+  </svg>
+  <div class="legend">
+    <span class="lg" style="--k:var(--ctrl)"><i></i>통제: 입구 → 판단 → 소유 모듈</span>
+    <span class="lg" style="--k:var(--data)"><i class="dash"></i>데이터·이벤트 채널(영역마다 하나)</span>
+    <span class="lg" style="--k:var(--bound)"><i></i>영역 간 등록 경계 API</span>
+    <span class="lg" style="--k:var(--alloc)"><i></i>공급·배분·Binding</span>
+    <span class="lg" style="--k:var(--deploy)"><i></i>설치·운영·배포</span>
+  </div>
+  </div>
+
+  <div class="rules">
+    <div class="card"><h3>통제 경로 (영역 안)</h3><ol>
+      <li>화면·CLI·에이전트 → <b>Shell</b> (admin: OS Shell · 사원: 사원 영역 Shell)</li>
+      <li>현재 신원·위임 사슬 확인 (사람·에이전트 교집합 권한)</li>
+      <li><b>판단</b>: Backbone 정책 / Governance 판단부</li>
+      <li>위험 등급이면 사람 확인 대기 · 결재는 사람만</li>
+      <li><b>소유 모듈</b>이 실행, 효과 직전 재검사</li>
+      <li>결과 확인 · 결과 불명은 재전송 없이 조회로 확정</li>
+    </ol></div>
+    <div class="card"><h3>데이터 채널 규칙 (D-66·D-69)</h3><ul>
+      <li>영역마다 하나의 채널, 영역 간 신뢰 뿌리 공유 없음</li>
+      <li>CloudEvents 봉투 + 등록된 스키마만</li>
+      <li>저장·발행은 outbox로 원자적</li>
+      <li>최소 1회 전달 + 수신 측 멱등</li>
+      <li>순서는 대상 키 단위</li>
+      <li>위임 토큰(act 사슬) 전달, 판단은 Governance</li>
+    </ul></div>
+    <div class="card"><h3>영역 간 통제 (B-1~B-8, O-6)</h3><ul>
+      <li>신원 셋은 섞지 않음: admin · 사원 · 고객</li>
+      <li>Backbone은 설치·운영·복구만, 사원 권한 내용엔 관여 안 함</li>
+      <li>C1 운영 지표·단위별 사용량 보고 / C2 내용 중립 조치</li>
+      <li>C3 비상 진입은 소유자 허락 + 시한부 자격 + 기록</li>
+      <li>보안 동결은 Backbone 단독 가능(24h 만료)</li>
+      <li>고객 영역 ↔ 사원 영역은 <b>교류 계층</b>만 통과 (D-75): 교류 객체·신원 연결·데이터 최소화·감사</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ============ 3. TABLE ============ -->
+<section id="v-tbl" role="tabpanel" aria-labelledby="t-tbl" hidden>
+  <p class="hint">계층별 기본 역할, 배치 제품, 통신 방식, 통제 주체를 한 표로 정리했습니다. 제품 옆 표시는 결정 상태입니다.</p>
+  <div class="card tblwrap"><table class="tbl" id="tbl">
+    <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col></colgroup>
+    <thead><tr><th>계층</th><th>영역</th><th>기본 역할</th><th>배치 제품</th><th>통신 방식</th><th>통제 주체</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+<!-- ============ 4. SCM ============ -->
+<section id="v-scm" role="tabpanel" aria-labelledby="t-scm" hidden>
+  <p class="hint">고객 영역의 핵심인 <b>SCM(공급망 관리)</b>의 정본은 전사 <b>업무 코어(ERP·SCM, 사원 영역)</b>에 두고, 고객 영역은 대외 면(주문·배송·협력사 포털)만 가집니다(D-74). 아래는 업무 코어와 대외 커머스 계층의 업스트림 후보입니다. <b>업무 코어는 Odoo Community로 선택</b>(D-76, 컬러)했고, 나머지는 후보·비선정(회색)입니다. 고객 영역 구성(커머스 계층·Liferay)은 아직 보류입니다. 라이선스는 GitHub의 LICENSE 원문 기준(2026-11-17), 기능은 공개 문서 기준이며 PoC 전입니다.</p>
+  <div class="card" style="margin-bottom:12px">
+    <svg viewBox="0 0 1000 210" role="img" aria-label="SCM 권고 구성">
+      <rect x="10" y="10" width="980" height="86" rx="10" fill="var(--cust-bg)" stroke="var(--cust)"/>
+      <text x="24" y="32" class="t-h" style="fill:var(--cust)">고객 영역 · 인터넷 공개 · 고객·협력사 신원(Keycloak CIAM)</text>
+      <rect x="24" y="44" width="300" height="40" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="36" y="69">고객·협력사 포털 UI · 고객 AI 에이전트</text>
+      <rect x="360" y="44" width="330" height="40" rx="7" fill="var(--panel)" stroke="var(--cust)"/><text x="372" y="69">대외 커머스 계층: Saleor (대안 Medusa)</text>
+      <rect x="726" y="44" width="250" height="40" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="738" y="69">공개 API · 협력사 ASN·정산 조회</text>
+      <rect x="10" y="118" width="980" height="84" rx="10" fill="var(--user-bg)" stroke="var(--user)"/>
+      <text x="24" y="140" class="t-h" style="fill:var(--user)">사원 영역 · 업무 코어(ERP·SCM, 전사 정본) · 사원 신원(Keycloak)</text>
+      <rect x="24" y="152" width="460" height="40" rx="7" fill="var(--panel)" stroke="var(--user)"/><text x="36" y="177">업무 코어: Odoo Community(선택, D-76) — 판매·구매·재고·생산·정산</text>
+      <rect x="520" y="152" width="456" height="40" rx="7" fill="var(--panel)" stroke="var(--line)"/><text x="532" y="177">Governance: 사원의 SCM 권한·고객정보 열람 통제(B-7)</text>
+      <path d="M525 86 L525 150" stroke="var(--bound)" stroke-width="2.5" fill="none" marker-end="url(#m-bound)" marker-start="url(#m-bound)"/>
+      <text x="535" y="112" class="t-muted" style="fill:var(--bound)">교류 계층: 교류 객체(견적·주문·ASN·정산) · 신원 연결 · 이벤트 연결기</text>
+    </svg>
+  </div>
+  <div class="scmgrid" id="scmgrid"></div>
+  <div class="card" style="margin-top:12px"><h3 style="margin:0 0 6px;font-size:14px">왜 코어의 포털을 그대로 공개하지 않나</h3>
+    <p class="hint" style="margin:0">Odoo·ERPNext의 고객·공급사 포털은 코어 프로세스·DB와 같은 곳에서 돈다. 인터넷에 직접 공개하면 B-6(고객 영역은 업무 DB에 직접 닿지 않음)·B-8(별도 공개 진입점)이 깨지고 코어 취약점이 바로 외부에 노출된다. 그래서 헤드리스 커머스 계층과 OpenSphere 자체 포털을 둔다. 사용자가 적은 협력사 포털은 코어 포털을 별도 진입점 뒤에서 제한 사용하는 안을 PoC에서 비교한다.</p></div>
+</section>
+</main>
+
+<script>
+const S = {ok:'결정', cand:'후보', tbd:'재선정'};
+const CDN='https://cdn.statically.io/gh/openplatform-labs/logos@main/logos/';
+// logo files resolved from logos.opl.io.kr (OpenSphere Logos) API/catalog, 2026-11-17
+const G={angular:'angular-icon.svg',rust:'rust-icon.svg',pg:'postgresql-icon.svg',temporal:'temporal.svg',gitea:'gitea.svg',openclaw:'openclaw.svg',
+ oo:'openobserve.svg',otel:'opentelemetry-icon.svg',supabase:'supabase.svg',keycloak:'keycloak.svg',samba:'samba-server.svg',gitlab:'gitlab-icon.svg',
+ stalwart:'stalwart.svg',mattermost:'mattermost-icon.svg',kubevirt:'kubevirt.svg',dapr:'dapr.svg',directus:'directus.svg',valkey:'valkey.svg',
+ opensearch:'opensearch-icon.svg',percona:'percona.svg',rustfs:'rustfs.svg',argocd:'argocd.svg',crossplane:'crossplane-icon.svg',velero:'velero.svg',
+ helm:'helm-icon.svg',rancher:'rancher-icon.svg',k8s:'kubernetes-icon.svg',longhorn:'longhorn.svg',nginx:'nginx-icon.svg',certm:'cert-manager.svg',
+ prom:'prometheus-icon.svg',grafana:'grafana-icon.svg',spicedb:'spicedb.svg',
+ affine:'affine-icon.svg',odoo:'odoo-icon.svg',erpnext:'erpnext-icon.svg',apache:'apache-icon.svg',medusa:'medusa-icon.svg',dolibarr:'dolibarr-icon.svg'};
+function logo(key,mono,big){
+  const cls='logo'+(big?' big':'');
+  if(key&&G[key]) return '<span class="'+cls+'"><img loading="lazy" alt="" src="'+CDN+G[key]+'" onerror="this.parentNode.classList.add(\'mono\');this.replaceWith(document.createTextNode(\''+(mono||'·')+'\'))"></span>';
+  return '<span class="'+cls+' mono" aria-hidden="true">'+(mono||'·')+'</span>';
+}
+// chips on the map: [label, logoKey, monogram]
+const C={
+ backbone:[['Console','angular',null,'ok'],['Rust BFF·버스','rust',null,'ok'],['Core PG19','pg',null,'ok'],['Temporal','temporal',null,'ok'],['OS Shell',null,'S','ok'],['R2D2 / OpenClaw','openclaw',null,'ok'],['Gitea','gitea',null,'ok'],['OpenObserve','oo',null,'ok'],['Supabase Auth','supabase',null,'ok'],['Cluster Manager',null,'CM','ok']],
+ governance:[['원장 (전용 PG)','pg',null,'ok'],['판단 엔진(후보)',null,'P','cand'],['결재',null,'✓','ok'],['SCIM형 프로비저닝',null,'↻','ok'],['관리 콘솔',null,'A','ok']],
+ workspace:[['Keycloak SSO','keycloak',null,'ok'],['Samba AD DC','samba',null,'ok'],['Stalwart 메일·일정·연락처·파일','stalwart',null,'ok'],['Mattermost 메신저','mattermost',null,'ok'],['Univer 문서·시트·슬라이드',null,'U','ok'],['AFFiNE 지식·화이트보드(후보)','affine',null,'cand'],['GitLab 개발','gitlab',null,'ok'],['에이전트 자리 VM','kubevirt',null,'ok'],['OpenBot(후보)',null,'OB','cand'],['Dapr(PoC)','dapr',null,'cand']],
+ core:[['Odoo Community','odoo',null,'ok'],['판매·구매·재고·물류',null,'SCM','ok'],['생산·정산·회계',null,'ERP','ok'],['실증 조건 C1~C9',null,'✓','cand'],['비선정: ERPNext','erpnext',null,'cand'],['비선정: Apache OFBiz','apache',null,'cand']],
+ exchange:[['교류 게이트웨이(미정)',null,'GW','cand'],['신원 연결 레지스트리',null,'ID','ok'],['교류 객체: 견적·주문·ASN·정산·반품',null,'SCM','ok'],['상담 건·대화(제품 미정)',null,'CS','cand'],['공유 문서(미정)',null,'Doc','cand'],['표현 변환·데이터 최소화',null,'⇄','ok'],['이벤트 연결기(Dapr PoC)','dapr',null,'cand'],['교류 감사',null,'✓','ok']],
+ customer:[['Keycloak CIAM','keycloak',null,'ok'],['SCM 대외 커머스: Saleor·Medusa(후보)','medusa',null,'cand'],['고객·협력사 포털(미정)',null,'P','cand'],['CMS(재선정)',null,'W','cand'],['공개 API',null,'API','ok'],['고객 AI 에이전트',null,'AI','ok'],['Dapr(PoC)','dapr',null,'cand']],
+ pfss:[['공급 풀',null,'SP','ok'],['Grant 검증',null,'G','ok'],['PostgreSQL','pg',null,'ok'],['RustFS','rustfs',null,'ok'],['Valkey','valkey',null,'ok'],['OpenSearch','opensearch',null,'ok'],['Percona MongoDB','percona',null,'ok'],['KubeVirt VM','kubevirt',null,'ok'],['Samba AD','samba',null,'ok'],['Keycloak','keycloak',null,'ok']],
+ psss:[['Argo CD','argocd',null,'ok'],['Crossplane','crossplane',null,'ok'],['Helm','helm',null,'ok'],['Velero 백업(후보)','velero',null,'cand'],['GitLab CI → Argo','gitlab',null,'ok']],
+ hiss:[['RKE2','rancher',null,'ok'],['Kubernetes','k8s',null,'ok'],['Longhorn·CSI','longhorn',null,'ok'],['ingress-nginx','nginx',null,'ok'],['cert-manager','certm',null,'ok'],['Prometheus','prom',null,'ok'],['Grafana','grafana',null,'ok'],['OpenTelemetry','otel',null,'ok'],['StackGres op.',null,'SG','ok'],['KubeVirt op.·KVM','kubevirt',null,'ok'],['Kata(후보)',null,'K','cand']]
+};
+const L = {
+  backbone:{name:'Backbone', area:'admin', role:'OpenSphere가 서비스를 구성·운영·복구할 수 있게 지원하는 관리 영역. 사원 권한의 내용에는 관여하지 않음 (D-1, D-23)',
+    does:['관리 신원·관리 데이터(PG19)·감사','모듈 설치·운영·복구, 공급 풀 설정','OS Shell로 모든 관리 기능 제어(AOA)','자체 업데이트·독립 복구','Cluster Manager로 HISS 관리'],
+    products:[['Console (Angular·Clarity)','ok','angular'],['Rust BFF + 내부 버스','ok','rust'],['Core (PG19) + outbox','ok','pg'],['Temporal','ok','temporal'],['OS Shell','ok',null,'S'],['R2D2 / OpenClaw','ok','openclaw'],['Gitea + Gitea Actions','ok','gitea'],['OpenShell 격리 실행','ok',null,'OS'],['OpenObserve + OTel','ok','oo'],['Magpie 모델 관리','ok',null,'M'],['Supabase Auth (admin 신원)','ok','supabase'],['Cluster Manager','ok',null,'CM'],['Setup CLI','ok',null,'>_']],
+    comm:['영역 안: Rust 버스 · Core outbox · Temporal','사원 영역으로: 등록 경계 API (서비스 배분 요청, 운영 지표·사용량 수신)','기반: 공급 풀 설정 → PFSS, Gitea Actions 배포'],
+    ctrl:['플랫폼 운영자 (admin 신원)','정책 게이트 + 소유 모듈 + Core SQL 최종 검사','비상 진입은 사원 영역 허락 필요 (C3)']},
+  governance:{name:'Governance', area:'사원', role:'"누가(AD) + 무엇을(정의) + 얼마나·언제까지(할당)"를 원장에 확정하고, 각 앱·PFSS에 투영하고, 계속 대조하는 독립 제품 (D-2, D-19)',
+    does:['접근: 역할·할당·신청·결재·재검토·프로비저닝','자원: 개인·부서·프로젝트·서비스 quota와 배분','비용·사용량: showback, quota 초과 차단','준수·감사: drift 대조, 시점별 권한 증거','에이전트 신원·상시 위임 관리'],
+    products:[['Governance 엔진 (원장·정의 revision·결재·실행기·대조기)','ok',null,'G'],['원장 = 전용 PostgreSQL','ok','pg'],['판단 엔진 (Cedar·Cerbos·OPA·OpenFGA·SpiceDB 비교)','cand',null,'P'],['Grant 서명기','ok',null,'✎'],['프로비저닝 어댑터 (SCIM 2.0 모양 계약)','ok',null,'↻'],['Governance 관리 콘솔 (별도 주소)','ok',null,'A'],['정의 서명 사본 → GitLab','ok','gitlab']],
+    comm:['입구: 관리 콘솔 · Workspace 셀프서비스 · 사원 영역 Shell → Governance API','원천: AD 변경 수집 (조직도 정본 = AD)','투영: 어댑터 → 앱 / 서명 Grant → PFSS Claim','영역 채널(이벤트)로 앱과 연계'],
+    ctrl:['소유자 = AD 도메인 관리자 그룹 (D-34)','위임 관리 역할 (기능·단위 범위)','본인·에이전트 결재 금지, 정의 활성화는 위험 기반 승인','초과 권한 자동 회수, 부족은 보고 (D-20)']},
+  workspace:{name:'Workspace', area:'사원', role:'사원용 업무 제품 전체. 진입점부터 메일·ERP·개발·AI까지 (D-7, D-28, D-55)',
+    does:['진입점·서비스 스위처·SSO','내 권한·자원·신청·결재함 (셀프서비스)','메일·일정·파일, 메신저','개발 (GitLab, 개발자 자리 VM)','ERP·업무 앱','사원·부서·프로젝트 에이전트'],
+    products:[['Keycloak (사원 SSO, AD federation)','ok','keycloak'],['Samba AD DC (사원 신원 정본) / 외부 AD','ok','samba'],
+      ['Stalwart — 메일(SMTP·IMAP·JMAP)·일정(CalDAV)·연락처(CardDAV)·파일(WebDAV)','ok','stalwart',null,'AGPL-3.0 + Enterprise 기능 별도. SSO·디렉터리 연동 범위 실증 필요'],
+      ['Mattermost — 메신저·채널·알림','ok','mattermost',null,'공식 빌드 MIT / 소스 AGPLv3 / 상업 라이선스. Keycloak(OIDC·SAML) SSO가 유료 판 기능인지 확인 필요'],
+      ['Univer — 문서·스프레드시트·슬라이드 편집 SDK (사원·에이전트 공용)','ok',null,'U','코어 Apache-2.0. 실시간 공동 편집·서버 SDK·일부 파일 처리는 상업 확장'],
+      ['AFFiNE — 지식·위키·화이트보드','cand','affine',null,'클라이언트 MIT, 서버(packages/backend)는 Enterprise 라이선스: 운영 사용은 구독 약관 동의 필요. 셀프호스팅·OEM 조건 확인 선행'],
+      ['GitLab + GitLab CI','ok','gitlab'],
+      ['ERP·SCM 업무 화면 → 업무 코어 계층으로 분리 (D-74)','ok',null,'→'],['에이전트 하네스: OpenBot (OEM 협상 선행)','cand',null,'OB'],['에이전트 자리: KubeVirt VM / 경량 격리','ok','kubevirt'],['영역 채널: Dapr (PoC)','cand','dapr'],['사원 영역 모델 게이트웨이','ok',null,'MG'],['사원 영역 Shell','ok',null,'S']],
+    comm:['사람: Keycloak SSO → 앱 (외부 접속 방식은 회사 선택, D-59)','에이전트: 자리 VM → 모델 게이트웨이 · Shell · 기록되는 웹 출구 (3개만)','앱 간: 영역 채널 (Dapr PoC + 브로커)','고객 영역과: 업무 API'],
+    ctrl:['권한은 Governance 판단 · 프로비저닝','에이전트 = 할당 ∩ 요청자/위임자 권한, 사슬 깊이 2','위험 행위는 사람 확인 대기']},
+  core:{name:'업무 코어 · ERP·SCM', area:'사원', role:'회사 업무 데이터의 정본(system of record). 판매·구매·재고·물류·생산·정산·회계. 고객 영역에 한정하지 않고 전사 코어로 둔다 (D-74)',
+    does:['수주·발주, 재고·창고·물류, 출하·반품','생산(선택), 정산·회계 연결','고객 영역 SCM 대외 면의 정본 제공 (주문·배송·재고 가시성·협력사 ASN)','Workspace 업무 화면과 사원 영역 에이전트의 업무 데이터 원천'],
+    products:[['Odoo Community — 선택 (D-76)','ok','odoo',null,'LGPL-3.0, PostgreSQL 전용, 기능 폭·생태계 최대'],
+      ['실증 조건 C1~C9','tbd',null,'✓','Enterprise 의존 금지 목록, Keycloak OIDC·Governance 어댑터, 교류 계층 계약, outbox 이벤트, 한국 현지화, PFSS 배치, 업그레이드, 성능, LGPL 대응. 실증 시작은 별도 지시'],
+      ['ERPNext (Frappe) — 비선정','cand','erpnext',null,'GPL-3.0, MariaDB 중심'],
+      ['Apache OFBiz — 비선정','cand','apache',null,'Apache-2.0, Java']],
+    comm:['사원: Keycloak SSO → 업무 화면 (Workspace)','고객 영역: 대외 커머스·포털이 등록 경계 API·이벤트로만 소비 (B-6, D-71)','에이전트: 사원 영역 Shell 경유','이벤트: outbox → CloudEvents → 영역 채널 (D-69)','저장: PFSS PostgreSQL (Governance 서비스 배분, D-30)'],
+    ctrl:['사원의 업무 권한·고객정보 열람 = Governance (B-7)','고객·협력사 자격 = 계약·주문 상태(업무 데이터)','데이터 보존·파기 = Governance 결정 (D-33)']},
+  exchange:{name:'교류 계층 · Exchange', area:'사원↔고객', role:'내부 업무(사원 영역)와 외부 고객·협력사(고객 영역)가 만나는 유일한 통과 지점. 자체 신원과 업무 데이터 정본은 없고, 연결 규칙·보여 줄 형태·전달 기록만 가짐 (D-75, X-1~X-5)',
+    does:['교류 객체 계약: 견적·주문·주문 확인·ASN·송장/정산 조회·반품·상담 건·공유 문서·고객 요청 결재','신원 연결: 고객 계정·고객 조직 ↔ 업무 코어 거래처, 건 ↔ 담당 사원','표현 변환: 고객에게 보일 필드만 투영(원가·내부 메모 제외)','사원·고객 영역 채널 사이 이벤트 연결(등록된 이벤트만)','교류 감사: 누가 어떤 교류 객체를 보고 바꿨는지'],
+    products:[['교류 게이트웨이','tbd',null,'GW','범용 API 게이트웨이+정책 또는 자체 경량 서비스 (X-Q1)'],['신원 연결 레지스트리','ok',null,'ID','연결 생성·변경은 Governance 결재'],['고객 서비스 시스템(상담 건 정본)','tbd',null,'CS','Odoo Helpdesk·CRM 또는 별도 헬프데스크 (X-Q2)'],['이벤트 연결기 (Dapr PoC 결과 따름)','cand','dapr'],['교류 감사 저장','ok',null,'✓']],
+    comm:['고객 쪽: 고객 토큰(고객 CIAM)으로만','사원 쪽: 사원 토큰·위임 사슬 / 업무 코어 API','두 영역 직접 연결은 네트워크 정책으로 차단 (X-1)','이벤트: CloudEvents·멱등·outbox·키 순서 (D-69)'],
+    ctrl:['넘길 데이터·동의·속도 제한·사원 열람 조건 = Governance 정의 (X-4)','업무 판단(가격·재고·결재)은 정본 시스템 몫 (X-5)','고객 AI 에이전트는 고객 토큰으로만 교류 객체 조회']},
+  customer:{name:'고객 영역', area:'고객', role:'핵심은 SCM(공급망 관리)의 대외 면. 고객·협력사의 주문·배송·재고·정산을 신원·포털·공개 API로 제공. 운영은 사원이 Governance 역할로 (D-60, D-62~D-65)',
+    does:['SCM 대외 면: 카탈로그·견적·주문, 주문·배송 추적, B2B 재고 가시성, 반품','협력사: 발주 확인·납품 예정(ASN)·정산 조회','고객·협력사 가입·로그인·동의·탈퇴 (B2C·B2B)','공개 웹사이트·고객용 앱·공개 API','고객 응대 AI 에이전트 (고객 권한 이하)'],
+    products:[['Keycloak CIAM (별도 인스턴스, 고객·협력사 조직)','ok','keycloak'],
+      ['SCM 대외 커머스 계층 — Saleor (1순위 후보)','cand',null,'S','BSD-3-Clause, PostgreSQL, GraphQL 헤드리스. 코어(Odoo)와 API·이벤트로만 연결'],
+      ['SCM 대외 커머스 계층 대안 — Medusa','cand','medusa',null,'MIT(Enterprise Edition 자료 제외), PostgreSQL, TypeScript'],
+      ['고객·협력사 포털 UI (OpenSphere 자체)','tbd',null,'P'],['헤드리스 CMS (웹사이트, 아카이브 계획은 Directus)','tbd','directus'],['고객용 앱·API (GitLab에서 개발)','ok','gitlab'],['고객 AI 에이전트 (경량 격리)','ok',null,'AI'],['영역 채널: Dapr (PoC)','cand','dapr'],['공개 ingress · WAF · 속도 제한','ok','nginx']],
+    comm:['외부: 별도 공개 진입점 (B-8)','SCM: 포털 → 커머스 계층(고객 토큰) → 경계 API·이벤트 → 사원 영역 SCM 코어','사원 영역과: 업무 시스템의 고객용 API로만 (B-6)','영역 채널 (Dapr PoC + 브로커)','에이전트 데이터 조회는 고객 토큰으로만'],
+    ctrl:['고객 자격 = 업무 시스템(계약·주문·구독)','고객 영역 정책·사원의 고객정보 열람 = Governance','B2B 고객 조직 관리자는 CIAM 안의 고객 측 역할']},
+  pfss:{name:'PFSS · L5 Foundation', area:'공통', role:'공유 자원을 만들고 권한을 투영. Backbone은 공급, Governance는 배분, PFSS는 집행 (O-2)',
+    does:['Plan → Claim → Instance → Binding','서명 Grant 오프라인 검증, quota 강제','엔진별 권한 투영 (PG role, S3 IAM, ACL 등)','사용량 보고, drift 대조','VM(compute) 제공'],
+    products:[['Foundation control plane','ok',null,'F'],['SupplyPool (신규)','ok',null,'SP'],['PostgreSQL (StackGres)','ok','pg'],['RustFS (S3)','ok','rustfs'],['Valkey','ok','valkey'],['OpenSearch','ok','opensearch'],['Percona MongoDB','ok','percona'],['KubeVirt VM (compute 모델 신설)','ok','kubevirt'],['Samba AD DC Provider','ok','samba'],['Keycloak Provider','ok','keycloak']],
+    comm:['Backbone → 공급 풀 설정','Governance → 서명 Grant + Claim','→ 각 영역에 Binding (엔드포인트·Secret 참조)','사용량 → Governance (단위별) → Backbone (보고서)'],
+    ctrl:['Backbone 공급 한도가 배분보다 우선','영구 삭제는 Governance 결정, PFSS 실행 (D-33)','과할당 비율은 풀마다 Backbone 설정 (D-32)']},
+  psss:{name:'PSSS · L4 Platform Support', area:'공통', role:'배포·동기화·adapter·백업·정책 실행 연계. 영역을 가로지르는 안전망',
+    does:['선언 배포와 drift 복구','operator·Helm 릴리스 관리','백업·복원 연계','사원·고객 영역 배포 실행'],
+    products:[['Argo CD','ok','argocd'],['Crossplane + provider-helm','ok','crossplane'],['Helm','ok','helm'],['백업 (Velero 계열)','cand','velero']],
+    comm:['GitLab CI → Argo CD (사원·고객 영역, D-18)','Backbone은 Gitea Actions로 자기 관리'],
+    ctrl:['소스 → 검토 → 고정 산출물 → 배포','에이전트는 PR까지만 (D-16)']},
+  hiss:{name:'HISS · L1 Host Infrastructure', area:'공통', role:'모든 영역이 쓰는 클러스터 공통 실행 기반',
+    does:['K8s·네트워크·DNS·저장·인증서','ingress·관측 기반','DB·VM operator 같은 공통 설비','Ready는 canary 증거로 판정'],
+    products:[['RKE2 (Rancher)','ok','rancher'],['Kubernetes · CNI · CoreDNS','ok','k8s'],['StorageClass·CSI (Longhorn 등)','ok','longhorn'],['ingress-nginx','ok','nginx'],['cert-manager','ok','certm'],['kube-prometheus-stack (Prometheus·Grafana·Loki·Tempo)','ok','prom'],['OpenTelemetry Collector','ok','otel'],['StackGres operator','ok',null,'SG'],['KubeVirt operator · KVM 노드 (D-54)','ok','kubevirt'],['Kata Containers (경량 격리)','cand',null,'K']],
+    comm:['Kubernetes API · 네트워크 정책 · 공유 관측'],
+    ctrl:['Backbone Cluster Manager가 진단·설치·검증','관측 라벨에 단위 이름 금지 (D-44)']}
+};
+const areaCls = {admin:'c-admin','사원':'c-user','고객':'c-cust','공통':'c-base'};
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function list(a){return '<ul>'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'}
+const KC={backbone:'c-admin',governance:'c-user',workspace:'c-user',core:'c-user',exchange:'c-exch',customer:'c-cust',pfss:'c-base',psss:'c-base',hiss:'c-base'};
+function st(s){return s==='ok'?'sel':'cand'}
+function plist(a){return '<ul class="plist">'+a.map(([n,s,g,m,note])=>'<li class="pl pbox '+st(s)+'">'+logo(g,m,true)+'<span>'+esc(n)+'<span class="badge b-'+s+'">'+S[s]+'</span>'+(note?'<span class="pnote">'+esc(note)+'</span>':'')+'</span></li>').join('')+'</ul>'}
+document.querySelectorAll('[data-chips]').forEach(el=>{
+  el.innerHTML=C[el.dataset.chips].map(([t,g,m,s])=>'<span class="chip lg2 '+st(s)+'">'+logo(g,m||t.slice(0,1))+esc(t)+'</span>').join('');
+});
+function show(k){
+  const d=L[k]; const el=document.getElementById('detail'); el.className='card detail '+KC[k];
+  document.querySelectorAll('.layer').forEach(b=>b.setAttribute('aria-pressed', b.dataset.k===k?'true':'false'));
+  el.innerHTML='<h2>'+esc(d.name)+' <span class="chip">'+esc(d.area)+'</span></h2><p class="hint" style="margin-bottom:12px">'+esc(d.role)+'</p>'+
+   '<div class="dgrid"><div><h3>기본으로 하는 일</h3>'+list(d.does)+'</div><div><h3>배치 제품</h3>'+plist(d.products)+'</div>'+
+   '<div><h3>통신 방식</h3>'+list(d.comm)+'</div><div><h3>통제 방식</h3>'+list(d.ctrl)+'</div></div>';
+}
+document.querySelectorAll('.layer').forEach(b=>b.addEventListener('click',()=>show(b.dataset.k)));
+show('governance');
+// table
+const tb=document.querySelector('#tbl tbody');
+['backbone','governance','workspace','core','exchange','customer','pfss','psss','hiss'].forEach(k=>{
+  const d=L[k]; const tr=document.createElement('tr'); tr.className=KC[k];
+  tr.innerHTML='<td>'+esc(d.name)+'</td><td>'+esc(d.area)+'</td><td>'+esc(d.role)+'</td><td>'+d.products.map(([n,s,g,m,note])=>'<div class="tprod pbox '+st(s)+'">'+logo(g,m)+'<span>'+esc(n)+'<span class="badge b-'+s+'">'+S[s]+'</span>'+(note?'<span class="pnote">'+esc(note)+'</span>':'')+'</span></div>').join('')+'</td><td>'+d.comm.map(esc).join('<br>')+'</td><td>'+d.ctrl.map(esc).join('<br>')+'</td>';
+  tb.appendChild(tr);
+});
+// SCM candidates: [tier, name, logoKey, mono, role, license, stack, activity, note]
+const SC=[
+ ['선택','Odoo Community','odoo',null,'업무 코어 ERP·SCM (전사 정본, 사원 영역) — D-76 선택','LGPL-3.0 (일부 기능 Enterprise 유료)','Python · PostgreSQL','★55.8k · 매일 push','기능 폭·모듈 생태계 최대. 자체 모듈 독점 가능. Enterprise 전용 기능 의존 금지, Keycloak OIDC·한국 현지화 실증'],
+ ['1','Saleor',null,'S','대외 커머스 계층 (고객 영역)','BSD-3-Clause','Python · GraphQL · PostgreSQL','★23.6k · 3.23.x','헤드리스 주문·채널·창고. 후방 SCM 없음 → 코어와 API·이벤트로 결합'],
+ ['1','Medusa (대안)','medusa',null,'대외 커머스 계층 (고객 영역)','MIT (Enterprise Edition 자료 제외)','TypeScript · PostgreSQL','★37.3k · v2.22.x','모듈식, B2B 확장 쉬움. EE 경계 확인'],
+ ['비교','Liferay Portal + Commerce',null,'L','고객 영역 플랫폼 후보 (커머스·포털·CMS 일체)','LGPL-2.1-or-later (DXP는 상용 EULA)','Java(OSGi) · PostgreSQL','★2.3k · 2026-11-16 push','B2B 계정·가격표·주문 규칙·창고·출하·헤드리스 API + CMS·사이트·계정. 후방 SCM(구매·생산·회계) 없음 → Odoo의 대체가 아니라 Saleor/Medusa+자체 포털+CMS를 한 번에 대체하는 후보. 운영 무거움, UI 정책 예외'],
+ ['2','ERPNext (Frappe)','erpnext',null,'SCM 코어 대안','GPL-3.0','Python · MariaDB 중심','★41.4k · v16 계열','무료 범위 넓고 공급사 포털 있음. GPL 배포 의무, PFSS에 MariaDB 필요'],
+ ['2','Apache OFBiz','apache',null,'SCM 코어 대안 (라이선스 우선 시)','Apache-2.0','Java · PostgreSQL 가능','★1.2k · push 활발','OEM 가장 자유. UX 낡고 개발량 큼'],
+ ['보조','InvenTree',null,'IT','재고·부품 특화 보완','MIT','Python · PostgreSQL','★7.9k · 1.7.x','재고 영역만'],
+ ['보조','OpenBoxes',null,'OB','재고·물류 특화 보완','EPL-1.0','Groovy · MySQL 중심','★0.9k · v0.9.9','보건 공급망 출신'],
+ ['보조','Tryton',null,'T','모듈식 ERP','GPL-3.0','Python · PostgreSQL','GitHub는 미러','설계 깔끔, 커뮤니티 작음'],
+ ['비권장','Axelor Open Suite',null,'Ax','ERP·BPM','AGPL-3.0','Java · PostgreSQL','★1.0k','고객 대면(인터넷 공개)에 AGPL 의무 큼'],
+ ['비권장','iDempiere · metasfresh',null,'iD','ERP','GPL-2.0 · GPL','Java · PostgreSQL','작은 커뮤니티 / 2023 이후 공개 릴리스 없음','활동성·구조'],
+ ['비권장','Dolibarr','dolibarr',null,'중소기업 ERP·CRM','GPL-3.0','PHP · MySQL·PostgreSQL','★7.9k','SCM 깊이 얕음']
+];
+const tierCls={'선택':'b-ok','1':'b-ok','비교':'b-cand','2':'b-cand','보조':'b-tbd','비권장':'b-tbd'};
+document.getElementById('scmgrid').innerHTML=SC.map(([t,n,g,m,role,lic,stack,act,note])=>
+ '<div class="card scm '+(t==='선택'?'pbox sel c-user':'cand')+'"><div class="scmh">'+logo(g,m,true)+'<div><b>'+esc(n)+'</b><span class="badge '+tierCls[t]+'">'+(t==='1'||t==='2'?t+'순위':t)+'</span><div class="pnote">'+esc(role)+'</div></div></div>'+
+ '<dl><dt>라이선스</dt><dd>'+esc(lic)+'</dd><dt>스택·DB</dt><dd>'+esc(stack)+'</dd><dt>활동</dt><dd>'+esc(act)+'</dd><dt>판단</dt><dd>'+esc(note)+'</dd></dl></div>').join('');
+// tabs
+const tabs=[...document.querySelectorAll('[role=tab]')];
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>{const on=x===t; x.setAttribute('aria-selected',on); document.getElementById(x.getAttribute('aria-controls')).hidden=!on;});
+}));
+</script>
+</body>
+</html>

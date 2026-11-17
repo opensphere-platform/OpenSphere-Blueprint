@@ -5,7 +5,7 @@
 **상위 기준:**
 - [테넌트·어셈블리 구성 명세](TENANT-ASSEMBLY-SPEC-v0.1.md): 연결 객체, 연결 그래프, T-1~T-9
 - OpenSphere 기준선 v0.2: B-4(등록된 계약), D-46·D-47(위임 사슬), D-66(영역마다 채널 하나), D-69(일관성 기준·계약 규칙 6개)
-- Dapr 평가(`OPENSPHERE-DAPR-EVALUATION-v0.1.md`): D-67 PoC 대기
+- Dapr 평가([OPENSPHERE-DAPR-EVALUATION-v0.1.md](../architecture/OPENSPHERE-DAPR-EVALUATION-v0.1.md)): D-67 PoC 대기
 
 ---
 

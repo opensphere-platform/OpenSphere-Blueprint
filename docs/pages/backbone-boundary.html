@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Backbone 경계 제안</title>
+<style>
+/* 레이아웃: 결론 → 판정 기준 → 계층별 경계선(안 | 인도 지점 | 밖) → 걸치는 일 → 바뀌는 곳 → 남는 가정 */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b1f24; --muted:#5b6470; --line:#d9dee5; --soft:#eef1f5;
+  --admin:#4f46e5; --admin-bg:#eef0ff;
+  --user:#0f8a5f; --user-bg:#e7f6ef;
+  --cust:#c2410c; --cust-bg:#fdf0e7;
+  --bound:#be123c; --bound-bg:#fdecef;
+  --warn:#b45309; --warn-bg:#fdf3e2;
+  --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+    --admin:#a5b4fc; --admin-bg:#1e1f3a; --user:#5eead4; --user-bg:#10291f;
+    --cust:#fdba74; --cust-bg:#33200f; --bound:#fb7185; --bound-bg:#3a1520;
+    --warn:#fbbf24; --warn-bg:#33270f; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+  --admin:#a5b4fc; --admin-bg:#1e1f3a; --user:#5eead4; --user-bg:#10291f;
+  --cust:#fdba74; --cust-bg:#33200f; --bound:#fb7185; --bound-bg:#3a1520;
+  --warn:#fbbf24; --warn-bg:#33270f; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 var(--sans)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1{font-size:24px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0 0 10px;text-wrap:balance}
+p{margin:0}
+.meta{color:var(--muted);font-size:12.5px;margin-top:4px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;letter-spacing:.02em;padding:1px 8px;border-radius:999px;background:var(--warn-bg);color:var(--warn);vertical-align:middle;margin-left:6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.muted{color:var(--muted)}
+small{font-size:12.5px}
+
+/* 결론 */
+.thesis{border-left:5px solid var(--bound);display:flex;flex-direction:column;gap:10px}
+.thesis .big{font-size:19px;font-weight:700;line-height:1.45;text-wrap:balance}
+.thesis ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+
+/* 세 겹 */
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ply{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ply .n{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ply b{font-size:15px}
+.st{font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;align-self:flex-start}
+.st.ok{background:var(--user-bg);color:var(--user)}
+.st.bad{background:var(--bound-bg);color:var(--bound)}
+
+/* 판정 기준 */
+.tests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;counter-reset:q}
+.test{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.test b{display:block;margin-bottom:4px}
+.rule{margin-top:10px;padding:10px 14px;border-radius:10px;background:var(--soft);font-size:13.5px}
+
+/* 경계선 표 */
+.scroll{overflow-x:auto}
+.bt{width:100%;border-collapse:separate;border-spacing:0;min-width:760px}
+.bt th,.bt td{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--line);text-align:left}
+.bt thead th{font-size:12.5px;font-weight:700;position:sticky;top:0}
+.bt thead th.in{background:var(--admin-bg);color:var(--admin);border-radius:8px 0 0 0}
+.bt thead th.hand{background:var(--bound-bg);color:var(--bound);text-align:center}
+.bt thead th.out{background:var(--user-bg);color:var(--user);border-radius:0 8px 0 0}
+.bt thead th.ly{background:transparent}
+.bt td.ly{font-weight:700;white-space:nowrap}
+.bt td.hand{text-align:center;color:var(--bound);font-size:12.5px;font-weight:600;border-left:2px dashed var(--bound);border-right:2px dashed var(--bound);background:var(--bound-bg)}
+.bt td.in{background:color-mix(in srgb,var(--admin-bg) 45%,var(--panel))}
+.bt td.out{background:color-mix(in srgb,var(--user-bg) 45%,var(--panel))}
+.bt tr.key td{font-weight:600}
+.bt tr.key td.ly::after{content:"핵심";font-size:11px;font-weight:600;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--bound-bg);color:var(--bound)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);margin-top:10px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+
+/* 한 줄 도식 */
+.line{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;white-space:pre;line-height:1.8}
+.line .a{color:var(--admin)} .line .u{color:var(--user)} .line .h{color:var(--bound);font-weight:700}
+
+/* 걸치는 일 · 바뀌는 곳 */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.item b{font-size:14.5px}
+.who{display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
+.who span{padding:1px 8px;border-radius:999px}
+.who .a{background:var(--admin-bg);color:var(--admin)}
+.who .u{background:var(--user-bg);color:var(--user)}
+.who .t{background:var(--bound-bg);color:var(--bound)}
+.chg{counter-reset:c;display:flex;flex-direction:column;gap:10px}
+.chg .item{flex-direction:row;gap:14px;align-items:flex-start}
+.chg .no{font-family:var(--mono);font-weight:700;color:var(--bound);font-size:15px;flex:0 0 auto}
+.chg .body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fromto{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px}
+.fromto dt{color:var(--muted)}
+.fromto dd{margin:0}
+
+/* 운영 주체 */
+.op{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.op .item b{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pill{font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted)}
+.pill.must{background:var(--bound-bg);color:var(--bound)}
+
+footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+code{font-family:var(--mono);font-size:12.5px;background:var(--soft);padding:0 5px;border-radius:4px}
+
+@media (max-width:760px){
+  .three,.tests,.grid2,.op{grid-template-columns:minmax(0,1fr)}
+  h1{font-size:21px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Backbone 경계 제안 <span class="tag">검토 의견 · 미결정</span></h1>
+  <p class="meta">2026-11-17 · Claude(설계 검토 AI)의 입장 · 근거: 레드팀 검토 R-01, 기준선 v0.2 B-2·B-3, D-18·D-23·D-38~D-42·D-54·D-57</p>
+</header>
+
+<section class="card thesis" aria-labelledby="t-thesis">
+  <h2 id="t-thesis" class="muted" style="font-size:13px;margin:0">결론</h2>
+  <p class="big">Backbone 경계 밖은 <span style="color:var(--bound)">영역의 키가 태어나는 지점</span>부터다.<br>Backbone은 공통 기반의 공급 쪽을 선언된 경로로만 운영하고, cluster-admin은 평상시 권한이 아니다.</p>
+  <ul>
+    <li>지금 설계에서 <b>결정권의 선</b>(누가 무엇을 결정하는가)은 맞게 그어져 있다.</li>
+    <li>틀린 것은 그 선을 <b>기술적으로도 지켜지는 것처럼 쓴 점</b>, 그리고 HISS·PSSS·PFSS의 <b>제어권이 어디에 붙는지 정하지 않은 점</b>이다.</li>
+    <li>노드 root만 신뢰 가정으로 남기고, 나머지는 평상시 기술로 강제한다.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="t-three">
+  <h2 id="t-three">Backbone을 세 겹으로 나눠 본다</h2>
+  <div class="three">
+    <div class="ply"><span class="n">① 결정권</span><b>공급 쪽만 결정</b><p class="muted">용량, 공급 풀, 버전, 건강, 복구. "누구에게 무엇을"은 Governance 몫(B-2, D-23).</p><span class="st ok">맞게 그어짐</span></div>
+    <div class="ply"><span class="n">② 제품</span><b>admin 영역 제품</b><p class="muted">Console, OS Shell, R2D2, Supabase Auth, Gitea, 관측(D-1).</p><span class="st ok">맞게 그어짐</span></div>
+    <div class="ply"><span class="n">③ 기술적 도달 범위</span><b>실제로 손이 닿는 곳</b><p class="muted">공통 기반 세 계층의 제어면을 Backbone이 쥐고 있어 cluster-admin까지 닿는다. ①의 약속을 ③이 받쳐 주지 못한다.</p><span class="st bad">정의되지 않음 · 이번 제안의 대상</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="t-tests">
+  <h2 id="t-tests">판정 기준: 세 질문</h2>
+  <div class="tests">
+    <div class="test"><b>1. 영역의 키가 필요한가?</b><span class="muted">DB 비밀, 관리자 계정, 서명 키, 복호화 키</span></div>
+    <div class="test"><b>2. 수요 쪽 결정인가?</b><span class="muted">누구에게, 무엇을, 얼마나</span></div>
+    <div class="test"><b>3. 내용을 보게 되는가?</b><span class="muted">업무 데이터, 대화, 로그 본문, 권한 내역</span></div>
+  </div>
+  <p class="rule">하나라도 <b>예</b>면 Backbone 경계 <b style="color:var(--user)">밖</b>. 전부 <b>아니오</b>인 일, 즉 공급·용량·건강·수명주기·내용을 보지 않는 조치만 Backbone <b style="color:var(--admin)">안</b>.</p>
+</section>
+
+<section aria-labelledby="t-table">
+  <h2 id="t-table">계층별 경계선</h2>
+  <div class="scroll card" style="padding:0">
+    <table class="bt">
+      <thead><tr><th class="ly">대상</th><th class="in">Backbone 안</th><th class="hand">인도 지점</th><th class="out">Backbone 밖 (사원·고객 영역)</th></tr></thead>
+      <tbody>
+        <tr><td class="ly">HISS</td><td class="in">노드, K8s 제어면, CNI, 저장 엔진, ingress 컨트롤러, 인증서·DNS 엔진, <b>영역 사이 차단 정책</b>(X-1의 바닥)</td><td class="hand">영역 네임스페이스 생성</td><td class="out">네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10)</td></tr>
+        <tr class="key"><td class="ly">PSSS</td><td class="in">Argo 엔진, Crossplane 엔진, 백업 실행</td><td class="hand">엔진 → 영역 인스턴스</td><td class="out">사원 영역 Argo 인스턴스·AppProject·동기화 대상, 배포 서명 키, 백업 내용(영역 키로 암호화)</td></tr>
+        <tr class="key"><td class="ly">PFSS</td><td class="in">Provider·Operator, Plan, SupplyPool, 과할당 비율(D-32), Instance 생성·확장·이전</td><td class="hand">Instance → Binding</td><td class="out">Claim·Binding부터: 수혜 단위, quota, 발급된 자격, 데이터</td></tr>
+        <tr><td class="ly">KubeVirt</td><td class="in">엔진, KVM 노드, 공급 한도</td><td class="hand">VM 생성</td><td class="out">VM 디스크, 게스트 내부</td></tr>
+        <tr class="key"><td class="ly">신원</td><td class="in">Supabase Auth(admin)</td><td class="hand">설치 → 첫 관리자 자격</td><td class="out">Samba AD·외부 AD, 사원 Keycloak, 고객 CIAM. 설치는 Backbone이 하되 첫 관리자 자격은 영역에서 태어난다</td></tr>
+        <tr><td class="ly">관측</td><td class="in">상태·건강·용량 지표, 단위별 사용량(D-41)</td><td class="hand">지표 ↔ 본문</td><td class="out">로그·추적 본문. 사원 영역 자체 관측 스택 필요</td></tr>
+        <tr><td class="ly">소스·배포</td><td class="in">Gitea, Backbone 자기 배포</td><td class="hand">분리</td><td class="out">GitLab, 사원 영역 CI</td></tr>
+        <tr><td class="ly">모델</td><td class="in">Magpie</td><td class="hand">분리</td><td class="out">사원 영역 게이트웨이, 고객 AI 게이트웨이</td></tr>
+        <tr class="key"><td class="ly">키</td><td class="in">Backbone 자신의 키</td><td class="hand">키 생성</td><td class="out"><b>영역별 KMS.</b> 이것이 없으면 경계 전체가 성립하지 않는다(R-07)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--admin-bg);border:1px solid var(--admin)"></i>Backbone이 평상시 범위가 정해진 역할로 다루는 곳</span>
+    <span><i class="sw" style="background:var(--bound-bg);border:1px dashed var(--bound)"></i>인도 지점: 여기서 소유가 넘어간다</span>
+    <span><i class="sw" style="background:var(--user-bg);border:1px solid var(--user)"></i>Backbone 역할로 exec·Secret 읽기·볼륨 마운트 거부</span>
+  </div>
+</section>
+
+<section aria-labelledby="t-line">
+  <h2 id="t-line">한 줄로</h2>
+<div class="line"><span class="a">Backbone 안 ── 엔진 · 공급 · 수명주기 · 건강 · 영역 사이 칸막이</span>
+<span class="h">──────── 인도 지점: Instance → Binding · 설치 → 첫 관리자 자격 · 키 생성 ────────</span>
+<span class="u">Backbone 밖 ── 자격 · 수요 결정 · 내용 · 영역 키 · 영역 내부 설정</span></div>
+  <p class="muted" style="margin-top:8px"><small>클라우드에 비유하면 하이퍼바이저와 용량은 사업자 몫이고, 게스트 OS·데이터·IAM은 테넌트 몫인 것과 같은 자리다.</small></p>
+</section>
+
+<section aria-labelledby="t-straddle">
+  <h2 id="t-straddle">경계에 걸치는 일: Backbone이 실행하되 내용에는 닿지 않게</h2>
+  <div class="grid2">
+    <div class="item"><b>사원 영역 제품 업그레이드</b><p>Backbone은 새 버전을 카탈로그에 <b>공급</b>만 한다. 적용은 사원 영역 Argo가 끌어간다(pull). 자동 적용 여부는 영역이 정한다.</p><div class="who"><span class="a">Backbone: 공급</span><span class="u">영역: 적용 결정</span></div></div>
+    <div class="item"><b>복구</b><p>Backbone은 암호화된 백업으로 복원을 실행한다. 복호화 키는 영역 소유자 승인으로만 풀린다(D-40과 맞물림).</p><div class="who"><span class="a">Backbone: 실행</span><span class="u">영역: 키 해제</span></div></div>
+    <div class="item"><b>보안 동결(D-39)</b><p>세션 차단은 내용을 보지 않는 조치(C2)라 Backbone 안에 둘 수 있다. 해제와 사후 확인은 영역이 한다.</p><div class="who"><span class="a">Backbone: 동결</span><span class="u">영역: 해제·확인</span></div></div>
+    <div class="item"><b>노드 root</b><p>물리 서버와 하이퍼바이저 접근은 기술적으로 막을 수 없다. 여기만 <b>신뢰 가정</b>으로 문서에 명시한다.</p><div class="who"><span class="t">신뢰 가정</span></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="t-change">
+  <h2 id="t-change">지금 설계에서 바뀌는 곳</h2>
+  <p class="muted" style="margin-bottom:10px">KubeVirt에서 이미 쓴 "엔진은 기반, 인스턴스는 영역" 분리(D-54)를 나머지에도 똑같이 적용한다.</p>
+  <div class="chg">
+    <div class="item"><span class="no">1</span><div class="body"><b>PSSS를 엔진과 인스턴스로 쪼갠다</b>
+      <dl class="fromto"><dt>지금</dt><dd>Backbone이 운영하는 Argo가 사원 영역 배포를 실행(D-18). Backbone이 배포 내용을 바꿀 수 있다.</dd><dt>제안</dt><dd>엔진은 PSSS가 제공하고, 사원 영역 Argo 인스턴스·AppProject는 영역 소유. 사원 영역 키로 서명된 이미지만 admission 통과.</dd></dl></div></div>
+    <div class="item"><span class="no">2</span><div class="body"><b>PFSS 경계를 Binding에 둔다</b>
+      <dl class="fromto"><dt>지금</dt><dd>StackGres 등 operator가 만든 DB 슈퍼유저 비밀을 Backbone 역할이 읽을 수 있다. Governance 원장(D-57)·Odoo DB를 직접 고칠 수 있다.</dd><dt>제안</dt><dd>공급 쪽 조작(Instance, 용량, 백업)은 허용. 사원·고객 영역 네임스페이스의 Secret 읽기·exec·볼륨 마운트는 거부. Samba AD DC도 같은 규칙.</dd></dl></div></div>
+    <div class="item"><span class="no">3</span><div class="body"><b>영역 키(KMS)를 영역 안에 둔다</b>
+      <dl class="fromto"><dt>지금</dt><dd>B-3은 "사원 영역 키를 Backbone 저장소에 두지 않는다"고만 하고 어디 둘지 없다.</dd><dt>제안</dt><dd>영역별 KMS를 영역 부트스트랩 집합에 넣는다. 서명 Grant(D-31)·정의 서명(D-27)·백업 암호화·복구 키(D-42)의 뿌리.</dd></dl></div></div>
+    <div class="item"><span class="no">4</span><div class="body"><b>cluster-admin을 봉인한다</b>
+      <dl class="fromto"><dt>지금</dt><dd>Backbone 운영자의 평상시 권한에 포함. O-6은 비상 복구(D-38) 때만 "기술적으로 단독 가능"을 인정.</dd><dt>제안</dt><dd>봉인된 비상 자격으로만 두고, 고객 확인 또는 M-of-N을 거쳐 C3 경로로 연다. 평상시 권한 설계와 O-6 비상 진입을 맞물린다.</dd></dl></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="t-op">
+  <h2 id="t-op">운영 주체에 따라 달라지는 것</h2>
+  <p class="muted" style="margin-bottom:10px">선의 위치는 바뀌지 않는다. 바뀌는 것은 cluster-admin 봉인과 키 분리를 <b>기본값</b>으로 둘지, <b>선택</b>으로 둘지다. <b>현장의 Backbone 관리자가 누구인지는 아직 정하지 않았다.</b></p>
+  <div class="op">
+    <div class="item"><b>고객사 인프라팀 <span class="pill">선택</span></b><p>회사 내부 직무 분리 문제. 이 제안의 기본 구성으로 충분하다.</p></div>
+    <div class="item"><b>공급사 원격 운영 <span class="pill must">필수</span></b><p>외부자가 고객 권한의 뿌리를 쥐는 구조. 봉인·키 분리가 필수이고 계약·감사 문제로 이어진다.</p></div>
+    <div class="item"><b>둘 다 가능 <span class="pill">프로파일</span></b><p>설치 프로파일에서 가른다. 규제가 강한 고객은 사원 영역 별도 클러스터를 선택한다.</p></div>
+  </div>
+</section>
+
+<footer>
+  이 페이지는 <a href="four-planes.html">네 면 구조</a>에 흡수된 이전 검토 의견이며 결정 대장(D-번호)에 반영되지 않았다. 반영하려면 기준선에 신뢰 가정 절과 위 4개 변경을 결정으로 올려야 한다.
+  관련 문서: <a href="../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md">기준선 v0.2</a> · <a href="../architecture/OPENSPHERE-BREAKGLASS-O6-v0.1.md">O-6 비상 진입</a> · <a href="../architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md">O-2 PFSS 경계</a> · <a href="../architecture/OPENSPHERE-LAYER-MAP.html">계층 지도</a>
+</footer>
+
+</div>
+</body>
+</html>

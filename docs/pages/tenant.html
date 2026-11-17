@@ -247,6 +247,83 @@ a{color:var(--me)}
 @media (max-width:680px){.cats{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:900px){.tdia{grid-template-columns:minmax(0,1fr)}.kinds{grid-template-columns:repeat(2,minmax(0,1fr))}.link .fields{grid-template-columns:repeat(2,minmax(0,1fr))}.link .f:nth-child(4n){border-right:1px solid var(--line)}.link .f:nth-child(2n){border-right:0}}
 @media (max-width:680px){.asm,.asm.biz,.steps6,.kinds,.idrow,.ban,.link .fields{grid-template-columns:minmax(0,1fr)}.link .f{border-right:0}}
+
+/* ---- 와이어프레임 ---- */
+.asum{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.wflanes{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin-bottom:12px}
+.lane{border:1px dashed var(--muted);border-radius:10px;padding:8px 10px;background:var(--panel);display:flex;flex-direction:column;gap:6px;min-width:0}
+.lane .who{font-size:12px;font-weight:700}
+.lane.lb .who{color:var(--bb)} .lane.lg .who{color:var(--gov)} .lane.lv .who{color:var(--ws)}
+.lsteps{display:flex;flex-wrap:wrap;gap:4px}
+.lsteps span{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;background:var(--soft)}
+.lane-arrow{align-self:center;font-size:12px;color:var(--muted)}
+.wf{border:2px solid var(--muted);border-radius:12px;background:var(--panel);overflow:hidden;margin-bottom:6px;color:var(--ink)}
+.wf .wf-tabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line);background:var(--soft)}
+.wf .wf-tabs button{font:inherit;font-size:12.5px;padding:8px 12px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.wf .wf-tabs button[aria-selected="true"]{background:var(--panel);color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ink)}
+.wf .wf-tabs button:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.wf-bar{display:flex;align-items:center;gap:6px;padding:7px 10px;border-bottom:1px dashed var(--line);background:var(--soft);flex-wrap:wrap}
+.wf-bar .dot{width:9px;height:9px;border-radius:50%;border:1px solid var(--muted)}
+.wf-bar .url{flex:1;min-width:160px;font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:6px;padding:2px 8px;background:var(--panel);color:var(--muted);overflow-wrap:anywhere}
+.actor-b,.actor-g{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px}
+.actor-b{color:var(--bb);background:var(--bb-bg)} .actor-g{color:var(--gov);background:var(--gov-bg)}
+.wf-body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.wf-h{font-size:16px;font-weight:700;display:flex;gap:10px;align-items:baseline}
+.wf-step{font-size:12px;font-weight:400;color:var(--muted);border:1px dashed var(--muted);border-radius:6px;padding:0 6px}
+.wf-grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.wf-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.wf-field{display:flex;flex-direction:column;gap:5px}
+.wf-field label{font-size:12.5px;font-weight:700;display:flex;gap:8px;align-items:center}
+.wf-field small,.wf-body small{color:var(--muted);font-size:11.5px}
+.wf-input{border:1px dashed var(--muted);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--muted);background:var(--bg)}
+.wf-radio{font-size:13px;padding:4px 0 4px 22px;position:relative}
+.wf-radio::before{content:"";position:absolute;left:2px;top:7px;width:12px;height:12px;border:1.5px solid var(--muted);border-radius:50%}
+.wf-radio.on::before{background:radial-gradient(circle,var(--ink) 0 3px,transparent 4px)}
+.wf-radio.dis{color:var(--muted);opacity:.7}
+.wf-radio small{margin-left:6px}
+.wf-ok{font-size:11px;font-weight:700;color:var(--ws);border:1px solid var(--ws);border-radius:999px;padding:0 6px}
+.bar{height:8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--muted)}
+.wf-note{font-size:12.5px;border-left:3px solid var(--muted);padding:6px 10px;background:var(--soft);border-radius:0 6px 6px 0}
+.wf-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.wf-btn{font-size:13px;font-weight:700;padding:6px 14px;border-radius:7px;background:var(--ink);color:var(--panel)}
+.wf-btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--muted)}
+.wf-check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:13px}
+.wf-check li{padding-left:22px;position:relative}
+.wf-check li::before{content:"☐";position:absolute;left:2px;color:var(--muted)}
+.wf-check li.done::before{content:"☑";color:var(--ink)}
+.wf-check.warn li::before{content:"!";font-weight:700;left:7px;color:var(--gov)}
+.wf-kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.wf-kv>div,.wf-kpi>div{border:1px dashed var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.wf-kv span,.wf-kpi span{font-size:11.5px;color:var(--muted)}
+.wf-kv b{font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere}
+.wf-kpi{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.wf-kpi b{font-size:20px;font-variant-numeric:tabular-nums}
+.wf-sub{font-size:12.5px;font-weight:700}
+.wf-asm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.wa{border:1px dashed var(--muted);border-radius:8px;padding:8px 10px;font-size:13px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.wa small{color:var(--muted);font-family:var(--mono);font-size:11px;overflow-wrap:anywhere}
+.wa.on{border-style:solid;border-color:var(--ink)}
+.wa.lock{background:var(--soft);color:var(--muted)}
+.wa .wf-ok{align-self:flex-start}
+.wf-tree{font-family:var(--mono);font-size:12px;border:1px dashed var(--line);border-radius:6px;padding:8px 10px;line-height:1.7;background:var(--bg)}
+.wf-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.wf-table th,.wf-table td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.wf-table th{background:var(--soft);font-weight:700;color:var(--muted)}
+.wf-states{display:flex;flex-wrap:wrap;gap:6px}
+.wf-states span{font-size:12.5px;padding:3px 10px;border-radius:999px;border:1px dashed var(--muted);color:var(--muted)}
+.wf-states .done{border-style:solid;color:var(--ink)}
+.wf-states .done::before{content:"✓ "}
+.wf-states .cur{border:2px solid var(--ink);color:var(--ink);font-weight:700}
+.wf-vhead{padding:12px 14px 6px;display:flex;flex-direction:column;gap:4px}
+.wf-pill{font-size:11.5px;padding:1px 8px;border-radius:999px;border:1px solid var(--muted);color:var(--muted);margin-left:4px}
+.wf-pill.ok{border-color:var(--ws);color:var(--ws)}
+.wf-mini{border:1px dashed var(--bb);border-radius:8px;padding:10px;font-size:13px;display:flex;flex-direction:column;gap:3px}
+.wf-time{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:8px;font-size:13px}
+.wf-time b{font-family:var(--mono);font-size:12px;margin-right:6px}
+#wf-create .wf-screen,#wf-view .wf-screen{overflow-x:auto}
+@media (max-width:900px){.wf-kpi{grid-template-columns:repeat(3,minmax(0,1fr))}.wf-asm{grid-template-columns:repeat(2,minmax(0,1fr))}.wf-kv{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:680px){.wf-grid2,.wf-asm{grid-template-columns:minmax(0,1fr)}.wf-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <script src="../../assets/js/logos.js" defer></script>
 </head>
@@ -255,7 +332,7 @@ a{color:var(--me)}
 
 <header>
   <h1>OpenSphere 테넌트 구조</h1>
-  <p class="meta">2026-11-17 · 테넌트를 만들고, 무엇을 나눠 주고, 유지하고, 그 안에서 통신하고, Governance로 통제하는 방법 · 근거: 테넌트·어셈블리 구성 명세 v0.1, 테넌트 내부 통신 규칙 v0.1, Governance 참고 아키텍처 v0.1</p>
+  <p class="meta">2026-11-17 · 테넌트를 만들고, 무엇을 나눠 주고, 유지하고, 그 안에서 통신하고, Governance로 통제하는 방법 · 하단에 생성 화면과 테넌트 뷰 와이어프레임 · 근거: 테넌트·어셈블리 구성 명세 v0.1, 테넌트 내부 통신 규칙 v0.1, Governance 참고 아키텍처 v0.1</p>
   <p class="meta"><span class="s ok">결정</span> 결정 대장에 있음 &nbsp; <span class="s pr">제안</span> 명세 초안, 결정 전 &nbsp; <span class="s tbd">미정</span> 정해야 할 것</p>
 </header>
 
@@ -600,6 +677,366 @@ spiffe://&lt;tenant&gt;.tenant/&lt;assembly&gt;/&lt;component&gt;
     </table>
   </div>
 </section>
+
+<!-- 9. 와이어프레임 -->
+<section aria-labelledby="h-wf">
+  <h2 id="h-wf">9. 와이어프레임: 테넌트 생성과 생성 후 테넌트 뷰</h2>
+  <p class="lead">"테넌트를 만든다"의 해석이 서로 같은지 눈으로 맞춰 보기 위한 화면이다. <b>전제: 테넌트에 필요한 모든 자원은 Fabric이 이미 공급할 수 있는 상태다.</b> 화면의 숫자와 이름은 모두 더미다. <span class="s pr">제안</span></p>
+
+  <div class="card" style="margin-bottom:12px">
+    <h3 style="margin:0 0 8px">이 와이어프레임이 전제하는 해석 <span class="muted" style="font-weight:400;font-size:12.5px">— 다른 곳이 있으면 번호로 짚어 주세요</span></h3>
+    <ol class="asum">
+      <li><b>테넌트는 영역 단위다.</b> 한 설치(한 회사, D-14)에 사원 테넌트 1개, 필요하면 고객 테넌트 1개. 부서·프로젝트마다 테넌트를 만들지 않는다. 부서·프로젝트는 테넌트 <i>안에서</i> 리소스를 할당받는다.</li>
+      <li><b>생성은 두 사람이 나눠 한다.</b> 플랫폼 운영자가 Backbone Console에서 <i>선언하고 시작</i>하고(A~B), 회사의 첫 소유자가 Governance 관리 콘솔에서 <i>인수하고 완성</i>한다(C~G).</li>
+      <li><b>Backbone은 키를 보지 않는다.</b> 운영자 화면에는 테넌트 ID·공개 키 지문·상태만 나온다. 설치기 자격은 Genesis 끝에 폐기된다.</li>
+      <li><b>핵심 어셈블리 4개는 고정이다.</b> trust·identity·governance·channel은 고를 수 없고 항상 만들어진다.</li>
+      <li><b>업무 어셈블리는 카탈로그에서 고른다.</b> 생성 때 고르지 않은 것은 나중에 추가한다. 고르는 것은 "제품"이 아니라 "내놓을 리소스 유형"이다.</li>
+      <li><b>연결은 사람이 그리지 않는다.</b> 어셈블리 정의에서 자동 생성되고, 어셈블리 승인으로 결재를 갈음한다. 정의 밖의 연결만 별도 고위험 결재다.</li>
+      <li><b>생성 완료 = 적합성 시험 통과.</b> Pod가 떴다고 끝이 아니다. 입사 → 계정 → 로그인 → 회수까지 시험을 통과해야 Active다.</li>
+      <li><b>생성 후 테넌트 뷰는 Governance 관리 콘솔에 있다.</b> Backbone Console에는 같은 테넌트가 상태·용량·사용량만 보이는 카드로 나온다.</li>
+    </ol>
+  </div>
+
+  <h3 style="margin:16px 0 8px">생성 흐름</h3>
+  <div class="wflanes" data-nologo>
+    <div class="lane lb"><span class="who">플랫폼 운영자 · Backbone Console</span><div class="lsteps"><span>A 선언</span><span>B Genesis 시작·진행</span></div></div>
+    <div class="lane-arrow">인도 코드(시스템 밖 경로) →</div>
+    <div class="lane lg"><span class="who">회사 첫 소유자 · Governance 관리 콘솔</span><div class="lsteps"><span>C 인수</span><span>D 신원</span><span>E 어셈블리</span><span>F 연결·승인</span><span>G 생성·검증</span></div></div>
+    <div class="lane-arrow">→</div>
+    <div class="lane lv"><span class="who">생성 후</span><div class="lsteps"><span>테넌트 뷰</span></div></div>
+  </div>
+
+  <!-- 생성 와이어프레임 -->
+  <div class="wf" data-nologo id="wf-create">
+    <div class="wf-tabs" role="tablist" aria-label="생성 단계">
+      <button role="tab" aria-selected="true" data-p="pA">A 선언</button>
+      <button role="tab" aria-selected="false" data-p="pB">B Genesis</button>
+      <button role="tab" aria-selected="false" data-p="pC">C 인수</button>
+      <button role="tab" aria-selected="false" data-p="pD">D 신원</button>
+      <button role="tab" aria-selected="false" data-p="pE">E 어셈블리</button>
+      <button role="tab" aria-selected="false" data-p="pF">F 연결·승인</button>
+      <button role="tab" aria-selected="false" data-p="pG">G 생성·검증</button>
+    </div>
+
+    <!-- A -->
+    <div class="wf-screen" id="pA" role="tabpanel">
+      <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">console.backbone.local / 테넌트 / 새 테넌트</span><span class="actor-b">Backbone · 플랫폼 운영자</span></div>
+      <div class="wf-body">
+        <div class="wf-h">새 테넌트 선언 <span class="wf-step">1 / 2</span></div>
+        <div class="wf-grid2">
+          <div class="wf-col">
+            <div class="wf-field"><label>영역</label><div class="wf-radio on">사원 테넌트</div><div class="wf-radio dis">고객 테넌트 <small>사원 테넌트 Active 후 가능</small></div></div>
+            <div class="wf-field"><label>테넌트 ID</label><div class="wf-input">employee</div><small>영역별로 고정</small></div>
+            <div class="wf-field"><label>회사 도메인</label><div class="wf-input">example.co.kr</div></div>
+            <div class="wf-field"><label>설치 프로파일</label>
+              <div class="wf-radio on">standard <small>내장 Samba AD, 단일 클러스터</small></div>
+              <div class="wf-radio">external-ad <small>회사 기존 AD 연결</small></div>
+              <div class="wf-radio">regulated <small>별도 클러스터, 복구 키 필수</small></div></div>
+          </div>
+          <div class="wf-col">
+            <div class="wf-field"><label>Fabric 공급 확인 <span class="wf-ok">공급 가능</span></label>
+              <div class="bar"><span style="width:38%"></span></div><small>vCPU 48 / 128 예약 예정</small>
+              <div class="bar"><span style="width:44%"></span></div><small>메모리 224 / 512 GiB</small>
+              <div class="bar"><span style="width:21%"></span></div><small>저장 3.2 / 15 TiB</small></div>
+            <div class="wf-field"><label>첫 소유자 인도 경로 (시스템 밖)</label>
+              <div class="wf-input">담당자 이름 · 홍길동(정보보호팀)</div>
+              <div class="wf-input">인도 코드 수신 · 등록된 휴대폰</div>
+              <small>인도 코드는 이 화면에 다시 나오지 않는다</small></div>
+          </div>
+        </div>
+        <div class="wf-note"><b>이 화면에서 정하지 않는 것:</b> 사원 권한, 업무 어셈블리, 테넌트 키, 외부 AD 자격. 모두 회사 첫 소유자가 C~G에서 정한다.</div>
+        <div class="wf-actions"><span class="wf-btn ghost">취소</span><span class="wf-btn">Genesis 시작</span></div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="wf-screen" id="pB" role="tabpanel" hidden>
+      <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">console.backbone.local / 테넌트 / employee / Genesis</span><span class="actor-b">Backbone · 플랫폼 운영자</span></div>
+      <div class="wf-body">
+        <div class="wf-h">Genesis 진행 <span class="wf-step">2 / 2</span></div>
+        <ul class="wf-check">
+          <li class="done">테넌트 네임스페이스·네트워크 칸막이 생성</li>
+          <li class="done">발생 작업 실행(테넌트 안)</li>
+          <li class="done">trust: 테넌트 KMS·내부 CA 생성 <small>키는 테넌트 안에만 있음</small></li>
+          <li class="done">identity: Samba AD DC ×2 · Keycloak realm</li>
+          <li class="done">governance: Governance · 전용 PostgreSQL</li>
+          <li class="done">channel: 이벤트 채널 · 스키마 레지스트리</li>
+          <li class="done">인도 코드 발송(시스템 밖 경로)</li>
+          <li class="done">설치기 실행 자격 폐기</li>
+        </ul>
+        <div class="wf-kv">
+          <div><span>테넌트 ID</span><b>employee</b></div>
+          <div><span>공개 키 지문</span><b>SHA256:7c1e…a90b</b></div>
+          <div><span>테넌트 기록 v1 해시</span><b>sha256:3f9a…41d2</b></div>
+          <div><span>상태</span><b>인수 대기</b></div>
+        </div>
+        <div class="wf-note"><b>Backbone이 받는 것은 위 네 줄뿐이다.</b> 이후 이 테넌트의 상세는 Governance 관리 콘솔에서만 보인다. 운영자 화면에는 상태·용량·사용량 카드만 남는다.</div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="wf-screen" id="pC" role="tabpanel" hidden>
+      <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">governance.example.co.kr / 인수</span><span class="actor-g">Governance · 첫 소유자</span></div>
+      <div class="wf-body">
+        <div class="wf-h">테넌트 인수 <span class="wf-step">1 / 5</span></div>
+        <div class="wf-grid2">
+          <div class="wf-col">
+            <div class="wf-field"><label>인도 코드</label><div class="wf-input">●●●● - ●●●● - ●●●●</div><small>한 번만 쓸 수 있고 24시간 뒤 만료</small></div>
+            <div class="wf-field"><label>소유자 자격</label><div class="wf-input">새 비밀번호</div><div class="wf-input">MFA 등록 · 보안 키 / OTP</div></div>
+          </div>
+          <div class="wf-col">
+            <div class="wf-field"><label>복구 키 (선택, D-42)</label>
+              <div class="wf-radio on">사용 · 2-of-3</div>
+              <div class="wf-input">보관자 1 · 홍길동</div><div class="wf-input">보관자 2 · 김영희</div><div class="wf-input">보관자 3 · 외부 금고</div>
+              <small>Backbone 단독 복구를 기술적으로 막고 싶으면 켠다</small></div>
+          </div>
+        </div>
+        <div class="wf-note">이 단계가 끝나면 인도 코드는 폐기되고, 이 테넌트의 첫 Governance 소유자가 확정된다.</div>
+        <div class="wf-actions"><span class="wf-btn">인수 확정</span></div>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="wf-screen" id="pD" role="tabpanel" hidden>
+      <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">governance.example.co.kr / 테넌트 설정 / 신원</span><span class="actor-g">Governance · 소유자</span></div>
+      <div class="wf-body">
+        <div class="wf-h">신원 원천 <span class="wf-step">2 / 5</span></div>
+        <div class="wf-grid2">
+          <div class="wf-col">
+            <div class="wf-field"><label>사원 신원 원천 (D-3)</label>
+              <div class="wf-radio on">내장 Samba AD DC <small>Genesis에서 생성됨</small></div>
+              <div class="wf-radio">외부 AD · 쓰기 허용 <small>관리형</small></div>
+              <div class="wf-radio">외부 AD · 읽기 전용 <small>연동형</small></div></div>
+            <div class="wf-field"><label>Governance 소유자 그룹 (D-34)</label><div class="wf-input">Domain Admins</div></div>
+          </div>
+          <div class="wf-col">
+            <div class="wf-field"><label>조직도 미리보기 (정본 = AD, D-22)</label>
+              <div class="wf-tree">example.co.kr<br>├ 경영지원본부 (14)<br>├ 영업본부 (38)<br>│ ├ 국내영업팀 (21)<br>│ └ 해외영업팀 (17)<br>├ 생산본부 (52)<br>└ 정보보호팀 (6)</div>
+              <small>사원 110명 · 부서 7 · 동기화 정상</small></div>
+          </div>
+        </div>
+        <div class="wf-actions"><span class="wf-btn ghost">이전</span><span class="wf-btn">다음</span></div>
+      </div>
+    </div>
+
+    <!-- E -->
+    <div class="wf-screen" id="pE" role="tabpanel" hidden>
+      <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">governance.example.co.kr / 테넌트 설정 / 어셈블리</span><span class="actor-g">Governance · 소유자</span></div>
+      <div class="wf-body">
+        <div class="wf-h">어셈블리 선택 <span class="wf-step">3 / 5</span></div>
+        <div class="wf-sub">핵심 어셈블리 · 고정</div>
+        <div class="wf-asm">
+          <div class="wa lock">☑ trust<small>자격 · 인증서 · 키</small></div>
+          <div class="wa lock">☑ identity<small>계정 · 그룹 · SSO 등록</small></div>
+          <div class="wa lock">☑ governance<small>역할 · 정의 · 결재선</small></div>
+          <div class="wa lock">☑ channel<small>이벤트 주제 · 구독</small></div>
+        </div>
+        <div class="wf-sub">업무 어셈블리 · 카탈로그 <span class="muted">(지금 고르지 않은 것은 나중에 추가)</span></div>
+        <div class="wf-asm">
+          <div class="wa on">☑ 메일·일정·연락처<small>mail.mailbox 기본 10GB · 공유 메일함 · 캘린더</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa on">☑ 메신저<small>chat.team · chat.channel</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa on">☑ 파일·문서<small>file.space 기본 20GB · 공유 폴더</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa on">☑ 업무 코어(ERP·SCM)<small>erp.role · erp.record-scope</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa on">☑ 데이터 서비스<small>프로젝트 DB · 버킷 · 인덱스</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa on">☑ 개발<small>저장소 · CI 러너</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa">☐ 에이전트 자리<small>agent.seat · model.usage</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa">☐ 사원 앱 실행 환경<small>app.runtime · app.domain</small><span class="wf-ok">공급 가능</span></div>
+          <div class="wa">☐ 업무 자동화 · 관측 · 백업 …</div>
+        </div>
+        <div class="wf-note">고르는 것은 제품이 아니라 <b>사원·부서·프로젝트에게 나눠 줄 리소스 유형</b>이다. 선택한 업무 어셈블리 6개가 리소스 유형 28개를 Governance에 등록한다(핵심 어셈블리의 12개는 Genesis에서 이미 등록됨).</div>
+        <div class="wf-actions"><span class="wf-btn ghost">이전</span><span class="wf-btn">다음</span></div>
+      </div>
+    </div>
+
+    <!-- F -->
+    <div class="wf-screen" id="pF" role="tabpanel" hidden>
+      <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">governance.example.co.kr / 테넌트 설정 / 연결·승인</span><span class="actor-g">Governance · 소유자</span></div>
+      <div class="wf-body">
+        <div class="wf-h">연결·승인 미리보기 <span class="wf-step">4 / 5</span></div>
+        <div class="wf-kv">
+          <div><span>자동 생성될 연결</span><b>38개</b></div>
+          <div><span>어셈블리 승인으로 갈음</span><b>38개</b></div>
+          <div><span>별도 고위험 결재 필요</span><b>0개</b></div>
+          <div><span>등록될 리소스 유형</span><b>28개</b></div>
+        </div>
+        <table class="wf-table">
+          <thead><tr><th>어셈블리</th><th>연결</th><th>예</th><th>네트워크 허용</th></tr></thead>
+          <tbody>
+            <tr><td>메일</td><td>7</td><td>stalwart → store(postgresql, owner) · → directory(ldaps, read)</td><td>7 규칙</td></tr>
+            <tr><td>메신저</td><td>5</td><td>mattermost → store · → index · → sso</td><td>5 규칙</td></tr>
+            <tr><td>파일·문서</td><td>5</td><td>file → blob(s3, owner) · univer → sso</td><td>5 규칙</td></tr>
+            <tr><td>업무 코어</td><td>6</td><td>odoo → store · → sso · → channel(outbox)</td><td>6 규칙</td></tr>
+            <tr><td>데이터 서비스</td><td>4</td><td>provider → trust(자격 발급)</td><td>4 규칙</td></tr>
+            <tr><td>개발</td><td>7</td><td>gitlab → store · → cache · → blob · runner → registry</td><td>7 규칙</td></tr>
+            <tr><td>핵심 상호</td><td>4</td><td>governance → identity(control) · 모든 구성요소 → trust</td><td>4 규칙</td></tr>
+          </tbody>
+        </table>
+        <div class="wf-note">연결 그래프에 없는 통신은 생성 직후부터 막힌다(기본 거부). 이 화면에서 연결을 손으로 추가할 수는 없다.</div>
+        <div class="wf-actions"><span class="wf-btn ghost">이전</span><span class="wf-btn">생성 요청 · 결재</span></div>
+      </div>
+    </div>
+
+    <!-- G -->
+    <div class="wf-screen" id="pG" role="tabpanel" hidden>
+      <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">governance.example.co.kr / 테넌트 설정 / 생성</span><span class="actor-g">Governance · 소유자</span></div>
+      <div class="wf-body">
+        <div class="wf-h">생성·검증 <span class="wf-step">5 / 5</span></div>
+        <div class="wf-states"><span class="done">Provisioning</span><span class="done">Binding</span><span class="done">Initializing</span><span class="cur">Verifying</span><span>Active</span></div>
+        <table class="wf-table">
+          <thead><tr><th>적합성 시험</th><th>기준</th><th>결과</th></tr></thead>
+          <tbody>
+            <tr><td>AD 사용자 생성 → 메일함 생김</td><td>20분 이내</td><td>✓ 4분 12초</td></tr>
+            <tr><td>SSO 로그인 → 메일·메신저·문서 세션</td><td>성공</td><td>✓</td></tr>
+            <tr><td>연결 그래프 = 실제 네트워크 규칙</td><td>일치</td><td>✓ 38/38</td></tr>
+            <tr><td>그래프 밖 통신 시도</td><td>차단</td><td>✓</td></tr>
+            <tr><td>Backbone 역할로 Secret 읽기</td><td>거부</td><td>✓</td></tr>
+            <tr><td>AD 비활성 → SSO 차단 / 앱 계정 비활성</td><td>1분 / 20분 p95</td><td>진행 중…</td></tr>
+          </tbody>
+        </table>
+        <div class="wf-note">모두 통과하면 테넌트 기록 v2(어셈블리·연결 포함)를 테넌트 키로 서명하고 Active가 된다.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 테넌트 뷰 -->
+  <h3 style="margin:22px 0 8px">생성 후: 테넌트 뷰 (더미)</h3>
+  <div class="wf" data-nologo id="wf-view">
+    <div class="wf-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">governance.example.co.kr / 테넌트 / employee</span><span class="actor-g">Governance · 소유자·위임 관리자</span></div>
+    <div class="wf-vhead">
+      <div><b style="font-size:16px">사원 테넌트 · employee</b> <span class="wf-pill ok">Active</span> <span class="wf-pill">기록 v7 · 서명 일치</span></div>
+      <small class="muted">example.co.kr · 생성 2026-11-17 · 소유자 그룹 Domain Admins · 복구 키 2-of-3</small>
+    </div>
+    <div class="wf-tabs" role="tablist" aria-label="테넌트 뷰">
+      <button role="tab" aria-selected="true" data-p="vO">개요</button>
+      <button role="tab" aria-selected="false" data-p="vA">어셈블리</button>
+      <button role="tab" aria-selected="false" data-p="vL">연결</button>
+      <button role="tab" aria-selected="false" data-p="vR">리소스 유형</button>
+      <button role="tab" aria-selected="false" data-p="vX">외부 리소스</button>
+      <button role="tab" aria-selected="false" data-p="vH">기록·감사</button>
+    </div>
+
+    <div class="wf-screen" id="vO" role="tabpanel">
+      <div class="wf-body">
+        <div class="wf-kpi">
+          <div><span>어셈블리</span><b>10</b><small>정상 9 · 주의 1</small></div>
+          <div><span>연결</span><b>41</b><small>Bound 40 · Degraded 1</small></div>
+          <div><span>리소스 유형</span><b>42</b><small>내부 40 · 외부 2</small></div>
+          <div><span>할당</span><b>1,284</b><small>개인 1,021 · 부서·프로젝트 263</small></div>
+          <div><span>drift</span><b>2</b><small>회수 1 · 보고 1</small></div>
+          <div><span>재검토 예정</span><b>3</b><small>7일 이내</small></div>
+        </div>
+        <div class="wf-grid2">
+          <div class="wf-col">
+            <div class="wf-sub">확인할 것</div>
+            <ul class="wf-check warn">
+              <li>메신저 → OpenSearch 연결 Degraded · 인증서 만료 3일 전, 자동 갱신 실패</li>
+              <li>메신저 관리 화면에서 직접 부여한 관리자 권한 1건 · 초과 권한으로 자동 회수됨</li>
+              <li>외부 협업 SaaS(연동형) 내부 권한 차이 4건 · 보고만 함</li>
+            </ul>
+          </div>
+          <div class="wf-col">
+            <div class="wf-sub">Backbone Console에서 이 테넌트가 보이는 모습</div>
+            <div class="wf-mini">
+              <b>employee</b> <span class="wf-pill ok">Active</span><br>
+              <small>건강 정상 · vCPU 41 / 48 · 메모리 188 / 224 GiB · 단위별 사용량 보고서(D-41)</small><br>
+              <small class="muted">어셈블리 구성, 연결, 할당, 감사 본문은 보이지 않는다</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wf-screen" id="vA" role="tabpanel" hidden>
+      <div class="wf-body">
+        <table class="wf-table">
+          <thead><tr><th>어셈블리</th><th>상태</th><th>구성요소</th><th>리소스 유형</th><th>할당</th></tr></thead>
+          <tbody>
+            <tr><td>trust · identity · governance · channel</td><td>정상</td><td>KMS · CA · Samba AD ×2 · Keycloak · Governance · PG · 채널</td><td>12</td><td>146</td></tr>
+            <tr><td>메일·일정·연락처</td><td>정상</td><td>Stalwart · PG · OpenSearch · RustFS</td><td>6</td><td>342</td></tr>
+            <tr><td>메신저</td><td>주의</td><td>Mattermost · PG · RustFS · OpenSearch</td><td>4</td><td>218</td></tr>
+            <tr><td>파일·문서</td><td>정상</td><td>파일 엔진 · Univer · RustFS · OpenSearch</td><td>4</td><td>231</td></tr>
+            <tr><td>업무 코어</td><td>정상</td><td>Odoo · PG</td><td>4</td><td>129</td></tr>
+            <tr><td>데이터 서비스</td><td>정상</td><td>PG · OpenSearch · Valkey · RustFS · MongoDB(예비)</td><td>5</td><td>37</td></tr>
+            <tr><td>개발</td><td>정상</td><td>GitLab · PG · Valkey · RustFS · 러너 VM</td><td>5</td><td>181</td></tr>
+          </tbody>
+        </table>
+        <div class="wf-actions"><span class="wf-btn ghost">카탈로그에서 어셈블리 추가</span></div>
+      </div>
+    </div>
+
+    <div class="wf-screen" id="vL" role="tabpanel" hidden>
+      <div class="wf-body">
+        <table class="wf-table">
+          <thead><tr><th>연결</th><th>유형</th><th>상태</th><th>자격 회전</th><th>승인</th></tr></thead>
+          <tbody>
+            <tr><td>mail/stalwart → mail/store</td><td>store · postgresql · owner</td><td>Bound</td><td>12일 전</td><td>어셈블리 승인</td></tr>
+            <tr><td>mail/stalwart → core/identity.directory</td><td>directory · ldaps · read</td><td>Bound</td><td>12일 전</td><td>어셈블리 승인</td></tr>
+            <tr><td>chat/mattermost → chat/index</td><td>index · https · write</td><td>Degraded</td><td>인증서 만료 3일 전</td><td>어셈블리 승인</td></tr>
+            <tr><td>erp/odoo → core/channel</td><td>event · order.created</td><td>Bound</td><td>3일 전</td><td>어셈블리 승인</td></tr>
+            <tr><td>ext-collab-saas/connector → saas.example</td><td>external · https</td><td>Bound</td><td>41일 전</td><td>고위험 결재 #2026-118</td></tr>
+          </tbody>
+        </table>
+        <small class="muted">연결 41개 중 5개 표시 · 연결 추가는 어셈블리 정의 변경이나 고위험 결재로만</small>
+      </div>
+    </div>
+
+    <div class="wf-screen" id="vR" role="tabpanel" hidden>
+      <div class="wf-body">
+        <table class="wf-table">
+          <thead><tr><th>리소스 유형</th><th>어셈블리</th><th>통제</th><th>위험</th><th>할당</th><th>회수 실측</th></tr></thead>
+          <tbody>
+            <tr><td>mail.mailbox</td><td>메일</td><td>관리형</td><td>낮음</td><td>110</td><td>4분</td></tr>
+            <tr><td>mail.forward-rule</td><td>메일</td><td>관리형</td><td>높음</td><td>3</td><td>1분</td></tr>
+            <tr><td>chat.channel</td><td>메신저</td><td>관리형</td><td>낮음</td><td>96</td><td>6분</td></tr>
+            <tr><td>erp.record-scope</td><td>업무 코어</td><td>관리형</td><td>높음</td><td>41</td><td>9분</td></tr>
+            <tr><td>data.postgres.database</td><td>데이터 서비스</td><td>관리형</td><td>중간</td><td>12</td><td>2분</td></tr>
+            <tr><td>ext.collab.seat</td><td>외부 협업 SaaS</td><td>연동형</td><td>중간</td><td>58</td><td>— (보고만)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="wf-screen" id="vX" role="tabpanel" hidden>
+      <div class="wf-body">
+        <table class="wf-table">
+          <thead><tr><th>외부 어셈블리</th><th>등급</th><th>소유 단위</th><th>데이터</th><th>다음 재검토</th></tr></thead>
+          <tbody>
+            <tr><td>ext-collab-saas</td><td>연동형</td><td>IT운영팀</td><td>내부 · 개인정보 · 국외 이전</td><td>2027-02-15 (등급 재시험)</td></tr>
+            <tr><td>ext-legacy-groupware</td><td>참조형</td><td>경영지원본부</td><td>내부</td><td>2026-12-20</td></tr>
+          </tbody>
+        </table>
+        <div class="wf-actions"><span class="wf-btn ghost">외부 리소스 등록 신청</span></div>
+      </div>
+    </div>
+
+    <div class="wf-screen" id="vH" role="tabpanel" hidden>
+      <div class="wf-body">
+        <ul class="wf-time">
+          <li><b>2026-11-17 09:12</b> Genesis 완료 · 테넌트 기록 v1 서명 · 설치기 자격 폐기</li>
+          <li><b>2026-11-17 09:40</b> 첫 소유자 인수 · 복구 키 2-of-3 설정</li>
+          <li><b>2026-11-17 10:05</b> 어셈블리 6개 승인 · 연결 38개 생성 · 적합성 시험 통과 · 기록 v2</li>
+          <li><b>2026-11-24 14:20</b> 외부 어셈블리 ext-collab-saas 등록(고위험 결재 #2026-118) · 기록 v5</li>
+          <li><b>2026-12-02 03:00</b> 연결 자격 정기 회전 41건</li>
+          <li><b>2026-12-03 11:31</b> 메신저 관리 화면 직접 변경 감지 → 초과 권한 회수</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <p class="rule">와이어프레임은 화면 디자인이 아니라 <b>누가, 어느 화면에서, 무엇을 정하는지</b>를 맞추기 위한 것이다. 위 해석 1~8 중 다른 것이 있으면 그 번호부터 고친다.</p>
+</section>
+
+<script>
+(function(){
+  document.querySelectorAll('.wf').forEach(function(wf){
+    var tabs=wf.querySelectorAll(':scope > .wf-tabs [role=tab]');
+    tabs.forEach(function(t){
+      t.addEventListener('click',function(){
+        tabs.forEach(function(x){ x.setAttribute('aria-selected', x===t ? 'true' : 'false'); var p=document.getElementById(x.dataset.p); if(p) p.hidden = x!==t; });
+      });
+    });
+  });
+})();
+</script>
 
 <footer>
   <span>이 페이지는 명세 초안을 요약한 것이며, 결정 표시가 없는 항목은 결정 대장(D-번호)에 반영되지 않았다.</span>

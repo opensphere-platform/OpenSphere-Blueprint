@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenSphere 네 면 구조</title>
+<style>
+/* 레이아웃: 핵심 문장 → 네 면 도식(우측에 고객 영역) → 면별 정의 → Middle-earth 두 얼굴 → Backbone 경계 → Workspace 리소스 풀 → 사원 앱(승격·가드레일·도메인) → 바뀌는 결정 */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b1f24; --muted:#5b6470; --line:#d9dee5; --soft:#eef1f5;
+  --bb:#4f46e5; --bb-bg:#eef0ff;
+  --me:#0e7490; --me-bg:#e3f4f8;
+  --gov:#b45309; --gov-bg:#fdf3e2;
+  --ws:#0f8a5f; --ws-bg:#e7f6ef;
+  --cust:#c2410c; --cust-bg:#fdf0e7;
+  --cut:#be123c; --cut-bg:#fdecef;
+  --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+    --bb:#a5b4fc; --bb-bg:#1e1f3a; --me:#67e8f9; --me-bg:#0f2a31; --gov:#fbbf24; --gov-bg:#33270f;
+    --ws:#5eead4; --ws-bg:#10291f; --cust:#fdba74; --cust-bg:#33200f; --cut:#fb7185; --cut-bg:#3a1520;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+  --bb:#a5b4fc; --bb-bg:#1e1f3a; --me:#67e8f9; --me-bg:#0f2a31; --gov:#fbbf24; --gov-bg:#33270f;
+  --ws:#5eead4; --ws-bg:#10291f; --cust:#fdba74; --cust-bg:#33200f; --cut:#fb7185; --cut-bg:#3a1520;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 var(--sans)}
+.wrap{max-width:1160px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:30px}
+h1{font-size:24px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0 0 4px;text-wrap:balance}
+h3{font-size:14.5px;margin:0}
+p{margin:0}
+ul{margin:0;padding-left:18px}
+.lead{color:var(--muted);margin-bottom:12px}
+.meta{color:var(--muted);font-size:12.5px;margin-top:4px}
+.muted{color:var(--muted)}
+small{font-size:12.5px}
+code{font-family:var(--mono);font-size:12.5px;background:var(--soft);padding:0 5px;border-radius:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+
+/* 상태 표시 */
+.s{display:inline-block;font-size:11.5px;font-weight:600;padding:0 8px;border-radius:999px;vertical-align:1px;white-space:nowrap}
+.s.ok{background:var(--ws-bg);color:var(--ws)}
+.s.pr{background:var(--me-bg);color:var(--me)}
+.s.tbd{background:var(--soft);color:var(--muted)}
+.s.risk{background:var(--cut-bg);color:var(--cut)}
+
+/* 핵심 문장 */
+.thesis{border-left:5px solid var(--me);display:flex;flex-direction:column;gap:8px}
+.thesis .big{font-size:18.5px;font-weight:700;line-height:1.5;text-wrap:balance}
+
+/* 도식 */
+.dia{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:12px;align-items:stretch}
+.stack{display:flex;flex-direction:column;gap:0}
+.band{border-radius:12px;padding:12px 14px;border:1px solid var(--c);background:var(--cb);display:flex;flex-direction:column;gap:6px}
+.band>.hd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.band>.hd b{color:var(--c);font-size:15px}
+.band>.hd span{color:var(--muted);font-size:12.5px}
+.bb{--c:var(--bb);--cb:var(--bb-bg)} .me{--c:var(--me);--cb:var(--me-bg)} .gov{--c:var(--gov);--cb:var(--gov-bg)} .ws{--c:var(--ws);--cb:var(--ws-bg)} .cu{--c:var(--cust);--cb:var(--cust-bg)}
+.flow{font-size:12.5px;color:var(--muted);padding:5px 0 5px 22px;position:relative}
+.flow::before{content:"";position:absolute;left:12px;top:0;bottom:0;border-left:2px solid var(--line)}
+.flow b{color:var(--ink);font-weight:600}
+.faces{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:stretch}
+.face{background:var(--panel);border-radius:9px;padding:9px 11px;border:1px solid var(--line);font-size:13px}
+.face b{display:block;font-size:12.5px;margin-bottom:2px}
+.face.sup b{color:var(--bb)} .face.use b{color:var(--ws)}
+.cutline{writing-mode:vertical-rl;text-orientation:upright;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--cut);border-left:2px dashed var(--cut);border-right:2px dashed var(--cut);background:var(--cut-bg);padding:6px 3px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:12px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:1px 9px}
+.slices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.slice{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.slice b{font-size:13px}
+.slice.base{border-style:dashed}
+.side{display:flex;flex-direction:column;gap:8px}
+.side .band{flex:1}
+.xg{border:2px dashed var(--cut);border-radius:12px;padding:10px 12px;background:var(--cut-bg);font-size:12.5px}
+.xg b{color:var(--cut)}
+
+/* 정의 표 */
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{font-size:12.5px;color:var(--muted);font-weight:600;background:var(--soft)}
+td.nm{font-weight:700;white-space:nowrap}
+td.nm i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px;vertical-align:0}
+.t-def{min-width:820px}
+.t-me{min-width:760px}
+.t-me td.sup{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-me td.mid{background:var(--cut-bg);color:var(--ink)}
+.t-me td.use{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+
+/* 그리드 */
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.box .k{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.rule{padding:10px 14px;border-radius:10px;background:var(--soft);font-size:13.5px;margin-top:10px}
+
+/* 메일 예시 흐름 */
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;counter-reset:st}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:13px;position:relative;min-width:0}
+.step::before{counter-increment:st;content:counter(st);display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--ws);color:var(--panel);font-size:11.5px;font-weight:700;align-items:center;justify-content:center;margin-bottom:6px}
+.step b{display:block;margin-bottom:2px}
+
+/* 승격 */
+.promo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.stage{padding:14px;display:flex;flex-direction:column;gap:8px;border-right:1px solid var(--line);min-width:0}
+.stage:last-child{border-right:0}
+.stage h3{display:flex;align-items:center;gap:8px}
+.stage h3 .lv{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.stage dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:0;font-size:13px}
+.stage dt{color:var(--muted)} .stage dd{margin:0}
+.stage .gate{font-size:12.5px;padding:6px 9px;border-radius:8px;background:var(--gov-bg);color:var(--gov);font-weight:600}
+
+/* 도메인 비교 */
+.dom{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dom .box.no{border-color:var(--cut)}
+.dom .box.yes{border-color:var(--ws)}
+.addr{font-family:var(--mono);font-size:13px;padding:6px 9px;border-radius:7px;background:var(--soft);overflow-wrap:anywhere}
+
+/* 결정 표 */
+.t-dec{min-width:720px}
+
+footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:4px}
+a{color:var(--me)}
+
+@media (max-width:900px){
+  .dia{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:680px){
+  .g2,.g3,.g4,.dom,.slices,.steps{grid-template-columns:minmax(0,1fr)}
+  .promo{grid-template-columns:minmax(0,1fr)}
+  .stage{border-right:0;border-bottom:1px solid var(--line)}
+  .stage:last-child{border-bottom:0}
+  .faces{grid-template-columns:minmax(0,1fr)}
+  .cutline{writing-mode:horizontal-tb;border:0;border-top:2px dashed var(--cut);border-bottom:2px dashed var(--cut)}
+  h1{font-size:21px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>OpenSphere 네 면 구조</h1>
+  <p class="meta">2026-11-17 · 사용자 제안(네 면 구분·Workspace 리소스 풀) + Claude 검토 의견 · 기준선 v0.2 이후 방향안, 결정 대장 미반영</p>
+  <p class="meta"><span class="s ok">합의</span> 사용자가 동의한 항목 &nbsp; <span class="s pr">제안</span> 검토 의견, 결정 전 &nbsp; <span class="s tbd">미정</span> 정해야 할 것 &nbsp; <span class="s risk">위험</span> 그대로 두면 생기는 문제</p>
+</header>
+
+<section class="card thesis" aria-label="핵심">
+  <p class="big">Workspace는 제품 묶음이 아니라, Governance가 Middle-earth에서 잘라 준 <span style="color:var(--ws)">내 몫</span>이다.</p>
+  <ul>
+    <li><b style="color:var(--bb)">Backbone</b>은 공급한다. <b style="color:var(--me)">Middle-earth</b>의 구성요소는 공급 면과 사용 면을 함께 가진다.</li>
+    <li><b style="color:var(--gov)">Governance</b>는 사용 면을 권한에 맞게 쪼개 나눈다. 판단만 하고, 집행은 Middle-earth에서 한다.</li>
+    <li><b style="color:var(--ws)">Workspace</b>에서 사원과 에이전트는 받은 자원으로 자유롭게 앱을 만든다. 좋은 앱은 회사 앱으로 승격된다.</li>
+  </ul>
+</section>
+
+<!-- 도식 -->
+<section aria-labelledby="h-dia">
+  <h2 id="h-dia">한눈에</h2>
+  <p class="lead">위에서 아래로 공급이 내려오고, Middle-earth 가운데의 인도 지점에서 소유가 넘어간다.</p>
+  <div class="dia">
+    <div class="stack">
+      <div class="band bb">
+        <div class="hd"><b>Backbone</b><span>순수 관리 · 공급 권한</span></div>
+        <div class="chips"><span class="chip">Console</span><span class="chip">OS Shell</span><span class="chip">R2D2</span><span class="chip">Supabase Auth</span><span class="chip">Gitea</span><span class="chip">용량·공급 풀</span><span class="chip">영역 사이 칸막이</span></div>
+      </div>
+      <div class="flow"><b>공급 면만</b> 운영한다 · 선언된 경로 · cluster-admin은 봉인</div>
+      <div class="band me">
+        <div class="hd"><b>Middle-earth</b><span>가칭 · 두 얼굴이 공존하는 공유 구성요소</span></div>
+        <div class="faces">
+          <div class="face sup"><b>공급 면 (Backbone)</b>엔진·버전·CRD·노드·용량·인스턴스 수명주기</div>
+          <div class="cutline">인도 지점</div>
+          <div class="face use"><b>사용 면 (할당받은 쪽)</b>설정·자격·데이터·배포 대상·내 메일함·내 VM</div>
+        </div>
+        <div class="chips"><span class="chip">HISS</span><span class="chip">PSSS·Argo</span><span class="chip">PFSS·PG</span><span class="chip">KubeVirt</span><span class="chip">Keycloak</span><span class="chip">Stalwart 엔진</span><span class="chip">Mattermost 엔진</span><span class="chip">Univer SDK</span><span class="chip">Odoo 엔진</span><span class="chip">모델 게이트웨이</span><span class="chip">영역 KMS</span></div>
+      </div>
+      <div class="flow"><b>사용 면</b>을 Governance가 판단해 쪼갠다 · 집행은 Middle-earth</div>
+      <div class="band gov">
+        <div class="hd"><b>Governance</b><span>할당된 영역을 권한에 맞게 제어·분해</span></div>
+        <div class="chips"><span class="chip">정의</span><span class="chip">할당</span><span class="chip">결재</span><span class="chip">drift 회수</span><span class="chip">앱 승격 관문</span><span class="chip">사원 앱 도메인 발급</span></div>
+      </div>
+      <div class="flow"><b>할당</b> · 개인·부서·프로젝트·서비스 단위</div>
+      <div class="band ws">
+        <div class="hd"><b>Workspace</b><span>권한에 맞게 제공된 자유 영역 · 리소스 풀</span></div>
+        <div class="slices">
+          <div class="slice"><b>사원 A</b>내 자원(메일함·VM·앱 도메인) · 회사 자원에 대한 권한 · 에이전트 · 내가 만든 앱</div>
+          <div class="slice"><b>팀·프로젝트 X</b>팀 자원 · 팀 에이전트 · 팀 앱</div>
+          <div class="slice base"><b>회사 기본 앱</b> <span class="s ok">합의</span><br>웹메일·메신저·결재 등. 처음부터 "회사 앱"으로 제공</div>
+        </div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="band cu">
+        <div class="hd"><b>고객 영역</b><span>별도 영역 유지</span></div>
+        <p style="font-size:12.5px">고객 CIAM · 포털 · 공개 웹 · 고객 AI. 네 면 모델 밖의 세 번째 영역(D-62).</p>
+      </div>
+      <div class="xg"><b>교류 계층</b><br>사원↔고객의 유일한 통과 지점(D-75). 고객을 상대하는 사원 앱은 <b>회사 앱 승격 + 교류 계층 통과</b>가 필요하다.</div>
+      <div class="band me" style="flex:0">
+        <div class="hd"><b>업무 코어</b><span>Odoo</span></div>
+        <p style="font-size:12.5px">엔진은 Middle-earth. 거래 데이터는 누구의 Workspace도 아닌 <b>회사 공유 자원</b>이다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 정의 -->
+<section aria-labelledby="h-def">
+  <h2 id="h-def">면별 정의</h2>
+  <p class="lead">넷은 위아래로 쌓인 계층이 아니라 역할이 다른 면이다.</p>
+  <div class="scroll card" style="padding:0">
+    <table class="t-def">
+      <thead><tr><th>면</th><th>하는 일</th><th>주인</th><th>하지 않는 것</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr class="bb"><td class="nm"><i></i>Backbone</td><td>설치·운영·복구, 용량·공급 풀, 영역 사이 칸막이, 엔진 버전 공급</td><td>플랫폼 운영자</td><td>수요 결정, 영역 자격·키 보유, 내용 열람</td><td><span class="s pr">제안</span></td></tr>
+        <tr class="me"><td class="nm"><i></i>Middle-earth</td><td>공유 구성요소를 제공한다. 공급 면은 Backbone, 사용 면은 할당받은 쪽. Governance 판단을 <b>집행</b>(PEP)</td><td>얼굴마다 다름</td><td>누구에게 줄지 판단</td><td><span class="s pr">제안</span> <span class="s tbd">명칭 미정</span></td></tr>
+        <tr class="gov"><td class="nm"><i></i>Governance</td><td>사용 면을 사람·단위·에이전트·앱에 권한에 맞게 쪼갠다. <b>판단</b>(PDP), 결재, 승격 관문</td><td>회사 권한 관리자</td><td>엔진 운영, 집행 직접 수행</td><td><span class="s pr">제안</span></td></tr>
+        <tr class="ws"><td class="nm"><i></i>Workspace</td><td>할당된 사용 면의 묶음. 사원·에이전트가 자유롭게 쓰고 앱을 만든다</td><td>사원(팀은 팀장)</td><td>권한 판단, 받은 몫을 넘는 사용</td><td><span class="s pr">제안</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Middle-earth 두 얼굴 -->
+<section aria-labelledby="h-me">
+  <h2 id="h-me">Middle-earth: 구성요소마다 두 얼굴</h2>
+  <p class="lead">경계는 구성요소 사이가 아니라 구성요소 한가운데를 지난다. 얼굴을 나눴다고 선언하는 것만으로는 부족하고, 가운데 열(인스턴스)에서 실제로 떼어 놓아야 한다.</p>
+  <div class="scroll card" style="padding:0">
+    <table class="t-me">
+      <thead><tr><th>구성요소</th><th>공급 면 · Backbone</th><th>인스턴스 판단</th><th>사용 면 · 할당받은 쪽</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">Argo</td><td class="sup">엔진(PSSS)</td><td class="mid"><b>영역별 인스턴스.</b> 배포 결정권 자체라 공유하면 경계가 무너진다</td><td class="use">AppProject, 저장소 자격, 배포 서명 키</td></tr>
+        <tr><td class="nm">PostgreSQL</td><td class="sup">PFSS operator</td><td class="mid">DB는 Claim마다 따로. operator는 공유하되 <b>Secret 읽기 거부</b></td><td class="use">DB 자격, 데이터</td></tr>
+        <tr><td class="nm">Keycloak</td><td class="sup">이미지·버전</td><td class="mid">이미 영역별(사원·고객, D-63)</td><td class="use">realm, 클라이언트, 사용자</td></tr>
+        <tr><td class="nm">KubeVirt</td><td class="sup">operator·KVM 노드(HISS)</td><td class="mid">operator 공유, VM은 영역 소유(D-54, 이미 이 방식)</td><td class="use">VM 디스크, 게스트</td></tr>
+        <tr><td class="nm">Stalwart</td><td class="sup">엔진·버전·저장</td><td class="mid">사원 영역 인스턴스</td><td class="use">메일함, JMAP·CalDAV 접근 권한</td></tr>
+        <tr><td class="nm">ingress</td><td class="sup">HISS 컨트롤러</td><td class="mid">공유 가능. 영역 사이 칸막이는 Backbone이 지킴</td><td class="use">도메인 노출 조건, 사원 앱 경로</td></tr>
+        <tr><td class="nm">관측</td><td class="sup">수집 엔진</td><td class="mid">지표 경로 공유, <b>로그 본문 경로는 영역별</b></td><td class="use">로그·추적 내용</td></tr>
+        <tr><td class="nm">KMS</td><td class="sup">엔진</td><td class="mid"><b>영역별.</b> 다른 모든 선을 지켜 주는 장치</td><td class="use">서명·암호화·복구 키</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Backbone 경계 -->
+<section aria-labelledby="h-bb">
+  <h2 id="h-bb">Backbone 경계: 영역의 키가 태어나는 지점까지</h2>
+  <p class="lead">아래 세 질문 중 하나라도 "예"이면 Backbone 밖이다.</p>
+  <div class="g3">
+    <div class="box"><span class="k">질문 1</span><b>영역의 키·자격이 필요한가?</b><span class="muted">DB 비밀, 관리자 계정, 서명 키, 복호화 키</span></div>
+    <div class="box"><span class="k">질문 2</span><b>수요 쪽 결정인가?</b><span class="muted">누구에게, 무엇을, 얼마나</span></div>
+    <div class="box"><span class="k">질문 3</span><b>내용을 보게 되는가?</b><span class="muted">업무 데이터, 대화, 로그 본문, 권한 내역</span></div>
+  </div>
+  <div class="g4" style="margin-top:10px">
+    <div class="box"><b>Argo 분리</b><span class="muted">엔진은 공급, 영역 인스턴스는 영역 소유. 영역 키로 서명된 이미지만 통과</span></div>
+    <div class="box"><b>Binding이 경계</b><span class="muted">공급 쪽 조작은 허용, 영역 네임스페이스의 Secret 읽기·exec·마운트는 거부</span></div>
+    <div class="box"><b>영역 KMS</b><span class="muted">서명 Grant·정의 서명·백업 암호화·복구 키의 뿌리</span></div>
+    <div class="box"><b>cluster-admin 봉인</b><span class="muted">평상시 권한이 아니다. 고객 확인 또는 M-of-N으로 C3 경로에서만 연다</span></div>
+  </div>
+  <p class="rule">노드 root(물리 서버·하이퍼바이저)만 기술적으로 막을 수 없다. 여기만 <b>신뢰 가정</b>으로 명시한다. 현장의 Backbone 관리자가 고객사 인프라팀인지 공급사 원격 운영인지에 따라 위 4개를 기본값으로 둘지 선택으로 둘지가 달라진다 <span class="s tbd">미정</span></p>
+</section>
+
+<!-- Workspace -->
+<section aria-labelledby="h-ws">
+  <h2 id="h-ws">Workspace: 화면이 아니라 리소스 풀</h2>
+  <p class="lead">사원이 로그인하면 보이는 것은 <b>에이전트</b>와 <b>자기에게 부여된 회사 자원</b>이다. 웹메일이 없어도 메일함과 메일 서비스 권한이 있으면 Workspace는 성립한다.</p>
+  <div class="g2" style="margin-bottom:12px">
+    <div class="box"><h3>내 자원</h3><span class="muted">나에게 배정된 몫. 메일함, 일정, 파일 공간, 자리 VM, 모델 사용량, 사원 앱 도메인, 앱 실행 자원</span></div>
+    <div class="box"><h3>회사 자원에 대한 내 권한</h3><span class="muted">누구의 것도 아닌 회사 공유 자원을 쓸 권한. 업무 코어(Odoo) 거래 데이터, 공유 드라이브, 회사 앱</span></div>
+  </div>
+  <h3 style="margin-bottom:8px">예: 사원이 자기 웹메일을 만든다</h3>
+  <div class="steps">
+    <div class="step"><b>요청</b>사원이 에이전트에게 "내 웹메일을 만들어 줘"라고 한다</div>
+    <div class="step"><b>내 자원으로 개발</b>에이전트가 내 메일함의 JMAP 권한과 내 앱 실행 자원으로 앱을 만든다</div>
+    <div class="step"><b>게시</b>사원 앱 전용 도메인 <code>kim.회사-apps.net</code>에 올린다</div>
+    <div class="step"><b>플랫폼이 감싼다</b>SSO 프록시가 앞에 서고, 기본은 본인만 접근한다</div>
+    <div class="step"><b>승격 가능</b>동료들이 쓰고 싶어 하면 팀 앱, 회사 앱으로 승격을 신청한다</div>
+  </div>
+  <p class="rule">회사 기본 앱(웹메일·메신저·결재 등)은 처음부터 제공한다 <span class="s ok">합의</span>. 모바일, 신규 입사자, 장애 시 대체 수단이 필요하기 때문이다. 기본 앱도 "회사 앱"으로 다뤄 사원 앱과 같은 모델 안에 둔다.</p>
+</section>
+
+<!-- 사원 앱 -->
+<section aria-labelledby="h-app">
+  <h2 id="h-app">사원 앱: 승격 3단계</h2>
+  <p class="lead">승격할 때 <b>실행 신원과 소유</b>가 바뀌어야 한다. 그렇지 않으면 만든 사람이 퇴사하는 날 회사 앱이 멈춘다. <span class="s pr">제안</span></p>
+  <div class="promo">
+    <div class="stage"><h3><span class="lv">L1</span>개인 앱</h3>
+      <dl><dt>실행 신원</dt><dd>소유자 위임(소유자 권한 이하)</dd><dt>자원</dt><dd>소유자 몫</dd><dt>접근</dt><dd>소유자 본인</dd><dt>주소</dt><dd><code>kim.회사-apps.net</code></dd></dl>
+      <span class="gate">관문: 자동(가드레일 통과)</span></div>
+    <div class="stage"><h3><span class="lv">L2</span>팀 앱</h3>
+      <dl><dt>실행 신원</dt><dd>팀 신원</dd><dt>자원</dt><dd>팀 몫</dd><dt>접근</dt><dd>팀원</dd><dt>주소</dt><dd><code>팀.회사-apps.net</code></dd></dl>
+      <span class="gate">관문: 팀장 승인 + 가벼운 검토</span></div>
+    <div class="stage"><h3><span class="lv">L3</span>회사 앱</h3>
+      <dl><dt>실행 신원</dt><dd><b>서비스 신원</b></dd><dt>자원</dt><dd>Governance 서비스 배분(D-30)</dd><dt>접근</dt><dd>역할 기반, 전사</dd><dt>주소</dt><dd><code>앱.회사도메인</code></dd></dl>
+      <span class="gate">관문: 보안 검토 + 운영 책임 이전 + 회사 도메인 발급</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-guard">
+  <h2 id="h-guard">앱 실행 가드레일</h2>
+  <p class="lead"><span class="s risk">위험</span> "Governance 안에서 일어나니 위험이 아니다"는 성립하지 않는다. Governance는 <b>누가 어떤 자원을 갖는가</b>를 정하지만, <b>그 자원으로 만든 코드가 무엇을 하는가</b>는 정하지 않는다. 그래서 플랫폼이 Middle-earth 사용 면에 아래 네 가지를 강제한다. <span class="s pr">제안</span></p>
+  <div class="g4">
+    <div class="box"><b>인증은 플랫폼이</b><span class="muted">앱 앞에 SSO 프록시. 앱이 로그인을 직접 구현하지 않는다. 취약한 인증 코드가 생기지 않는다</span></div>
+    <div class="box"><b>기본은 비공개</b><span class="muted">처음엔 소유자만 접근. 공유·외부 공개는 승격 단계에서 연다</span></div>
+    <div class="box"><b>소유자 권한 이하</b><span class="muted">위임 신원으로 실행. 위임 사슬 교집합(D-46·D-47) 그대로</span></div>
+    <div class="box"><b>나가는 길 통제</b><span class="muted">외부 송신과 데이터 분류 규칙. "메일 읽기 + 외부 송신" 같은 위험한 조합을 막는다</span></div>
+  </div>
+  <p class="rule">막으려는 것: 앱 취약점으로 인한 메일함 노출, 정당한 권한의 조합을 통한 반출, 외부 메일 본문을 통한 프롬프트 인젝션, 검토받지 않은 웹앱 수천 개.</p>
+</section>
+
+<section aria-labelledby="h-dom">
+  <h2 id="h-dom">사원 앱 전용 도메인 <span class="s ok">합의</span></h2>
+  <p class="lead">GitHub가 <code>github.io</code>를, Google이 <code>googleusercontent.com</code>을 따로 두는 것과 같은 이유다.</p>
+  <div class="dom">
+    <div class="box no"><b style="color:var(--cut)">쓰지 않는다</b><div class="addr">사용자ID.회사도메인</div>
+      <ul class="muted" style="font-size:13px"><li>상위 도메인의 회사 SSO 쿠키를 하위 앱이 읽거나 덮어쓸 수 있다</li><li><code>hr-login.kim.회사도메인</code> 같은 주소가 진짜 회사 페이지처럼 보인다</li><li>개인 앱 하나가 악성으로 분류되면 회사 도메인 평판이 같이 떨어진다</li></ul></div>
+    <div class="box yes"><b style="color:var(--ws)">쓴다</b><div class="addr">사용자ID.회사-apps.net</div>
+      <ul class="muted" style="font-size:13px"><li>별도 등록 도메인. Public Suffix List에 등록해 앱끼리 쿠키를 분리한다</li><li>회사 도메인 아래 주소는 L3 회사 앱으로 승격된 뒤에만 준다</li><li>도메인 이름과 와일드카드 인증서 운영 방식은 정해야 한다 <span class="s tbd">미정</span></li></ul></div>
+  </div>
+</section>
+
+<!-- 결정 -->
+<section aria-labelledby="h-dec">
+  <h2 id="h-dec">채택하면 바뀌는 결정</h2>
+  <div class="scroll card" style="padding:0">
+    <table class="t-dec">
+      <thead><tr><th>대상</th><th>지금</th><th>바뀌는 방향</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">D-7, D-28</td><td>Workspace = 사원용 업무 제품 전체</td><td>Workspace = 할당된 사용 면 + 에이전트 + 사원 앱</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">D-70</td><td>Stalwart·Mattermost·Univer = Workspace 제품</td><td>Middle-earth 엔진. 선정 기준에 <b>API·프로토콜 우선</b> 추가</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">기준선 §3, 계층 지도</td><td>HISS·PSSS·PFSS = "공통 기반" 한 칸</td><td>네 면 구조. 기반 계층과 업무 엔진은 Middle-earth 아래</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">B-2, B-3</td><td>약속 수준의 경계</td><td>인도 지점 + 영역 KMS + cluster-admin 봉인으로 기술 강제, 노드 root만 신뢰 가정</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">D-16</td><td>에이전트 소스 변경 규칙</td><td>사원 앱 승격 3단계로 확장</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">신규</td><td>—</td><td>회사 기본 앱 제공</td><td><span class="s ok">합의</span></td></tr>
+        <tr><td class="nm">신규</td><td>—</td><td>사원 앱 전용 등록 도메인</td><td><span class="s ok">합의</span></td></tr>
+        <tr><td class="nm">신규</td><td>—</td><td>앱 실행 가드레일 4종, Governance 판단과 Middle-earth 집행 분리</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">신규</td><td>—</td><td>Middle-earth 공식 명칭(톨킨 저작물 상표라 제품 용어로는 중립 명칭 권장)</td><td><span class="s tbd">미정</span></td></tr>
+        <tr><td class="nm">신규</td><td>—</td><td>현장 Backbone 관리자(고객사 인프라팀 / 공급사 원격 / 둘 다)</td><td><span class="s tbd">미정</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <span>이 페이지는 방향안이며 결정 대장(D-번호)에 반영되지 않았다. 원본 설계 문서(기준선 v0.2, 계층 지도, 에이전트 신원, 교류 계층)는 OpenSphere 저장소 <code>governance/architecture/</code>에 있다.</span>
+  <span>이 저장소: <a href="../overview/FOUR-PLANES.md">네 면 구조(문서판)</a> · <a href="../specs/TENANT-ASSEMBLY-SPEC-v0.1.md">테넌트·어셈블리 구성 명세</a> · <a href="../specs/TENANT-COMMUNICATION-RULES-v0.1.md">테넌트 내부 통신 규칙</a> · <a href="../specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.md">Governance 참고 아키텍처</a></span>
+</footer>
+
+</div>
+</body>
+</html>

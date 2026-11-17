@@ -51,6 +51,10 @@
 | **Provider** | 공유 서비스의 엔진 단위. 예: PostgreSQL Provider, KubeVirt Provider | "PFSS Provider" 대신 "공유 서비스 Provider" 또는 그냥 "Provider" |
 | Plan · Claim · Instance · Binding | 공유 서비스의 공급·인도 절차 | 인도 지점은 Binding |
 | SupplyPool(공급 풀), Grant | 공급 한도와 서명된 배분 증거(D-31, D-32) | |
+| 어셈블리 | 테넌트 안에서 하나의 목적을 위해 묶인 Fabric 구성요소 조합 | [어셈블리 카탈로그](../specs/ASSEMBLY-CATALOG-v0.1.md) |
+| 리소스 유형 | 어셈블리가 내놓고 Governance가 나눠 주는 단위. 예: `mail.mailbox`. 제품명이 아니라 영역 이름으로 짓는다 | 사원은 구성요소가 아니라 리소스 유형을 받는다 |
+| 외부 어셈블리 | Fabric 밖의 리소스를 연결기·연결 객체로 묶어 들인 어셈블리 | [외부 리소스 편입 규칙](../specs/EXTERNAL-RESOURCE-ADMISSION-v0.1.md) |
+| 관리형 · 연동형 · 참조형 | 외부 리소스의 통제 등급. 적합성 시험으로 판정 | managed · federated · referenced |
 
 **구 식별자: 다음 메이저 버전까지 그대로 유지한다**
 

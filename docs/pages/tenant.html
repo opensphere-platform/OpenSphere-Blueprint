@@ -178,7 +178,7 @@ a{color:var(--me)}
 .tbox>.hd span{color:var(--muted);font-size:12.5px}
 .row-l{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.02em}
 .asm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.asm.biz{grid-template-columns:repeat(3,minmax(0,1fr))}
+.asm.biz{grid-template-columns:repeat(4,minmax(0,1fr))}
 .am{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12.5px;min-width:0;display:block;line-height:1.55}
 .am b{font-size:13px;display:block;margin-bottom:2px}
 .am.core{border-left:4px solid var(--me)}
@@ -229,6 +229,21 @@ a{color:var(--me)}
 .t-gov td.fx{background:color-mix(in srgb,var(--me-bg) 55%,var(--panel))}
 .ban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .ban div{font-size:12.5px;padding:7px 10px;border-radius:8px;background:var(--cut-bg);color:var(--ink);border:1px solid color-mix(in srgb,var(--cut) 35%,transparent)}
+.cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cat{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:10px;padding:11px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cat-core{--c:var(--me)} .cat-biz{--c:var(--ws)} .cat-cu{--c:var(--cust)}
+.cat .ch{display:flex;justify-content:space-between;gap:6px;align-items:flex-start;flex-wrap:wrap}
+.cat .ch b{font-size:14.5px}
+.cat .cc{font-size:12px;color:var(--muted);display:block}
+.cat ul{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:3px;font-size:12.5px}
+.cat ul li{display:block}
+.cat ul code{font-size:11.5px;margin-right:4px}
+.cat .cf{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px;margin-top:auto}
+.grade{border-top:4px solid var(--c)} .grade b{color:var(--c)}
+.gm{--c:var(--ws)} .gf{--c:var(--gov)} .gr{--c:var(--muted)}
+.box.grade>span{display:block}
+@media (max-width:900px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:680px){.cats{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:900px){.tdia{grid-template-columns:minmax(0,1fr)}.kinds{grid-template-columns:repeat(2,minmax(0,1fr))}.link .fields{grid-template-columns:repeat(2,minmax(0,1fr))}.link .f:nth-child(4n){border-right:1px solid var(--line)}.link .f:nth-child(2n){border-right:0}}
 @media (max-width:680px){.asm,.asm.biz,.steps6,.kinds,.idrow,.ban,.link .fields{grid-template-columns:minmax(0,1fr)}.link .f{border-right:0}}
 </style>
@@ -239,7 +254,7 @@ a{color:var(--me)}
 
 <header>
   <h1>OpenSphere 테넌트 구조</h1>
-  <p class="meta">2026-11-17 · 테넌트를 만들고, 유지하고, 그 안에서 통신하고, Governance로 통제하는 방법 · 근거: 테넌트·어셈블리 구성 명세 v0.1, 테넌트 내부 통신 규칙 v0.1, Governance 참고 아키텍처 v0.1</p>
+  <p class="meta">2026-11-17 · 테넌트를 만들고, 무엇을 나눠 주고, 유지하고, 그 안에서 통신하고, Governance로 통제하는 방법 · 근거: 테넌트·어셈블리 구성 명세 v0.1, 테넌트 내부 통신 규칙 v0.1, Governance 참고 아키텍처 v0.1</p>
   <p class="meta"><span class="s ok">결정</span> 결정 대장에 있음 &nbsp; <span class="s pr">제안</span> 명세 초안, 결정 전 &nbsp; <span class="s tbd">미정</span> 정해야 할 것</p>
 </header>
 
@@ -269,15 +284,8 @@ a{color:var(--me)}
           <div class="am core"><b>channel</b>이벤트 채널 · 스키마 레지스트리</div>
         </div>
         <div class="weave">연결(Link) — 연결 전용 신원 · 테넌트 CA 인증서 · 네트워크 허용 · 삭제 보호</div>
-        <span class="row-l">업무 어셈블리 · Genesis 이후 추가</span>
-        <div class="asm biz">
-          <div class="am biz"><b>메일</b>Stalwart + PostgreSQL + OpenSearch + 객체 저장</div>
-          <div class="am biz"><b>메신저 · 문서</b>Mattermost · Univer</div>
-          <div class="am biz"><b>업무 코어</b>Odoo + PostgreSQL</div>
-          <div class="am biz"><b>에이전트 자리</b>KubeVirt VM</div>
-          <div class="am biz"><b>사원 앱 실행 환경</b>1~3단계 승격, 전용 도메인</div>
-          <div class="am biz"><b>…</b>카탈로그의 어셈블리 정의로 추가</div>
-        </div>
+        <span class="row-l">업무 어셈블리 · Genesis 이후 카탈로그에서 추가 · 카드 안은 내놓는 리소스 유형(§2)</span>
+        <div class="asm biz"><div class="am biz"><b>메일·일정·연락처</b>mail.mailbox · mail.shared-mailbox · mail.alias …</div><div class="am biz"><b>파일·문서</b>file.space · file.shared-folder · doc.edit …</div><div class="am biz"><b>메신저</b>chat.team · chat.channel · chat.bot …</div><div class="am biz"><b>개발</b>dev.group · dev.repository · dev.runner …</div><div class="am biz"><b>업무 코어(ERP·SCM)</b>erp.company · erp.role · erp.record-scope …</div><div class="am biz"><b>데이터 서비스</b>data.postgres.database · data.search.index · data.cache.keyspace …</div><div class="am biz"><b>에이전트 자리</b>agent.seat · agent.identity · model.usage …</div><div class="am biz"><b>사원 앱 실행 환경</b>app.runtime · app.domain · app.identity …</div><div class="am biz"><b>업무 자동화</b>workflow.namespace · workflow.worker</div><div class="am biz"><b>관측</b>observe.logs · observe.dashboard</div><div class="am biz"><b>백업</b>backup.policy · backup.restore-request</div><div class="am biz"><b>통합 검색</b>search.scope</div></div>
         <p class="tfoot">연결 그래프 = 네트워크 허용 목록 = 삭제 보호의 근거 · 테넌트 기록은 테넌트 키로 서명</p>
       </div>
       <div class="xbar"><b>교류 계층</b> · 두 테넌트 사이의 유일한 통과 지점(X-1) · 테넌트 경계를 넘는 연결은 없다(T-9)</div>
@@ -311,9 +319,35 @@ a{color:var(--me)}
   <p class="rule">한 설치 = 한 회사(D-14)이므로 여기서 "테넌트"는 고객사 구분이 아니라 <b>영역 단위 결속 묶음</b>이다. 일반 SaaS 용어와 혼동되면 이름을 바꿀 수 있다 <span class="s tbd">미정 T-Q1</span></p>
 </section>
 
+
+<!-- 2. 카탈로그 -->
+<section aria-labelledby="h-cat">
+  <h2 id="h-cat">2. 어셈블리 카탈로그: 나눠 줄 수 있는 리소스</h2>
+  <p class="lead">사원은 "Stalwart"를 받지 않는다. 메일 어셈블리가 내놓는 <code>mail.mailbox</code>(메일함 10GB)를 받는다. Governance가 나눠 주는 단위는 구성요소가 아니라 어셈블리가 내놓는 <b>리소스 유형</b>이다. <span class="s pr">제안</span></p>
+  <div class="loop" aria-label="구성요소에서 할당까지">
+    <span class="lp f">Fabric 구성요소</span><span class="arr">→ 묶음 →</span><span class="lp f">어셈블리</span><span class="arr">→ 내놓음 →</span><span class="lp g">리소스 유형</span><span class="arr">→ 등록 →</span><span class="lp g">할당</span>
+    <span class="muted" style="font-size:12.5px">예: Stalwart · PostgreSQL · OpenSearch · RustFS · AD → 메일 → <code>mail.mailbox</code> → 김OO 메일함 10GB</span>
+  </div>
+  <h3 style="margin:14px 0 8px">핵심 어셈블리 · Genesis에서 생성 · 주로 서비스·앱에 배분</h3><div class="cats"><div class="cat cat-core"><div class="ch"><b>trust</b><span class="s pr">제안 · 제품 미정(T-Q3)</span></div><span class="cc">테넌트 KMS, 내부 CA, 비밀 저장(OpenBao 등 후보)</span><ul><li><code>trust.credential</code> 연결·앱 자격</li><li><code>trust.certificate</code> TLS 인증서</li><li><code>trust.key</code> 서명·암호화 키</li></ul><div class="cf"><span>배분 서비스·앱</span><span>측정 개수</span><span>위험 높음</span></div></div><div class="cat cat-core"><div class="ch"><b>identity</b><span class="s ok">결정 D-3, D-56</span></div><span class="cc">Samba AD DC 또는 외부 AD, Keycloak</span><ul><li><code>identity.account</code> 사원 계정</li><li><code>identity.group</code> 조직·그룹</li><li><code>identity.sso-client</code> 앱 SSO 등록</li><li><code>identity.service-account</code> 서비스·에이전트 신원</li></ul><div class="cf"><span>배분 개인·부서·서비스</span><span>측정 개수</span><span>위험 중간 · 서비스 계정 높음</span></div></div><div class="cat cat-core"><div class="ch"><b>governance</b><span class="s ok">결정 D-19, D-57</span></div><span class="cc">Governance, 전용 PostgreSQL</span><ul><li><code>gov.role</code> 역할</li><li><code>gov.policy</code> 정의(정책·서비스 메뉴)</li><li><code>gov.approval-route</code> 결재선</li></ul><div class="cf"><span>배분 부서·서비스</span><span>측정 —</span><span>위험 높음</span></div></div><div class="cat cat-core"><div class="ch"><b>channel</b><span class="s pr">제안 · D-66, D-67</span></div><span class="cc">이벤트 채널(Dapr PoC 대기), 스키마 레지스트리</span><ul><li><code>event.topic</code> 이벤트 주제</li><li><code>event.subscription</code> 구독</li></ul><div class="cf"><span>배분 서비스·프로젝트</span><span>측정 개수 · 보존 용량</span><span>위험 중간</span></div></div></div><h3 style="margin:14px 0 8px">업무 어셈블리 · 카탈로그에서 골라 추가 · 사원·부서·프로젝트가 받는 리소스 대부분</h3><div class="cats"><div class="cat cat-biz"><div class="ch"><b>메일·일정·연락처</b><span class="s ok">결정 D-70</span></div><span class="cc">Stalwart, PostgreSQL, OpenSearch, RustFS, identity, 공인 DNS</span><ul><li><code>mail.mailbox</code> 개인 메일함</li><li><code>mail.shared-mailbox</code> 공유 메일함</li><li><code>mail.alias</code> 별칭·그룹 주소</li><li><code>calendar.calendar</code> 개인·공유 캘린더</li><li><code>contacts.addressbook</code> 주소록</li><li><code>mail.forward-rule</code> 외부 자동 전달</li></ul><div class="cf"><span>배분 개인·부서</span><span>측정 GB · 개수</span><span>위험 낮음 · 외부 전달 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>파일·문서</b><span class="s tbd">Univer 결정 · 파일 정본 미정(R-12)</span></div><span class="cc">Stalwart WebDAV 또는 전용 파일 엔진, Univer, RustFS, OpenSearch</span><ul><li><code>file.space</code> 개인 파일 공간</li><li><code>file.shared-folder</code> 팀 공유 폴더</li><li><code>doc.edit</code> 문서 편집·공동 편집</li><li><code>file.external-share</code> 외부 공유 링크</li></ul><div class="cf"><span>배분 개인·부서·프로젝트</span><span>측정 GB</span><span>위험 중간 · 외부 공유 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>메신저</b><span class="s ok">결정 D-70 · SSO 무료판 확인 필요</span></div><span class="cc">Mattermost, PostgreSQL, RustFS, OpenSearch</span><ul><li><code>chat.team</code> 팀</li><li><code>chat.channel</code> 채널</li><li><code>chat.bot</code> 봇 계정</li><li><code>chat.webhook</code> 외부 연동 웹훅</li></ul><div class="cf"><span>배분 부서·프로젝트</span><span>측정 개수</span><span>위험 낮음 · 웹훅 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>개발</b><span class="s ok">결정 D-13, D-18, D-55</span></div><span class="cc">GitLab, PostgreSQL, Valkey, RustFS, KubeVirt(러너·개발 자리)</span><ul><li><code>dev.group</code> 그룹</li><li><code>dev.repository</code> 저장소</li><li><code>dev.runner</code> CI 러너 할당</li><li><code>dev.registry</code> 패키지·이미지 저장 용량</li><li><code>dev.deploy</code> 사원 영역 배포 권한</li></ul><div class="cf"><span>배분 개인·프로젝트</span><span>측정 개수 · GB · 러너 시간</span><span>위험 중간 · 배포 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>업무 코어(ERP·SCM)</b><span class="s ok">결정 D-76 · 레코드 규칙 투영 범위 미정(R-02)</span></div><span class="cc">Odoo Community, PostgreSQL</span><ul><li><code>erp.company</code> 법인</li><li><code>erp.role</code> 업무 그룹(판매·구매·재고·회계 등)</li><li><code>erp.record-scope</code> 담당 단위 레코드 범위</li><li><code>erp.approval-limit</code> 승인 한도</li></ul><div class="cf"><span>배분 개인·부서</span><span>측정 —</span><span>위험 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>데이터 서비스</b><span class="s ok">결정(Provider 11종, D-77, D-78)</span></div><span class="cc">공유 서비스 Provider가 직접 제공</span><ul><li><code>data.postgres.database</code> PostgreSQL DB</li><li><code>data.search.index</code> OpenSearch 인덱스</li><li><code>data.cache.keyspace</code> Valkey 키 공간</li><li><code>data.object.bucket</code> RustFS 버킷</li><li><code>data.document.database</code> MongoDB DB(예비, D-78)</li></ul><div class="cf"><span>배분 프로젝트·서비스</span><span>측정 GB · 메모리 · 연결 수</span><span>위험 중간</span></div></div><div class="cat cat-biz"><div class="ch"><b>에이전트 자리</b><span class="s ok">결정 D-50~D-54 · 하네스 미계약</span></div><span class="cc">KubeVirt 또는 Kata, 모델 게이트웨이, 기록되는 웹 출구, 사원 영역 Shell, 하네스(OpenBot, OEM 협상 중)</span><ul><li><code>agent.seat</code> 자리 VM(vCPU·메모리·디스크)</li><li><code>agent.identity</code> 에이전트 신원·위임</li><li><code>model.usage</code> 모델 사용량</li><li><code>egress.domain-policy</code> 웹 출구 허용 도메인</li></ul><div class="cf"><span>배분 개인·부서·프로젝트</span><span>측정 vCPU · GiB · 토큰</span><span>위험 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>사원 앱 실행 환경</b><span class="s pr">합의(기본 앱·전용 도메인) · 나머지 제안</span></div><span class="cc">K8s 네임스페이스, SSO 프록시, 전용 도메인, 앱 가드레일, 데이터 서비스</span><ul><li><code>app.runtime</code> 앱 실행 자원(CPU·메모리)</li><li><code>app.domain</code> 사원 앱 도메인</li><li><code>app.identity</code> 앱 신원</li><li><code>app.promotion</code> 승격 단계(1~3단계)</li></ul><div class="cf"><span>배분 개인·팀·서비스</span><span>측정 CPU · 메모리 · 개수</span><span>위험 1단계 낮음 · 3단계 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>업무 자동화</b><span class="s ok">결정 D-68</span></div><span class="cc">Temporal, PostgreSQL</span><ul><li><code>workflow.namespace</code> 워크플로 공간</li><li><code>workflow.worker</code> 워커 할당</li></ul><div class="cf"><span>배분 프로젝트·서비스</span><span>측정 실행 수</span><span>위험 중간</span></div></div><div class="cat cat-biz"><div class="ch"><b>관측</b><span class="s pr">제안</span></div><span class="cc">관측 서비스(Grafana, Loki, Tempo, 테넌트 게이트웨이)</span><ul><li><code>observe.logs</code> 테넌트 범위 로그·추적 조회</li><li><code>observe.dashboard</code> 대시보드</li></ul><div class="cf"><span>배분 부서·서비스</span><span>측정 보존 GB</span><span>위험 중간</span></div></div><div class="cat cat-biz"><div class="ch"><b>백업</b><span class="s pr">제안(네 면 구조 §3.3)</span></div><span class="cc">백업 서비스(Velero, 백업 operator), RustFS</span><ul><li><code>backup.policy</code> 백업 정책(최소 기준 위로만)</li><li><code>backup.restore-request</code> 복구 요청</li></ul><div class="cf"><span>배분 서비스·프로젝트</span><span>측정 GB · 보존일</span><span>위험 복구 높음</span></div></div><div class="cat cat-biz"><div class="ch"><b>통합 검색</b><span class="s tbd">미설계(레드팀 빠진 항목)</span></div><span class="cc">OpenSearch, 권한 인지 필터</span><ul><li><code>search.scope</code> 검색 범위</li></ul><div class="cf"><span>배분 개인</span><span>측정 —</span><span>위험 중간</span></div></div></div><h3 style="margin:14px 0 8px">고객 테넌트 어셈블리 · 사원 테넌트와는 교류 계층으로만</h3><div class="cats"><div class="cat cat-cu"><div class="ch"><b>고객 신원</b><span class="s ok">결정 D-63, D-72</span></div><span class="cc">Keycloak(고객 CIAM)</span><ul><li><code>customer.account</code> 고객 계정</li><li><code>customer.org</code> B2B 조직(협력사·공급사)</li><li><code>customer.app-client</code> 고객 앱 등록</li></ul><div class="cf"><span>배분 서비스</span><span>측정 개수</span><span>위험 중간</span></div></div><div class="cat cat-cu"><div class="ch"><b>대외 커머스·포털</b><span class="s tbd">후보(D-71)</span></div><span class="cc">헤드리스 커머스(Saleor·Medusa 후보), 자체 포털</span><ul><li><code>portal.site</code> 포털·공개 웹</li><li><code>commerce.channel</code> 판매 채널</li></ul><div class="cf"><span>배분 서비스</span><span>측정 —</span><span>위험 중간</span></div></div><div class="cat cat-cu"><div class="ch"><b>고객 AI</b><span class="s tbd">미정</span></div><span class="cc">고객용 모델 게이트웨이(미정, R-16)</span><ul><li><code>model.usage</code> 고객 AI 모델 사용량</li></ul><div class="cf"><span>배분 서비스</span><span>측정 토큰</span><span>위험 높음</span></div></div></div>
+  <p class="rule">배분 단위는 D-5의 넷(개인, 부서·팀, 프로젝트, 업무 서비스)이다. 위험은 기본값이고, 행위별로 더 높게 잡는다. 앱 관리(<code>admin</code>) 행위는 항상 높음이다(R-11). 리소스 유형 이름은 제품명이 아니라 영역 이름으로 짓는다(<code>stalwart.mailbox</code>가 아니라 <code>mail.mailbox</code>). 엔진이 바뀌어도 할당이 유지되게 하기 위해서다.</p>
+  <h3 style="margin:16px 0 8px">리소스 유형으로 등록할 때 적는 것</h3>
+  <div class="link">
+    <div class="top"><span class="node">ResourceType</span><span class="wire"></span><span><code>mail.mailbox</code> · assembly <b>mail</b> · source <b>internal</b> · control <b>managed</b></span></div>
+    <div class="fields">
+      <div class="f"><b>행위·위험</b>use 낮음 · share 중간 · admin 높음</div>
+      <div class="f"><b>배분</b>개인·부서 · GB · 기본 10 · 최대 50</div>
+      <div class="f"><b>프로비저닝</b>어댑터 · 생성·비활성·삭제 지원 여부</div>
+      <div class="f"><b>대조</b>실제 목록 읽기 · 15분 주기</div>
+      <div class="f"><b>회수</b>목표 20분 p95(D-21)</div>
+      <div class="f"><b>감사</b>원천 로그 경로</div>
+      <div class="f"><b>showback</b>GB-월(D-25)</div>
+      <div class="f"><b>재검토</b>주기(D-37 관리자 설정)</div>
+    </div>
+  </div>
+</section>
 <!-- 2. 생성 -->
 <section aria-labelledby="h-gen">
-  <h2 id="h-gen">2. 테넌트 생성</h2>
+  <h2 id="h-gen">3. 테넌트 생성</h2>
   <p class="lead">선언에서 시작해 검증을 통과해야 활성이 된다. 어느 단계든 실패하면 그 단계만 되돌린다. <span class="s pr">제안</span></p>
   <div class="flowrow" aria-label="테넌트 상태">
     <span class="st8">Declared</span><span class="arr">→</span>
@@ -357,7 +391,7 @@ a{color:var(--me)}
 
 <!-- 3. 유지 -->
 <section aria-labelledby="h-keep">
-  <h2 id="h-keep">3. 테넌트를 유지하는 힘</h2>
+  <h2 id="h-keep">4. 테넌트를 유지하는 힘</h2>
   <p class="lead">테넌트를 붙드는 것은 <b>연결 객체</b>다. 설정 파일에 흩어진 접속 문자열 대신, 연결 하나하나를 신원·자격·네트워크·보호가 달린 객체로 만든다. <span class="s pr">제안</span></p>
 
   <div class="link" aria-label="연결 객체의 구조">
@@ -405,7 +439,7 @@ a{color:var(--me)}
 
 <!-- 4. 통신 -->
 <section aria-labelledby="h-comm">
-  <h2 id="h-comm">4. 테넌트 안의 통신</h2>
+  <h2 id="h-comm">5. 테넌트 안의 통신</h2>
   <p class="lead">지금까지의 규칙(D-66, D-69)은 이벤트만 다뤘다. 실제 결속 통신은 SQL·LDAP·HTTP 같은 각 제품의 고유 프로토콜이라 규칙이 비어 있었다. 통신을 네 종류로 나누고, 서로 경로와 자격을 공유하지 않게 한다. <span class="s pr">제안</span></p>
   <div class="kinds">
     <div class="kind k1"><b>결속 통신</b><span>구성요소가 자기 의존 자원을 쓰는 고유 프로토콜</span><div class="ex">Stalwart → PostgreSQL(SQL), → AD(LDAPS), → OpenSearch(HTTPS)</div>
@@ -448,7 +482,7 @@ spiffe://&lt;tenant&gt;.tenant/&lt;assembly&gt;/&lt;component&gt;
 
 <!-- 5. Governance로 잇기 -->
 <section aria-labelledby="h-gov">
-  <h2 id="h-gov">5. Governance로 이어지게 하는 방법</h2>
+  <h2 id="h-gov">6. Governance로 이어지게 하는 방법</h2>
   <p class="lead">테넌트에서 일어나는 모든 변화가 Governance의 판단을 거치고, 그 결과가 Fabric에서 집행되며, 대조가 그 둘을 다시 잇는다. <span class="s pr">제안</span></p>
   <div class="loop" aria-label="통제 순환">
     <span class="lp g">정의</span><span class="arr">→</span>
@@ -494,9 +528,55 @@ spiffe://&lt;tenant&gt;.tenant/&lt;assembly&gt;/&lt;component&gt;
   <p class="rule">Governance의 대상은 접근·자원·비용·준수(D-10)이고, 하는 일은 정의·할당·결재·재검토·회수·승격의 판단과 원장이다(D-81). 집행·분석·보고 엔진은 Fabric 부품이 맡는다.</p>
 </section>
 
+
+<!-- 7. 외부 리소스 -->
+<section aria-labelledby="h-ext">
+  <h2 id="h-ext">7. 외부 리소스를 Governance 리소스로 올리기</h2>
+  <p class="lead">회사가 이미 쓰는 외부 AD, SaaS, 기존 DB, 클라우드 저장소, 외부 모델 API도 나눠 주려면 Governance 리소스가 되어야 한다. 앱 설정에 직접 꽂지 않고 <b>외부 어셈블리</b>로 묶어 들인다. <span class="s pr">제안</span></p>
+  <div class="loop" aria-label="외부 리소스 편입 경로">
+    <span class="lp f">외부 리소스</span><span class="arr">→</span><span class="lp f">연결기 · 연결 객체 · 연결 전용 자격</span><span class="arr">→</span><span class="lp f">외부 어셈블리</span><span class="arr">→</span><span class="lp g">리소스 유형 <code>ext.*</code></span><span class="arr">→</span><span class="lp g">할당</span>
+  </div>
+  <h3 style="margin:16px 0 8px">통제 등급: 신청자가 고르지 않고 시험으로 정한다</h3>
+  <div class="g3">
+    <div class="box grade gm"><b>관리형 <small class="muted">managed</small></b><span>조건: 생성·비활성·삭제 API + 권한 목록 API + 회수 시간 측정 + SSO</span><span class="muted">Governance: 신청·결재·할당·<b>자동 회수</b>·drift 회수·재검토·showback 전부. 에이전트 자율 실행 허용</span><span class="muted">예: SCIM 지원 SaaS, 외부 AD 쓰기 허용 모드</span></div>
+    <div class="box grade gf"><b>연동형 <small class="muted">federated</small></b><span>조건: SSO + 권한 목록 API. 생성·비활성 API는 없거나 일부</span><span class="muted">Governance: <b>입장(SSO 할당)</b>만 통제, 내부 권한은 대조해 <b>보고</b>만. 에이전트는 사람 결재 후 실행</span><span class="muted">예: SSO만 지원하는 SaaS, 외부 AD 읽기 전용 모드</span></div>
+    <div class="box grade gr"><b>참조형 <small class="muted">referenced</small></b><span>조건: 통제 API 없음</span><span class="muted">Governance: 원장에 <b>존재·소유자·위험만 등록</b>, 할당은 수작업 기록, 재검토 대상. 통제할 수 없다는 사실을 숨기지 않는다</span><span class="muted">예: 계정 관리 API가 없는 기존 시스템</span></div>
+  </div>
+  <p class="muted" style="margin-top:6px"><small>관리형 조건을 하나라도 시험에서 통과하지 못하면 한 등급 낮춰 등록한다. 재검토 주기마다 등급을 다시 시험한다.</small></p>
+
+  <h3 style="margin:16px 0 8px">편입 규칙 ER-1~ER-14</h3>
+  <div class="scroll card" style="padding:0"><table>
+    <thead><tr><th>ID</th><th>규칙</th><th>ID</th><th>규칙</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">ER-1</td><td><b>선언으로만.</b> 외부 어셈블리 정의로 등록. 앱 설정·스크립트·개인 토큰으로 직접 연결 금지</td><td class="nm">ER-8</td><td><b>등록해야 할당.</b> 리소스 유형 <code>ext.&lt;종류&gt;</code> 등록 전에는 할당 불가</td></tr>
+      <tr><td class="nm">ER-2</td><td><b>소유·책임·계약.</b> 소유 단위, 운영 책임자, 라이선스·약관·데이터 처리 계약 위치. 없으면 등록 불가</td><td class="nm">ER-9</td><td><b>감사 경로.</b> 외부 감사 로그를 테넌트로 수집. 불가하면 "감사 불가"를 위험으로 기록</td></tr>
+      <tr><td class="nm">ER-3</td><td><b>연결 전용 자격.</b> 외부 쪽 서비스 계정, 자격은 테넌트 KMS. 개인·관리자 계정·고정 토큰 금지</td><td class="nm">ER-10</td><td><b>비용 단위.</b> 외부 과금 단위를 showback 단위로 대응(D-25)</td></tr>
+      <tr><td class="nm">ER-4</td><td><b>등급은 시험으로.</b> 적합성 시험 결과로 관리형·연동형·참조형 판정</td><td class="nm">ER-11</td><td><b>한 테넌트에만.</b> 사원·고객 테넌트를 잇는 외부 리소스는 교류 계층 우회라 금지(T-9)</td></tr>
+      <tr><td class="nm">ER-5</td><td><b>신원 매핑.</b> 외부 계정 ↔ 사원·에이전트·서비스 신원. 매핑 안 되면 고아 계정으로 보고</td><td class="nm">ER-12</td><td><b>해체 절차 선기록.</b> 외부 계정·자격 회수, 반출·삭제 요청 방법을 등록 시점에</td></tr>
+      <tr><td class="nm">ER-6</td><td><b>출구 하나.</b> 기록되는 출구(D-53)만 지난다. 연결 그래프에 외부 노드로 표시</td><td class="nm">ER-13</td><td><b>등록은 고위험 결재.</b> Governance 소유자 + 보안 담당. 연결 변경도 고위험(T-6)</td></tr>
+      <tr><td class="nm">ER-7</td><td><b>데이터 분류.</b> 분류 등급, 개인정보, 국외 이전 여부. 해당하면 결재 위험 높음</td><td class="nm">ER-14</td><td><b>정기 재검토.</b> 약관·API·보안 상태가 밖에서 바뀌므로 등급을 다시 시험</td></tr>
+    </tbody></table></div>
+
+  <h3 style="margin:16px 0 8px">적합성 시험</h3>
+  <div class="scroll card" style="padding:0"><table>
+    <thead><tr><th>시험</th><th>확인</th><th>관리형</th><th>연동형</th><th>참조형</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">SSO 로그인</td><td>사원 Keycloak으로 들어갈 수 있다</td><td>필수</td><td>필수</td><td>—</td></tr>
+      <tr><td class="nm">계정 생성</td><td>어댑터로 계정·권한을 만든다</td><td>필수</td><td>—</td><td>—</td></tr>
+      <tr><td class="nm">권한 목록</td><td>실제 계정·권한을 목록으로 읽는다</td><td>필수</td><td>필수</td><td>—</td></tr>
+      <tr><td class="nm">비활성·회수</td><td>퇴사 처리 후 외부 계정이 막히는 시간</td><td>필수</td><td>—</td><td>—</td></tr>
+      <tr><td class="nm">자격 회전</td><td>연결 자격을 바꿔도 연결 유지</td><td>필수</td><td>권장</td><td>권장</td></tr>
+      <tr><td class="nm">감사 수집</td><td>외부 감사 로그가 테넌트로 들어온다</td><td>필수</td><td>권장</td><td>—</td></tr>
+      <tr><td class="nm">반출</td><td>데이터 반출 요청이 동작한다</td><td>필수</td><td>권장</td><td>권장</td></tr>
+    </tbody></table></div>
+  <div class="flowrow" style="margin-top:12px">
+    <span class="st8">신청(소유 단위)</span><span class="arr">→</span><span class="st8">적합성 시험</span><span class="arr">→</span><span class="st8 gen">등급 판정</span><span class="arr">→</span><span class="st8 bad">결재(소유자 + 보안)</span><span class="arr">→</span><span class="st8">등록</span><span class="arr">→</span><span class="st8 ok">할당 가능</span><span class="arr">→</span><span class="st8">대조·재검토</span><span class="arr">→</span><span class="st8 end">해체</span>
+  </div>
+  <p class="rule">첫 사례는 이미 있는 외부 AD 연결(<code>external-directory</code>, D-3·D-6)이다. 쓰기 허용 모드는 관리형, 읽기 전용 모드는 연동형으로, 설치 시 고객이 모드를 고른다는 기존 결정과 그대로 대응한다.</p>
+</section>
 <!-- 6. 미결 -->
 <section aria-labelledby="h-open">
-  <h2 id="h-open">6. 정해야 할 것</h2>
+  <h2 id="h-open">8. 정해야 할 것</h2>
   <div class="scroll card" style="padding:0">
     <table>
       <thead><tr><th>ID</th><th>미결</th></tr></thead>
@@ -510,6 +590,11 @@ spiffe://&lt;tenant&gt;.tenant/&lt;assembly&gt;/&lt;component&gt;
         <tr><td class="nm">TC-Q4</td><td>위임 토큰 수명(5분)과 에이전트의 장시간 예약 작업(D-46)의 관계</td></tr>
         <tr><td class="nm">GR-Q1</td><td>관계 엔진과 조건 엔진을 조합할지, 하나로 갈지(시나리오 S1~S10 결과로)</td></tr>
         <tr><td class="nm">—</td><td>Valkey(cache), MongoDB(document) 연결 유형 추가</td></tr>
+        <tr><td class="nm">AC-Q1</td><td>파일 정본 엔진(Stalwart WebDAV, 전용 파일 엔진, AFFiNE)</td></tr>
+        <tr><td class="nm">AC-Q2</td><td>통합 검색의 권한 인지 방식</td></tr>
+        <tr><td class="nm">AC-Q5</td><td>리소스 유형 레지스트리 위치(Governance 원장 / 카탈로그 저장소)</td></tr>
+        <tr><td class="nm">ER-Q3</td><td>회수 시간 기준(D-21)을 못 지키는 외부 리소스의 허용 범위</td></tr>
+        <tr><td class="nm">ER-Q4</td><td>고아 계정 자동 비활성을 기본으로 둘지</td></tr>
       </tbody>
     </table>
   </div>
@@ -517,7 +602,7 @@ spiffe://&lt;tenant&gt;.tenant/&lt;assembly&gt;/&lt;component&gt;
 
 <footer>
   <span>이 페이지는 명세 초안을 요약한 것이며, 결정 표시가 없는 항목은 결정 대장(D-번호)에 반영되지 않았다.</span>
-  <span>상세: <a href="../specs/TENANT-ASSEMBLY-SPEC-v0.1.html">테넌트·어셈블리 구성 명세</a> · <a href="../specs/TENANT-COMMUNICATION-RULES-v0.1.html">테넌트 내부 통신 규칙</a> · <a href="../specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.html">Governance 참고 아키텍처</a> · <a href="four-planes.html">네 면 구조</a> · <a href="../overview/GLOSSARY.html">용어 대응표</a></span>
+  <span>상세: <a href="../specs/TENANT-ASSEMBLY-SPEC-v0.1.html">테넌트·어셈블리 구성 명세</a> · <a href="../specs/TENANT-COMMUNICATION-RULES-v0.1.html">테넌트 내부 통신 규칙</a> · <a href="../specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.html">Governance 참고 아키텍처</a> · <a href="../specs/ASSEMBLY-CATALOG-v0.1.html">어셈블리 카탈로그</a> · <a href="../specs/EXTERNAL-RESOURCE-ADMISSION-v0.1.html">외부 리소스 편입 규칙</a> · <a href="four-planes.html">네 면 구조</a> · <a href="../overview/GLOSSARY.html">용어 대응표</a></span>
 </footer>
 
 </div>

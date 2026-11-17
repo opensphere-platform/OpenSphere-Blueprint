@@ -19,6 +19,8 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [테넌트 구조 페이지](docs/pages/tenant.html) | 테넌트 생성, 유지하는 힘(연결 객체), 테넌트 안 통신, Governance로 잇는 방법을 한 화면에 | 초안 요약 |
 | [테넌트·어셈블리 구성 명세 v0.1](docs/specs/TENANT-ASSEMBLY-SPEC-v0.1.md) | 독립 제품을 하나의 목적으로 묶는 절차, Genesis, 연결 객체, 수명주기, 해체 | 초안 |
 | [테넌트 내부 통신 규칙 v0.1](docs/specs/TENANT-COMMUNICATION-RULES-v0.1.md) | 결속·요청·이벤트·제어 네 종류의 통신 규칙, 워크로드 신원과 위임 토큰 | 초안 |
+| [어셈블리 카탈로그 v0.1](docs/specs/ASSEMBLY-CATALOG-v0.1.md) | 어셈블리 19종이 나눠 주는 Governance 리소스 유형, 리소스 유형 정의 형식, 카탈로그 등재 조건 | 초안 |
+| [외부 리소스 편입 규칙 v0.1](docs/specs/EXTERNAL-RESOURCE-ADMISSION-v0.1.md) | 외부 AD·SaaS·DB·모델 API를 외부 어셈블리로 묶어 Governance 리소스로 올리는 규칙 ER-1~ER-14, 통제 등급 | 초안 |
 | [Governance 참고 아키텍처 v0.1](docs/specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.md) | 랜딩존 대응표, 부품 지도, 판단 엔진 비교 시나리오 추가 | 초안 |
 
 ## 3. 계층 구조 설계 (결정 대장 포함)
@@ -62,6 +64,8 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | X-* | 교류 계층 |
 | R-* | 레드팀 검토 |
 | T-*, T-Q* | 테넌트·어셈블리 구성 명세 |
+| AC-Q* | 어셈블리 카탈로그 |
+| ER-*, ER-Q* | 외부 리소스 편입 규칙 |
 | TC-*, TC-Q* | 테넌트 내부 통신 규칙 |
 | S8~S10, GR-Q* | Governance 참고 아키텍처 |
 

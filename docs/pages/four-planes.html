@@ -64,7 +64,9 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--soft);padding:0 5
 .band>.hd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .band>.hd b{color:var(--c);font-size:15px}
 .band>.hd span{color:var(--muted);font-size:12.5px}
-.bb{--c:var(--bb);--cb:var(--bb-bg)} .me{--c:var(--me);--cb:var(--me-bg)} .gov{--c:var(--gov);--cb:var(--gov-bg)} .ws{--c:var(--ws);--cb:var(--ws-bg)} .cu{--c:var(--cust);--cb:var(--cust-bg)}
+.bb{--c:var(--bb);--cb:var(--bb-bg)} .me{--c:var(--me);--cb:var(--me-bg)} .gov{--c:var(--gov);--cb:var(--gov-bg)} .ws{--c:var(--ws);--cb:var(--ws-bg)} .cu{--c:var(--cust);--cb:var(--cust-bg)} .hiss{--c:var(--ink);--cb:var(--soft)}
+.dia>.hiss{grid-column:1/-1;border-width:2px}
+.hiss .hand{font-size:12.5px;color:var(--muted)} .hiss .hand b{color:var(--ink)}
 .flow{font-size:12.5px;color:var(--muted);padding:5px 0 5px 22px;position:relative}
 .flow::before{content:"";position:absolute;left:12px;top:0;bottom:0;border-left:2px solid var(--line)}
 .flow b{color:var(--ink);font-weight:600}
@@ -192,7 +194,7 @@ a{color:var(--me)}
 <!-- 도식 -->
 <section aria-labelledby="h-dia">
   <h2 id="h-dia">한눈에</h2>
-  <p class="lead">위에서 아래로 공급이 내려오고, Fabric 가운데의 인도 지점에서 소유가 넘어간다.</p>
+  <p class="lead">위에서 아래로 공급이 내려오고, Fabric 가운데의 인도 지점에서 소유가 넘어간다. 네 면은 모두 맨 아래 HISS 위에서 돈다.</p>
   <div class="dia">
     <div class="stack">
       <div class="band bb">
@@ -203,11 +205,11 @@ a{color:var(--me)}
       <div class="band me">
         <div class="hd"><b>Fabric</b><span>OpenSphere Fabric · 공급(날실)과 사용(씨실)이 엮인 공유 구성요소</span></div>
         <div class="faces">
-          <div class="face sup"><b>공급 면 (Backbone)</b>엔진·버전·CRD·노드·용량·인스턴스 수명주기</div>
+          <div class="face sup"><b>공급 면 (Backbone)</b>엔진·버전·CRD·용량·인스턴스 수명주기</div>
           <div class="cutline">인도 지점</div>
           <div class="face use"><b>사용 면 (할당받은 쪽)</b>설정·자격·데이터·배포 대상·내 메일함·내 VM</div>
         </div>
-        <div class="chips"><span class="chip">기반: K8s·CNI·ingress</span><span class="chip">배포 지원: Argo CD·Crossplane</span><span class="chip">PostgreSQL(StackGres)</span><span class="chip">OpenSearch</span><span class="chip">Valkey</span><span class="chip">RustFS</span><span class="chip">Percona MongoDB(예비)</span><span class="chip">Samba AD DC</span><span class="chip">외부 디렉터리</span><span class="chip">Keycloak</span><span class="chip">OpenFGA(제안)</span><span class="chip">Kyverno(제안)</span><span class="chip">KubeVirt</span><span class="chip">백업 서비스</span><span class="chip">관측 서비스</span><span class="chip">Stalwart</span><span class="chip">Mattermost</span><span class="chip">Univer</span><span class="chip">GitLab</span><span class="chip">Odoo 엔진</span><span class="chip">이벤트 채널</span><span class="chip">Temporal</span><span class="chip">모델 게이트웨이</span><span class="chip">영역 KMS</span></div>
+        <div class="chips"><span class="chip">배포 지원: Argo CD·Crossplane</span><span class="chip">PostgreSQL(StackGres)</span><span class="chip">OpenSearch</span><span class="chip">Valkey</span><span class="chip">RustFS</span><span class="chip">Percona MongoDB(예비)</span><span class="chip">Samba AD DC</span><span class="chip">외부 디렉터리</span><span class="chip">Keycloak</span><span class="chip">OpenFGA(제안)</span><span class="chip">Kyverno(제안)</span><span class="chip">KubeVirt</span><span class="chip">백업 서비스</span><span class="chip">관측 서비스</span><span class="chip">Stalwart</span><span class="chip">Mattermost</span><span class="chip">Univer</span><span class="chip">GitLab</span><span class="chip">Odoo 엔진</span><span class="chip">이벤트 채널</span><span class="chip">Temporal</span><span class="chip">모델 게이트웨이</span><span class="chip">영역 KMS</span></div>
       </div>
       <div class="flow"><b>사용 면</b>을 Governance가 판단해 쪼갠다 · 집행은 Fabric</div>
       <div class="band gov">
@@ -235,13 +237,18 @@ a{color:var(--me)}
         <p style="font-size:12.5px">엔진은 Fabric. 거래 데이터는 누구의 Workspace도 아닌 <b>회사 공유 자원</b>이다.</p>
       </div>
     </div>
+    <div class="band hiss">
+      <div class="hd"><b>HISS</b><span>네 면과 고객 영역이 모두 그 위에서 도는 바닥 · 주인 Backbone · 사용 면 없음 <span class="s ok">합의 D-86</span></span></div>
+      <div class="chips"><span class="chip">노드 · K8s 제어면</span><span class="chip">KVM 노드</span><span class="chip">CNI</span><span class="chip">영역 사이 차단 정책</span><span class="chip">저장 엔진</span><span class="chip">외부 Ceph 연결(Rook External · CSI)</span><span class="chip">ingress 컨트롤러</span><span class="chip">cert-manager</span><span class="chip">DNS</span><span class="chip">내부 CA</span><span class="chip">호스트 전제조건 진단</span></div>
+      <div class="hand">▲ 위로 넘기는 것: <b>네임스페이스 · StorageClass · IngressClass · ClusterIssuer</b></div>
+    </div>
   </div>
 </section>
 
 <!-- 정의 -->
 <section aria-labelledby="h-def">
   <h2 id="h-def">면별 정의</h2>
-  <p class="lead">넷은 위아래로 쌓인 계층이 아니라 역할이 다른 면이다.</p>
+  <p class="lead">넷은 위아래로 쌓인 계층이 아니라 역할이 다른 면이다. HISS만은 면이 아니라 넷 모두의 바닥이다(D-86).</p>
   <div class="scroll card" style="padding:0">
     <table class="t-def">
       <thead><tr><th>면</th><th>하는 일</th><th>주인</th><th>하지 않는 것</th><th>상태</th></tr></thead>
@@ -250,6 +257,7 @@ a{color:var(--me)}
         <tr class="me"><td class="nm"><i></i>Fabric</td><td>공유 구성요소를 제공한다. 공급 면은 Backbone, 사용 면은 할당받은 쪽. Governance 판단을 <b>집행</b>(PEP)</td><td>얼굴마다 다름</td><td>누구에게 줄지 판단</td><td><span class="s pr">제안</span> <span class="s tbd">명칭 미정</span></td></tr>
         <tr class="gov"><td class="nm"><i></i>Governance</td><td>사용 면을 사람·단위·에이전트·앱에 권한에 맞게 쪼갠다. <b>판단</b>(PDP), 결재, 승격 관문</td><td>회사 권한 관리자</td><td>엔진 운영, 집행 직접 수행</td><td><span class="s pr">제안</span></td></tr>
         <tr class="ws"><td class="nm"><i></i>Workspace</td><td>할당된 사용 면의 묶음. 사원·에이전트가 자유롭게 쓰고 앱을 만든다</td><td>사원(팀은 팀장)</td><td>권한 판단, 받은 몫을 넘는 사용</td><td><span class="s pr">제안</span></td></tr>
+        <tr class="hiss"><td class="nm"><i></i>HISS <small class="muted">(네 면 아래 바닥)</small></td><td>노드·K8s·네트워크·저장(외부 Ceph 연결)·ingress·인증서·DNS를 운영하고, 네임스페이스·StorageClass·IngressClass·ClusterIssuer를 위로 넘긴다</td><td>Backbone(플랫폼 운영자)</td><td>나눠 주기, 영역 내용·자격 보유</td><td><span class="s ok">합의</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -272,9 +280,9 @@ a{color:var(--me)}
         <tr><td class="nm">Argo</td><td class="sup">엔진(배포 지원)</td><td class="mid"><b>영역별 인스턴스.</b> 배포 결정권 자체라 공유하면 경계가 무너진다</td><td class="use">AppProject, 저장소 자격, 배포 서명 키</td></tr>
         <tr><td class="nm">PostgreSQL</td><td class="sup">공유 서비스 operator</td><td class="mid">DB는 Claim마다 따로. operator는 공유하되 <b>Secret 읽기 거부</b></td><td class="use">DB 자격, 데이터</td></tr>
         <tr><td class="nm">Keycloak</td><td class="sup">이미지·버전</td><td class="mid">이미 영역별(사원·고객, D-63)</td><td class="use">realm, 클라이언트, 사용자</td></tr>
-        <tr><td class="nm">KubeVirt</td><td class="sup">operator·KVM 노드(기반)</td><td class="mid">operator 공유, VM은 영역 소유(D-54, 이미 이 방식)</td><td class="use">VM 디스크, 게스트</td></tr>
+        <tr><td class="nm">KubeVirt</td><td class="sup">operator(KVM 노드는 HISS)</td><td class="mid">operator 공유, VM은 영역 소유(D-54, 이미 이 방식)</td><td class="use">VM 디스크, 게스트</td></tr>
         <tr><td class="nm">Stalwart</td><td class="sup">엔진·버전·저장</td><td class="mid">사원 영역 인스턴스</td><td class="use">메일함, JMAP·CalDAV 접근 권한</td></tr>
-        <tr><td class="nm">ingress</td><td class="sup">기반 계열 컨트롤러</td><td class="mid">공유 가능. 영역 사이 칸막이는 Backbone이 지킴</td><td class="use">도메인 노출 조건, 사원 앱 경로</td></tr>
+        <tr><td class="nm">ingress</td><td class="sup">HISS 컨트롤러(D-86)</td><td class="mid">공유 가능. 영역 사이 칸막이는 Backbone이 지킴</td><td class="use">도메인 노출 조건, 사원 앱 경로</td></tr>
         <tr><td class="nm">관측</td><td class="sup">수집 엔진</td><td class="mid">지표 경로 공유, <b>로그 본문 경로는 영역별</b></td><td class="use">로그·추적 내용</td></tr>
         <tr><td class="nm">KMS</td><td class="sup">엔진</td><td class="mid"><b>영역별.</b> 다른 모든 선을 지켜 주는 장치</td><td class="use">서명·암호화·복구 키</td></tr>
       </tbody>
@@ -290,7 +298,7 @@ a{color:var(--me)}
     </table>
   </div>
   <h3 style="margin:16px 0 6px">공유 서비스(구 PFSS) 밖의 Fabric 구성요소</h3>
-  <div class="g3 other"><div class="box"><b>기반(구 HISS)</b><span class="muted">K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진</span></div><div class="box"><b>배포 지원(구 PSSS)</b><span class="muted">Argo CD, Crossplane (Velero 설치는 백업 서비스로)</span></div><div class="box"><b>업무 엔진</b><span class="muted">Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어)</span></div><div class="box"><b>런타임</b><span class="muted">이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이</span></div><div class="box"><b>신뢰</b><span class="muted">영역 KMS, 내부 CA, SPIRE(테넌트 명세 trust 어셈블리)</span></div></div>
+  <div class="g3 other"><div class="box"><b>배포 지원(구 PSSS)</b><span class="muted">Argo CD, Crossplane (Velero 설치는 백업 서비스로)</span></div><div class="box"><b>업무 엔진</b><span class="muted">Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어)</span></div><div class="box"><b>런타임</b><span class="muted">이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이</span></div><div class="box"><b>신뢰</b><span class="muted">영역 KMS, SPIRE(테넌트 명세 trust 어셈블리). 내부 CA는 HISS(D-86)</span></div></div>
   <h3 style="margin:16px 0 6px">정리 과제</h3>
   <div class="scroll card" style="padding:0"><table>
     <thead><tr><th>과제</th><th>결과</th><th>상태</th></tr></thead>
@@ -342,7 +350,7 @@ a{color:var(--me)}
     <table class="t-bd">
       <thead><tr><th>대상</th><th>Backbone 안</th><th style="text-align:center">인도 지점</th><th>Backbone 밖 (사원·고객 영역)</th></tr></thead>
       <tbody>
-        <tr><td class="nm">기반 <small class="muted">(구 HISS)</small></td><td class="in">노드, K8s 제어면, CNI, 저장 엔진, ingress 컨트롤러, 인증서·DNS 엔진, <b>영역 사이 차단 정책</b>(X-1의 바닥)</td><td class="hand">영역 네임스페이스 생성</td><td class="out">네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10)</td></tr>
+        <tr><td class="nm">HISS <small class="muted">(D-86)</small></td><td class="in">노드, K8s 제어면, CNI, 저장 엔진(외부 Ceph 연결 포함), ingress 컨트롤러, 인증서·DNS 엔진, <b>영역 사이 차단 정책</b>(X-1의 바닥)</td><td class="hand">네임스페이스 · StorageClass · IngressClass · ClusterIssuer</td><td class="out">네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10)</td></tr>
         <tr class="key"><td class="nm">배포 지원 <small class="muted">(구 PSSS)</small></td><td class="in">Argo 엔진, Crossplane 엔진, 백업 실행</td><td class="hand">엔진 → 영역 인스턴스</td><td class="out">사원 영역 Argo 인스턴스·AppProject·동기화 대상, 배포 서명 키, 백업 내용(영역 키로 암호화)</td></tr>
         <tr class="key"><td class="nm">공유 서비스 <small class="muted">(구 PFSS)</small></td><td class="in">Provider·Operator, Plan, SupplyPool, 과할당 비율(D-32), Instance 생성·확장·이전</td><td class="hand">Instance → Binding</td><td class="out">Claim·Binding부터: 수혜 단위, quota, 발급된 자격, 데이터</td></tr>
         <tr><td class="nm">KubeVirt</td><td class="in">엔진, KVM 노드, 공급 한도</td><td class="hand">VM 생성</td><td class="out">VM 디스크, 게스트 내부</td></tr>
@@ -429,8 +437,9 @@ a{color:var(--me)}
       <tbody>
         <tr><td class="nm">D-7, D-28</td><td>Workspace = 사원용 업무 제품 전체</td><td>Workspace = 할당된 사용 면 + 에이전트 + 사원 앱</td><td><span class="s pr">제안</span></td></tr>
         <tr><td class="nm">D-70</td><td>Stalwart·Mattermost·Univer = Workspace 제품</td><td>Fabric 엔진. 선정 기준에 <b>API·프로토콜 우선</b> 추가</td><td><span class="s pr">제안</span></td></tr>
-        <tr><td class="nm">기준선 §3, 계층 지도</td><td>HISS·PSSS·PFSS = "공통 기반" 한 칸</td><td>네 면 구조. 기반 계층과 업무 엔진은 Fabric 아래</td><td><span class="s pr">제안</span></td></tr>
-        <tr><td class="nm">D-79</td><td>HISS·PSSS·PFSS, L1~L6, "공통 기반"</td><td>상위 구조어로 쓰지 않음. 기반·배포 지원·공유 서비스로 부르고, 코드 식별자는 다음 메이저까지 유지(용어 대응표: docs/overview/GLOSSARY)</td><td><span class="s ok">합의</span></td></tr>
+        <tr><td class="nm">기준선 §3, 계층 지도</td><td>HISS·PSSS·PFSS = "공통 기반" 한 칸</td><td>네 면 구조. 업무 엔진은 Fabric, 클러스터 바닥은 HISS(D-86)</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">D-79</td><td>HISS·PSSS·PFSS, L1~L6, "공통 기반"</td><td>상위 구조어로 쓰지 않음. 배포 지원·공유 서비스로 부르고(HISS는 D-86), 코드 식별자는 다음 메이저까지 유지(용어 대응표: docs/overview/GLOSSARY)</td><td><span class="s ok">합의</span></td></tr>
+        <tr><td class="nm">D-86</td><td>기반(구 HISS) = Fabric의 묶음</td><td>HISS를 Fabric에서 빼서 네 면 아래 바닥으로 둔다. D-79의 HISS 부분 개정. 기본 저장 엔진은 O-11(미정)</td><td><span class="s ok">합의</span></td></tr>
         <tr><td class="nm">B-2, B-3</td><td>약속 수준의 경계</td><td>인도 지점 + 영역 KMS + cluster-admin 봉인으로 기술 강제, 노드 root만 신뢰 가정</td><td><span class="s pr">제안</span></td></tr>
         <tr><td class="nm">D-16</td><td>에이전트 소스 변경 규칙</td><td>사원 앱 승격 3단계로 확장</td><td><span class="s pr">제안</span></td></tr>
         <tr><td class="nm">신규</td><td>—</td><td>회사 기본 앱 제공</td><td><span class="s ok">합의</span></td></tr>

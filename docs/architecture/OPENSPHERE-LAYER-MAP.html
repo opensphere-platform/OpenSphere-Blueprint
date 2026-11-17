@@ -124,7 +124,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
 <body>
 <header>
   <h1>OpenSphere 계층 지도</h1>
-  <div class="sub">기준선 v0.2 · 결정 D-1~D-85 반영 · 업무 코어·SCM 후보 v0.1 · 2026-11-17 · 설계 기준이며 구현·운영 완료를 뜻하지 않음 · 로고: OpenSphere Logos(logos.opl.io.kr, Statically CDN). 로고가 없는 제품은 글자 표식</div>
+  <div class="sub">기준선 v0.2 · 결정 D-1~D-86 반영 · 업무 코어·SCM 후보 v0.1 · 2026-11-17 · 설계 기준이며 구현·운영 완료를 뜻하지 않음 · 로고: OpenSphere Logos(logos.opl.io.kr, Statically CDN). 로고가 없는 제품은 글자 표식</div>
 </header>
 <nav role="tablist" aria-label="보기 선택">
   <button role="tab" aria-selected="true" aria-controls="v-map" id="t-map">① 영역 × 계층 지도</button>
@@ -164,7 +164,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
       <div class="chips" data-chips="pfss"></div></button>
     <button class="layer c-base full" data-k="psss" aria-pressed="false"><b>배포 지원 (구 PSSS)</b><span class="role">배포·동기화·adapter·백업 — 모든 영역의 안전망</span>
       <div class="chips" data-chips="psss"></div></button>
-    <button class="layer c-base full" data-k="hiss" aria-pressed="false"><b>기반 (구 HISS)</b><span class="role">클러스터 공통 실행 기반</span>
+    <button class="layer c-base full" data-k="hiss" aria-pressed="false"><b>HISS</b><span class="role">네 면 아래의 바닥 — Fabric 밖, 주인 Backbone, 사용 면 없음 (D-86)</span>
       <div class="chips" data-chips="hiss"></div></button>
   </div>
 
@@ -251,8 +251,8 @@ svg .t-h{font-weight:700;font-size:13.5px}
     <text x="30" y="566" class="t-muted">변경은 소스(Gitea/GitLab) → 검토 → 고정 산출물 → 배포. 에이전트는 PR까지만(D-16)</text>
 
     <rect x="16" y="596" width="968" height="76" rx="12" fill="var(--base-bg)" stroke="var(--base)"/>
-    <text x="30" y="620" class="t-h">기반 (구 HISS) — 클러스터 실행 기반</text>
-    <text x="30" y="644">RKE2 · CNI · DNS · 저장·CSI · ingress · cert-manager · 관측 stack · StackGres operator · KubeVirt operator·KVM 노드</text>
+    <text x="30" y="620" class="t-h">HISS — 네 면 아래의 바닥 (D-86) · 네임스페이스 · StorageClass · IngressClass · ClusterIssuer를 위로 넘긴다</text>
+    <text x="30" y="644">RKE2 · CNI · DNS · 저장·CSI · 외부 Ceph(Rook External) · ingress · cert-manager · 관측 stack · StackGres operator · KubeVirt operator·KVM 노드</text>
     <text x="30" y="662" class="t-muted">Backbone의 Cluster Manager가 진단·설치·canary로 Ready 판정</text>
 
     <!-- allocation arrows from areas to 공유 서비스 -->
@@ -365,7 +365,7 @@ const C={
  customer:[['Keycloak CIAM','keycloak',null,'ok'],['SCM 대외 커머스: Saleor·Medusa(후보)','medusa',null,'cand'],['고객·협력사 포털(미정)',null,'P','cand'],['CMS(재선정)',null,'W','cand'],['공개 API',null,'API','ok'],['고객 AI 에이전트',null,'AI','ok'],['Dapr(PoC)','dapr',null,'cand']],
  pfss:[['공급 풀',null,'SP','ok'],['Grant 검증',null,'G','ok'],['PostgreSQL','pg',null,'ok'],['RustFS','rustfs',null,'ok'],['Valkey','valkey',null,'ok'],['OpenSearch','opensearch',null,'ok'],['Percona MongoDB','percona',null,'ok'],['KubeVirt VM','kubevirt',null,'ok'],['Samba AD','samba',null,'ok'],['Keycloak','keycloak',null,'ok']],
  psss:[['Argo CD','argocd',null,'ok'],['Crossplane','crossplane',null,'ok'],['Helm','helm',null,'ok'],['Velero 백업(후보)','velero',null,'cand'],['GitLab CI → Argo','gitlab',null,'ok']],
- hiss:[['RKE2','rancher',null,'ok'],['Kubernetes','k8s',null,'ok'],['Longhorn·CSI','longhorn',null,'ok'],['ingress-nginx','nginx',null,'ok'],['cert-manager','certm',null,'ok'],['Prometheus','prom',null,'ok'],['Grafana','grafana',null,'ok'],['OpenTelemetry','otel',null,'ok'],['StackGres op.',null,'SG','ok'],['KubeVirt op.·KVM','kubevirt',null,'ok'],['Kata(후보)',null,'K','cand']]
+ hiss:[['RKE2','rancher',null,'ok'],['Kubernetes','k8s',null,'ok'],['Longhorn·CSI','longhorn',null,'ok'],['외부 Ceph (Rook External)',null,'Ce','ok'],['ingress-nginx','nginx',null,'ok'],['cert-manager','certm',null,'ok'],['Prometheus','prom',null,'ok'],['Grafana','grafana',null,'ok'],['OpenTelemetry','otel',null,'ok'],['StackGres op.',null,'SG','ok'],['KubeVirt op.·KVM','kubevirt',null,'ok'],['Kata(후보)',null,'K','cand']]
 };
 const L = {
   backbone:{name:'Backbone', area:'admin', role:'OpenSphere가 서비스를 구성·운영·복구할 수 있게 지원하는 관리 영역. 사원 권한의 내용에는 관여하지 않음 (D-1, D-23)',
@@ -420,9 +420,9 @@ const L = {
     products:[['Argo CD','ok','argocd'],['Crossplane + provider-helm','ok','crossplane'],['Helm','ok','helm'],['백업 (Velero 계열)','cand','velero']],
     comm:['GitLab CI → Argo CD (사원·고객 영역, D-18)','Backbone은 Gitea Actions로 자기 관리'],
     ctrl:['소스 → 검토 → 고정 산출물 → 배포','에이전트는 PR까지만 (D-16)']},
-  hiss:{name:'기반 (구 HISS)', area:'Fabric', role:'모든 영역이 쓰는 클러스터 공통 실행 기반',
-    does:['K8s·네트워크·DNS·저장·인증서','ingress·관측 기반','DB·VM operator 같은 공통 설비','Ready는 canary 증거로 판정'],
-    products:[['RKE2 (Rancher)','ok','rancher'],['Kubernetes · CNI · CoreDNS','ok','k8s'],['StorageClass·CSI (Longhorn 등)','ok','longhorn'],['ingress-nginx','ok','nginx'],['cert-manager','ok','certm'],['kube-prometheus-stack (Prometheus·Grafana·Loki·Tempo)','ok','prom'],['OpenTelemetry Collector','ok','otel'],['StackGres operator','ok',null,'SG'],['KubeVirt operator · KVM 노드 (D-54)','ok','kubevirt'],['Kata Containers (경량 격리)','cand',null,'K']],
+  hiss:{name:'HISS', area:'바닥 (네 면 아래, D-86)', role:'네 면과 고객 영역이 모두 그 위에서 도는 클러스터 바닥. 주인 Backbone, 사용 면 없음',
+    does:['K8s·네트워크·DNS·저장·인증서','외부 Ceph를 Rook External · CSI로 연결·검증·해제','네임스페이스 · StorageClass · IngressClass · ClusterIssuer를 위로 넘김','ingress·관측 기반','DB·VM operator 같은 공통 설비','Ready는 canary 증거로 판정'],
+    products:[['RKE2 (Rancher)','ok','rancher'],['Kubernetes · CNI · CoreDNS','ok','k8s'],['StorageClass·CSI (Longhorn 등, 기본 엔진은 O-11 미정)','ok','longhorn'],['외부 Ceph 연결 (Rook External · CSI)','ok',null,'Ce'],['ingress-nginx','ok','nginx'],['cert-manager','ok','certm'],['kube-prometheus-stack (Prometheus·Grafana·Loki·Tempo)','ok','prom'],['OpenTelemetry Collector','ok','otel'],['StackGres operator','ok',null,'SG'],['KubeVirt operator · KVM 노드 (D-54)','ok','kubevirt'],['Kata Containers (경량 격리)','cand',null,'K']],
     comm:['Kubernetes API · 네트워크 정책 · 공유 관측'],
     ctrl:['Backbone Cluster Manager가 진단·설치·검증','관측 라벨에 단위 이름 금지 (D-44)']}
 };

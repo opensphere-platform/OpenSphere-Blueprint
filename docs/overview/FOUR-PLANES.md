@@ -23,10 +23,9 @@
 │   ▼ 공급 면만 운영 · 선언된 경로 · cluster-admin 봉인
 │
 ├ Fabric (OpenSphere Fabric) ── 공급(날실)과 사용(씨실)이 엮인 공유 구성요소
-│   [공급 면 · Backbone]     엔진 · 버전 · CRD · 노드 · 용량 · 인스턴스 수명주기
+│   [공급 면 · Backbone]     엔진 · 버전 · CRD · 용량 · 인스턴스 수명주기
 │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄ 인도 지점 ┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 │   [사용 면 · 할당받은 쪽]  설정 · 자격 · 데이터 · 배포 대상 · 내 메일함 · 내 VM
-│   기반        K8s · CNI · ingress · cert-manager · DNS · 저장 엔진  (구 HISS)
 │   배포 지원   Argo CD · Crossplane                                (구 PSSS)
 │   공유 서비스 (구 PFSS) ─ 아래 데이터 · 신원 · 정책 집행 · 연산 · 보호·관측 묶음
 │   데이터   PostgreSQL(StackGres) · OpenSearch · Valkey · RustFS · Percona MongoDB(예비)
@@ -36,7 +35,7 @@
 │   보호·관측 백업 서비스 · 관측 서비스(Grafana · Loki · Tempo · 테넌트 게이트웨이)
 │   업무     Stalwart · Mattermost · Univer · GitLab · Odoo 엔진
 │   런타임   이벤트 채널 · Temporal · 모델 게이트웨이
-│   신뢰     영역 KMS · 내부 CA · SPIRE
+│   신뢰     영역 KMS · SPIRE
 │
 │   ▼ 사용 면을 판단해 쪼갬 · 집행은 Fabric
 │
@@ -49,6 +48,11 @@
     ├ 사원 A          내 자원(메일함 · VM · 앱 도메인) · 회사 자원에 대한 권한 · 에이전트 · 내가 만든 앱
     ├ 팀·프로젝트 X   팀 자원 · 팀 에이전트 · 팀 앱
     └ 회사 기본 앱    웹메일 · 메신저 · 결재 등, 처음부터 "회사 앱"으로 제공 (합의)
+
+━ HISS ── 네 면이 모두 그 위에서 도는 바닥 (D-86) · 주인 Backbone · 사용 면 없음
+    노드 · K8s 제어면 · KVM 노드 · CNI · 영역 사이 차단 정책
+    저장 엔진 · 외부 Ceph 연결(Rook External · CSI) · ingress 컨트롤러 · cert-manager · DNS · 내부 CA
+    ▲ 위로 넘기는 것: 네임스페이스 · StorageClass · IngressClass · ClusterIssuer
 
 네 면 옆에 놓이는 것
     업무 코어(Odoo)   엔진은 Fabric. 거래 데이터는 누구의 Workspace도 아닌 회사 공유 자원
@@ -64,6 +68,32 @@
 | Fabric | 공유 구성요소 제공. 공급 면은 Backbone, 사용 면은 할당받은 쪽. Governance 판단을 집행(PEP) | 얼굴마다 다름 | 누구에게 줄지 판단 | 제안, 명칭 미정 |
 | Governance | 사용 면을 사람·단위·에이전트·앱에 권한에 맞게 쪼갠다. 판단(PDP), 결재, 승격 관문 | 회사 권한 관리자 | 엔진 운영, 집행 직접 수행 | 제안 |
 | Workspace | 할당된 사용 면의 묶음. 사원·에이전트가 자유롭게 쓰고 앱을 만든다 | 사원(팀은 팀장) | 권한 판단, 받은 몫을 넘는 사용 | 제안 |
+
+### 2.1 HISS: 네 면 아래의 바닥 (`합의`, D-86)
+
+HISS는 Fabric의 묶음이 아니다. 네 면이 **모두** 그 위에서 돈다. Backbone의 Console · OS Shell · Gitea도 같은 노드와 저장소 위에 있으므로, "Fabric 아래"가 아니라 "네 면 아래"에 둔다.
+
+- **Fabric과 다른 점:** Fabric의 구성요소는 공급 면과 사용 면이 엮여 있다. HISS는 사용 면이 없다. 아무에게도 나눠 주지 않고, 주인은 Backbone 하나다.
+- **지키는 일이 여기 모인다:** 영역 사이 차단 정책(X-1의 바닥), 노드 root 신뢰 가정, 외부 저장소 연결 자격, 호스트 전제조건 진단. cluster-admin 봉인(§4)과 같은 자리의 일이다.
+- **아카이브 근거:** Cluster Manager(`OpenSphere-shell-clusterManager`)가 Kubernetes · Ceph Storage · HISS 전제조건을 독립 관리 화면으로 두었다. 외부 Ceph는 Rook External Mode와 CSI로 연결하고, 자격은 Kubernetes Secret에만 둔다. 원격 Ceph의 데이터는 관리하지 않는다.
+
+| HISS에 두는 것 | Fabric에 남는 것 |
+|---|---|
+| 노드 · K8s 제어면 · KVM 노드 | KubeVirt의 VM(엔진 설비만 HISS, D-54 유지) |
+| CNI · 영역 사이 차단 정책 | 영역 안 네트워크 정책(연결 그래프에서 생성) |
+| 저장 엔진 · 외부 Ceph 연결(Rook External · CSI) | 공유 서비스의 데이터 볼륨과 그 내용 |
+| ingress 컨트롤러 · cert-manager · DNS 엔진 | 공개 도메인 노출 조건(O-10) |
+| 내부 CA · 클러스터 건강 관측 바닥 | 영역 KMS · SPIRE · 관측 서비스(Grafana · Loki · Tempo) |
+| 호스트 전제조건 진단 · 실검증(저장 · 네트워크 · DNS) | — |
+
+**인도 지점:** HISS가 위로 넘기는 것은 넷이다. **네임스페이스 · StorageClass · IngressClass · ClusterIssuer.** 위의 면은 이 넷만 받아 쓰고, 노드·저장 엔진·CNI를 직접 만지지 않는다.
+
+**운영 규칙** (아카이브 HISS 규칙을 그대로 옮긴다)
+- 진단 항목과 관리 항목을 구분한다.
+- Ready는 실검증으로만 판정한다. StorageClass가 있다는 것만으로 저장이 Ready가 아니고, 임시 PVC·Pod로 할당·마운트·읽기쓰기를 확인해야 한다. 검증 계약이 바뀌면 이전 성공은 무효다.
+- 설치·삭제는 고정 Helm chart를 검토(plan)한 뒤에만 하고, 접수(202)를 설치 완료로 보지 않는다.
+
+**정해야 할 것:** 기본 저장 엔진(`미정`, O-11). 아카이브는 외부 Ceph(Cluster Manager)와 Longhorn(PostgreSQL 프로필 `hiss.storage.replicated-*`)을 함께 쓴다. 외부 Ceph를 기본으로 하고 Longhorn을 Ceph가 없을 때의 대체로 둘지, 등급별로 나눌지 정한다.
 
 ## 3. Fabric: 구성요소마다 두 얼굴
 
@@ -88,7 +118,7 @@
 | Keycloak | 이미지·버전 | 이미 영역별(D-63) | realm, 클라이언트, 사용자 |
 | KubeVirt | operator·KVM 노드 | operator는 공유, VM은 영역 소유(D-54) | VM 디스크, 게스트 |
 | Stalwart | 엔진·버전·저장 | 사원 영역 인스턴스 | 메일함, JMAP·CalDAV 접근 권한 |
-| ingress | 기반 계열 컨트롤러 | 공유 가능. 영역 사이 칸막이는 Backbone이 지킨다 | 도메인 노출 조건, 사원 앱 경로 |
+| ingress | HISS 컨트롤러(D-86) | 공유 가능. 영역 사이 칸막이는 Backbone이 지킨다 | 도메인 노출 조건, 사원 앱 경로 |
 | 관측 | 수집 엔진 | 지표 경로는 공유, 로그 본문 경로는 영역별 | 로그·추적 내용 |
 | KMS | 엔진 | **영역별.** 다른 모든 선을 지켜 주는 장치 | 서명·암호화·복구 키 |
 
@@ -119,11 +149,10 @@
 
 | 묶음 | 구성요소 |
 |---|---|
-| 기반(구 HISS) | K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진 |
 | 배포 지원(구 PSSS) | Argo CD, Crossplane |
 | 업무 엔진 | Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어) |
 | 런타임 | 이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이 |
-| 신뢰 | 영역 KMS, 내부 CA, SPIRE(테넌트 명세 trust 어셈블리) |
+| 신뢰 | 영역 KMS, SPIRE(테넌트 명세 trust 어셈블리). 내부 CA는 HISS(D-86) |
 
 **이 목록에서 나온 정리 과제**
 
@@ -186,7 +215,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 
 | 종류 | 대상 | 소유 |
 |---|---|---|
-| 플랫폼 백업 | Backbone 자신의 상태, etcd, 기반·배포 지원 설정 | Backbone이 전부 |
+| 플랫폼 백업 | Backbone 자신의 상태, etcd, HISS·배포 지원 설정 | Backbone이 전부 |
 | 영역 백업 | 사원·고객 영역의 데이터·설정 | 위 두 얼굴 구분을 따른다 |
 
 **기준선·아카이브 정리:** 기준선 §3의 "PSSS: 백업·복구"와 아카이브의 "Velero 설치 = Platform Support, 백업 operator = PFS"는 둘 다 **공급 면**이다. 따라서 둘 다 Backbone 운영으로 묶이고 충돌하지 않는다. 정할 것은 계층 이름표뿐이다. 이 구조에서는 백업 엔진을 Fabric "보호·관측" 계열로 두고, Velero 설치와 백업 operator를 백업 서비스 하나로 합친다(2026-11-17 합의). Velero는 배포 지원에 두지 않는다.
@@ -214,7 +243,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 
 | 대상 | Backbone 안 | 인도 지점 | Backbone 밖 (사원·고객 영역) |
 |---|---|---|---|
-| 기반(구 HISS) | 노드, K8s 제어면, CNI, 저장 엔진, ingress 컨트롤러, 인증서·DNS 엔진, **영역 사이 차단 정책**(X-1의 바닥) | 영역 네임스페이스 생성 | 네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10) |
+| HISS (D-86) | 노드, K8s 제어면, CNI, 저장 엔진(외부 Ceph 연결 포함), ingress 컨트롤러, 인증서·DNS 엔진, **영역 사이 차단 정책**(X-1의 바닥) | 네임스페이스 · StorageClass · IngressClass · ClusterIssuer | 네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10) |
 | **배포 지원**(구 PSSS) | Argo 엔진, Crossplane 엔진, 백업 실행 | 엔진 → 영역 인스턴스 | 사원 영역 Argo 인스턴스·AppProject·동기화 대상, 배포 서명 키, 백업 내용(영역 키로 암호화) |
 | **공유 서비스**(구 PFSS) | Provider·Operator, Plan, SupplyPool, 과할당 비율(D-32), Instance 생성·확장·이전 | Instance → Binding | Claim·Binding부터: 수혜 단위, quota, 발급된 자격, 데이터 |
 | KubeVirt | 엔진, KVM 노드, 공급 한도 | VM 생성 | VM 디스크, 게스트 내부 |
@@ -288,7 +317,8 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 | D-16 | 에이전트 소스 변경 규칙 | 사원 앱 승격 3단계로 확장 | 제안 |
 | 신규 | — | 회사 기본 앱 제공 | 합의 |
 | 신규 | — | 사원 앱 전용 등록 도메인 | 합의 |
-| D-79 | HISS·PSSS·PFSS, L1~L6, "공통 기반" | 상위 구조어로 쓰지 않음. 기반·배포 지원·공유 서비스로 부르고 코드 식별자는 다음 메이저까지 유지([용어 대응표](GLOSSARY.md)) | 합의 |
+| D-79 | HISS·PSSS·PFSS, L1~L6, "공통 기반" | 상위 구조어로 쓰지 않음. 배포 지원·공유 서비스로 부르고(HISS는 D-86) 코드 식별자는 다음 메이저까지 유지([용어 대응표](GLOSSARY.md)) | 합의 |
+| D-86 | 기반(구 HISS) = Fabric의 묶음 | HISS를 Fabric에서 빼서 네 면 아래 바닥으로 둔다(§2.1). D-79의 HISS 부분 개정. Fabric의 묶음은 배포 지원 · 공유 서비스 둘 | 합의 |
 | 공유 서비스 Provider(구 PFSS Provider) | Foundation 하위 모듈 11종 | Fabric 구성요소로 편입(§3.1) | 제안 |
 | D-77 | Apache Syncope Provider | 드롭, SCIM으로 처리 | 합의 |
 | D-78 | Percona MongoDB | 예비 설치 | 합의 |

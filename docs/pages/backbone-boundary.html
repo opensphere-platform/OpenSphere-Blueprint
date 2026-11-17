@@ -160,7 +160,7 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--soft);padding:0 5
     <table class="bt">
       <thead><tr><th class="ly">대상</th><th class="in">Backbone 안</th><th class="hand">인도 지점</th><th class="out">Backbone 밖 (사원·고객 영역)</th></tr></thead>
       <tbody>
-        <tr><td class="ly">HISS</td><td class="in">노드, K8s 제어면, CNI, 저장 엔진, ingress 컨트롤러, 인증서·DNS 엔진, <b>영역 사이 차단 정책</b>(X-1의 바닥)</td><td class="hand">영역 네임스페이스 생성</td><td class="out">네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10)</td></tr>
+        <tr><td class="ly">HISS <small>(네 면 아래 바닥, D-86)</small></td><td class="in">노드, K8s 제어면, CNI, 저장 엔진(외부 Ceph 연결 포함), ingress 컨트롤러, 인증서·DNS 엔진, <b>영역 사이 차단 정책</b>(X-1의 바닥)</td><td class="hand">네임스페이스 · StorageClass · IngressClass · ClusterIssuer</td><td class="out">네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10)</td></tr>
         <tr class="key"><td class="ly">PSSS</td><td class="in">Argo 엔진, Crossplane 엔진, 백업 실행</td><td class="hand">엔진 → 영역 인스턴스</td><td class="out">사원 영역 Argo 인스턴스·AppProject·동기화 대상, 배포 서명 키, 백업 내용(영역 키로 암호화)</td></tr>
         <tr class="key"><td class="ly">PFSS</td><td class="in">Provider·Operator, Plan, SupplyPool, 과할당 비율(D-32), Instance 생성·확장·이전</td><td class="hand">Instance → Binding</td><td class="out">Claim·Binding부터: 수혜 단위, quota, 발급된 자격, 데이터</td></tr>
         <tr><td class="ly">KubeVirt</td><td class="in">엔진, KVM 노드, 공급 한도</td><td class="hand">VM 생성</td><td class="out">VM 디스크, 게스트 내부</td></tr>

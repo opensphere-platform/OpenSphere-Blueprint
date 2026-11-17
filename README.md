@@ -8,7 +8,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 
 | 문서 | 내용 | 상태 |
 |---|---|---|
-| [네 면 구조](docs/overview/FOUR-PLANES.md) · [페이지](docs/pages/four-planes.html) | Backbone · Middle-earth · Governance · Workspace. Workspace = 리소스 풀, 사원 앱 승격, 전용 도메인 | 방향안(일부 합의) |
+| [네 면 구조](docs/overview/FOUR-PLANES.md) · [페이지](docs/pages/four-planes.html) | Backbone · Fabric · Governance · Workspace. Workspace = 리소스 풀, 사원 앱 승격, 전용 도메인 | 방향안(일부 합의) |
 | [용어 대응표](docs/overview/GLOSSARY.md) | 상위 구조어, 쓰지 않는 용어(HISS·PSSS·PFSS 등)와 바꿔 쓸 말, 남겨 두는 구 식별자(D-79) | 결정 |
 | [Backbone 경계 제안](docs/pages/backbone-boundary.html) | 영역의 키가 태어나는 지점까지가 Backbone. 네 면 구조에 흡수됨 | 이전 판 |
 

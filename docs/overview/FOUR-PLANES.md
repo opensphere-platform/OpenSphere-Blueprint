@@ -9,11 +9,11 @@
 
 ## 1. 핵심
 
-> **Workspace는 제품 묶음이 아니라, Governance가 Middle-earth에서 잘라 준 내 몫이다.**
+> **Workspace는 제품 묶음이 아니라, Governance가 Fabric에서 잘라 준 내 몫이다.**
 
 - **Backbone**은 공급한다.
-- **Middle-earth**의 구성요소는 공급 면과 사용 면을 함께 가진다.
-- **Governance**는 사용 면을 권한에 맞게 쪼개 나눈다. 판단만 하고, 집행은 Middle-earth에서 한다.
+- **Fabric**의 구성요소는 공급 면과 사용 면을 함께 가진다.
+- **Governance**는 사용 면을 권한에 맞게 쪼개 나눈다. 판단만 하고, 집행은 Fabric에서 한다.
 - **Workspace**에서 사원과 에이전트는 받은 자원으로 자유롭게 앱을 만든다. 좋은 앱은 회사 앱으로 승격된다.
 
 ```
@@ -22,7 +22,7 @@
 │
 │   ▼ 공급 면만 운영 · 선언된 경로 · cluster-admin 봉인
 │
-├ Middle-earth (가칭) ── 두 얼굴이 공존하는 공유 구성요소
+├ Fabric (OpenSphere Fabric) ── 공급(날실)과 사용(씨실)이 엮인 공유 구성요소
 │   [공급 면 · Backbone]     엔진 · 버전 · CRD · 노드 · 용량 · 인스턴스 수명주기
 │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄ 인도 지점 ┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 │   [사용 면 · 할당받은 쪽]  설정 · 자격 · 데이터 · 배포 대상 · 내 메일함 · 내 VM
@@ -38,7 +38,7 @@
 │   런타임   이벤트 채널 · Temporal · 모델 게이트웨이
 │   신뢰     영역 KMS · 내부 CA · SPIRE
 │
-│   ▼ 사용 면을 판단해 쪼갬 · 집행은 Middle-earth
+│   ▼ 사용 면을 판단해 쪼갬 · 집행은 Fabric
 │
 ├ Governance ── 할당된 영역을 권한에 맞게 제어·분해
 │   정의 · 할당 · 결재 · drift 회수 · 앱 승격 관문 · 사원 앱 도메인 발급
@@ -51,7 +51,7 @@
     └ 회사 기본 앱    웹메일 · 메신저 · 결재 등, 처음부터 "회사 앱"으로 제공 (합의)
 
 네 면 옆에 놓이는 것
-    업무 코어(Odoo)   엔진은 Middle-earth. 거래 데이터는 누구의 Workspace도 아닌 회사 공유 자원
+    업무 코어(Odoo)   엔진은 Fabric. 거래 데이터는 누구의 Workspace도 아닌 회사 공유 자원
     교류 계층         사원↔고객의 유일한 통과 지점(D-75). 고객을 상대하는 사원 앱은 회사 앱 승격 + 교류 계층 통과
     고객 영역         고객 CIAM · 포털 · 공개 웹 · 고객 AI. 네 면 모델 밖의 세 번째 영역(D-62)
 ```
@@ -61,11 +61,11 @@
 | 면 | 하는 일 | 주인 | 하지 않는 것 | 상태 |
 |---|---|---|---|---|
 | Backbone | 설치·운영·복구, 용량·공급 풀, 영역 사이 칸막이, 엔진 버전 공급 | 플랫폼 운영자 | 수요 결정, 영역 자격·키 보유, 내용 열람 | 제안 |
-| Middle-earth | 공유 구성요소 제공. 공급 면은 Backbone, 사용 면은 할당받은 쪽. Governance 판단을 집행(PEP) | 얼굴마다 다름 | 누구에게 줄지 판단 | 제안, 명칭 미정 |
+| Fabric | 공유 구성요소 제공. 공급 면은 Backbone, 사용 면은 할당받은 쪽. Governance 판단을 집행(PEP) | 얼굴마다 다름 | 누구에게 줄지 판단 | 제안, 명칭 미정 |
 | Governance | 사용 면을 사람·단위·에이전트·앱에 권한에 맞게 쪼갠다. 판단(PDP), 결재, 승격 관문 | 회사 권한 관리자 | 엔진 운영, 집행 직접 수행 | 제안 |
 | Workspace | 할당된 사용 면의 묶음. 사원·에이전트가 자유롭게 쓰고 앱을 만든다 | 사원(팀은 팀장) | 권한 판단, 받은 몫을 넘는 사용 | 제안 |
 
-## 3. Middle-earth: 구성요소마다 두 얼굴
+## 3. Fabric: 구성요소마다 두 얼굴
 
 경계는 구성요소와 구성요소 사이가 아니라 **구성요소 한가운데**를 지난다. 얼굴을 나눴다고 선언하는 것만으로는 부족하고, 인스턴스 단위에서 실제로 떼어 놓아야 한다.
 
@@ -115,7 +115,7 @@
 |  | **Claim 프로비저닝** | FoundationClaim → 엔진 라우팅 → DB·인덱스·역할·Secret 발급 | 컨트롤러 | Binding(자격 인도) | 인도 지점 자체. 어셈블리 명세의 연결 객체가 감싼다 | 유지 |
 |  | **Provider 수명주기** | `foundation.provider-modules.*` 13개 명령(adopt·update·approve 등, OS Shell 경유) | Backbone(Console 관리자) | — | 엔진 채택·갱신은 공급 면. 영역 인스턴스 적용은 영역이 끌어간다(제안) | 유지 |
 
-**공유 서비스(구 PFSS) 밖의 Middle-earth 구성요소**
+**공유 서비스(구 PFSS) 밖의 Fabric 구성요소**
 
 | 묶음 | 구성요소 |
 |---|---|
@@ -162,7 +162,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 
 ### 3.3 백업 소유: Backbone인가 (`제안`)
 
-**답: 실행은 Backbone, 결정과 열쇠는 영역이다.** 백업도 Middle-earth의 다른 구성요소처럼 두 얼굴로 나눈다.
+**답: 실행은 Backbone, 결정과 열쇠는 영역이다.** 백업도 Fabric의 다른 구성요소처럼 두 얼굴로 나눈다.
 
 ```
  엔진 · 실행      Velero 설치, 백업 operator, 스케줄 실행, 저장 위치(RustFS · 외부 사본), 모니터링   → Backbone
@@ -188,7 +188,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 | 플랫폼 백업 | Backbone 자신의 상태, etcd, 기반·배포 지원 설정 | Backbone이 전부 |
 | 영역 백업 | 사원·고객 영역의 데이터·설정 | 위 두 얼굴 구분을 따른다 |
 
-**기준선·아카이브 정리:** 기준선 §3의 "PSSS: 백업·복구"와 아카이브의 "Velero 설치 = Platform Support, 백업 operator = PFS"는 둘 다 **공급 면**이다. 따라서 둘 다 Backbone 운영으로 묶이고 충돌하지 않는다. 정할 것은 계층 이름표뿐이다. 이 구조에서는 백업 엔진을 Middle-earth "보호·관측" 계열로 둔다.
+**기준선·아카이브 정리:** 기준선 §3의 "PSSS: 백업·복구"와 아카이브의 "Velero 설치 = Platform Support, 백업 operator = PFS"는 둘 다 **공급 면**이다. 따라서 둘 다 Backbone 운영으로 묶이고 충돌하지 않는다. 정할 것은 계층 이름표뿐이다. 이 구조에서는 백업 엔진을 Fabric "보호·관측" 계열로 둔다.
 
 **확인할 점:** Velero의 파일 시스템 백업 저장소 키와 StackGres 백업 암호화를 영역 KMS 키로 분리할 수 있는지는 PoC에서 확인해야 한다. 분리할 수 없는 엔진은 애플리케이션 단계에서 암호화한 뒤 백업한다.
 
@@ -281,19 +281,19 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 | 대상 | 지금 | 바뀌는 방향 | 상태 |
 |---|---|---|---|
 | D-7, D-28 | Workspace = 사원용 업무 제품 전체 | Workspace = 할당된 사용 면 + 에이전트 + 사원 앱 | 제안 |
-| D-70 | Stalwart·Mattermost·Univer = Workspace 제품 | Middle-earth 엔진. 선정 기준에 API·프로토콜 우선 추가 | 제안 |
+| D-70 | Stalwart·Mattermost·Univer = Workspace 제품 | Fabric 엔진. 선정 기준에 API·프로토콜 우선 추가 | 제안 |
 | 기준선 §3, 계층 지도 | HISS·PSSS·PFSS = "공통 기반" 한 칸 | 네 면 구조 | 제안 |
 | B-2, B-3 | 약속 수준의 경계 | 인도 지점 + 영역 KMS + cluster-admin 봉인으로 기술 강제 | 제안 |
 | D-16 | 에이전트 소스 변경 규칙 | 사원 앱 승격 3단계로 확장 | 제안 |
 | 신규 | — | 회사 기본 앱 제공 | 합의 |
 | 신규 | — | 사원 앱 전용 등록 도메인 | 합의 |
 | D-79 | HISS·PSSS·PFSS, L1~L6, "공통 기반" | 상위 구조어로 쓰지 않음. 기반·배포 지원·공유 서비스로 부르고 코드 식별자는 다음 메이저까지 유지([용어 대응표](GLOSSARY.md)) | 합의 |
-| 공유 서비스 Provider(구 PFSS Provider) | Foundation 하위 모듈 11종 | Middle-earth 구성요소로 편입(§3.1) | 제안 |
+| 공유 서비스 Provider(구 PFSS Provider) | Foundation 하위 모듈 11종 | Fabric 구성요소로 편입(§3.1) | 제안 |
 | D-77 | Apache Syncope Provider | 드롭, SCIM으로 처리 | 합의 |
 | D-78 | Percona MongoDB | 예비 설치 | 합의 |
 | D-26 후보 | 판단 엔진 5종 | OPA 드롭, OpenFGA·SpiceDB로 좁혀 PoC, admission은 Kyverno(§3.2) | 제안 |
 | 기준선 §3 | 백업 = PSSS | 실행은 Backbone, 정책·키·복구 승인은 영역(§3.3) | 제안 |
 | 신규 | — | 테넌트·어셈블리 구성 절차 | 제안([명세](../specs/TENANT-ASSEMBLY-SPEC-v0.1.md)) |
 | 신규 | — | 테넌트 내부 통신 규칙 | 제안([규칙](../specs/TENANT-COMMUNICATION-RULES-v0.1.md)) |
-| 신규 | — | Middle-earth 공식 명칭. 톨킨 저작물 상표라 제품 용어로는 중립 명칭 권장 | 미정 |
+| D-80 | — | 공유 구성요소 집합의 공식 명칭 = **OpenSphere Fabric**(약칭 Fabric). 대외 표기 전 상표 확인 | 합의 |
 | 신규 | — | 현장 Backbone 관리자 | 미정 |

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OpenSphere 네 면 구조</title>
 <style>
-/* 레이아웃: 핵심 문장 → 네 면 도식(우측에 고객 영역) → 면별 정의 → Middle-earth 두 얼굴 → Backbone 경계 → Workspace 리소스 풀 → 사원 앱(승격·가드레일·도메인) → 바뀌는 결정 */
+/* 레이아웃: 핵심 문장 → 네 면 도식(우측에 고객 영역) → 면별 정의 → Fabric 두 얼굴 → Backbone 경계 → Workspace 리소스 풀 → 사원 앱(승격·가드레일·도메인) → 바뀌는 결정 */
 :root{
   --bg:#f6f7f9; --panel:#ffffff; --ink:#1b1f24; --muted:#5b6470; --line:#d9dee5; --soft:#eef1f5;
   --bb:#4f46e5; --bb-bg:#eef0ff;
@@ -181,10 +181,10 @@ a{color:var(--me)}
 </header>
 
 <section class="card thesis" aria-label="핵심">
-  <p class="big">Workspace는 제품 묶음이 아니라, Governance가 Middle-earth에서 잘라 준 <span style="color:var(--ws)">내 몫</span>이다.</p>
+  <p class="big">Workspace는 제품 묶음이 아니라, Governance가 Fabric에서 잘라 준 <span style="color:var(--ws)">내 몫</span>이다.</p>
   <ul>
-    <li><b style="color:var(--bb)">Backbone</b>은 공급한다. <b style="color:var(--me)">Middle-earth</b>의 구성요소는 공급 면과 사용 면을 함께 가진다.</li>
-    <li><b style="color:var(--gov)">Governance</b>는 사용 면을 권한에 맞게 쪼개 나눈다. 판단만 하고, 집행은 Middle-earth에서 한다.</li>
+    <li><b style="color:var(--bb)">Backbone</b>은 공급한다. <b style="color:var(--me)">Fabric</b>의 구성요소는 공급 면과 사용 면을 함께 가진다.</li>
+    <li><b style="color:var(--gov)">Governance</b>는 사용 면을 권한에 맞게 쪼개 나눈다. 판단만 하고, 집행은 Fabric에서 한다.</li>
     <li><b style="color:var(--ws)">Workspace</b>에서 사원과 에이전트는 받은 자원으로 자유롭게 앱을 만든다. 좋은 앱은 회사 앱으로 승격된다.</li>
   </ul>
 </section>
@@ -192,7 +192,7 @@ a{color:var(--me)}
 <!-- 도식 -->
 <section aria-labelledby="h-dia">
   <h2 id="h-dia">한눈에</h2>
-  <p class="lead">위에서 아래로 공급이 내려오고, Middle-earth 가운데의 인도 지점에서 소유가 넘어간다.</p>
+  <p class="lead">위에서 아래로 공급이 내려오고, Fabric 가운데의 인도 지점에서 소유가 넘어간다.</p>
   <div class="dia">
     <div class="stack">
       <div class="band bb">
@@ -201,7 +201,7 @@ a{color:var(--me)}
       </div>
       <div class="flow"><b>공급 면만</b> 운영한다 · 선언된 경로 · cluster-admin은 봉인</div>
       <div class="band me">
-        <div class="hd"><b>Middle-earth</b><span>가칭 · 두 얼굴이 공존하는 공유 구성요소</span></div>
+        <div class="hd"><b>Fabric</b><span>OpenSphere Fabric · 공급(날실)과 사용(씨실)이 엮인 공유 구성요소</span></div>
         <div class="faces">
           <div class="face sup"><b>공급 면 (Backbone)</b>엔진·버전·CRD·노드·용량·인스턴스 수명주기</div>
           <div class="cutline">인도 지점</div>
@@ -209,7 +209,7 @@ a{color:var(--me)}
         </div>
         <div class="chips"><span class="chip">기반: K8s·CNI·ingress</span><span class="chip">배포 지원: Argo CD·Crossplane·Velero</span><span class="chip">PostgreSQL(StackGres)</span><span class="chip">OpenSearch</span><span class="chip">Valkey</span><span class="chip">RustFS</span><span class="chip">Percona MongoDB(예비)</span><span class="chip">Samba AD DC</span><span class="chip">외부 디렉터리</span><span class="chip">Keycloak</span><span class="chip">OpenFGA(제안)</span><span class="chip">Kyverno(제안)</span><span class="chip">KubeVirt</span><span class="chip">백업 서비스</span><span class="chip">관측 서비스</span><span class="chip">Stalwart</span><span class="chip">Mattermost</span><span class="chip">Univer</span><span class="chip">GitLab</span><span class="chip">Odoo 엔진</span><span class="chip">이벤트 채널</span><span class="chip">Temporal</span><span class="chip">모델 게이트웨이</span><span class="chip">영역 KMS</span></div>
       </div>
-      <div class="flow"><b>사용 면</b>을 Governance가 판단해 쪼갠다 · 집행은 Middle-earth</div>
+      <div class="flow"><b>사용 면</b>을 Governance가 판단해 쪼갠다 · 집행은 Fabric</div>
       <div class="band gov">
         <div class="hd"><b>Governance</b><span>할당된 영역을 권한에 맞게 제어·분해</span></div>
         <div class="chips"><span class="chip">정의</span><span class="chip">할당</span><span class="chip">결재</span><span class="chip">drift 회수</span><span class="chip">앱 승격 관문</span><span class="chip">사원 앱 도메인 발급</span></div>
@@ -232,7 +232,7 @@ a{color:var(--me)}
       <div class="xg"><b>교류 계층</b><br>사원↔고객의 유일한 통과 지점(D-75). 고객을 상대하는 사원 앱은 <b>회사 앱 승격 + 교류 계층 통과</b>가 필요하다.</div>
       <div class="band me" style="flex:0">
         <div class="hd"><b>업무 코어</b><span>Odoo</span></div>
-        <p style="font-size:12.5px">엔진은 Middle-earth. 거래 데이터는 누구의 Workspace도 아닌 <b>회사 공유 자원</b>이다.</p>
+        <p style="font-size:12.5px">엔진은 Fabric. 거래 데이터는 누구의 Workspace도 아닌 <b>회사 공유 자원</b>이다.</p>
       </div>
     </div>
   </div>
@@ -247,7 +247,7 @@ a{color:var(--me)}
       <thead><tr><th>면</th><th>하는 일</th><th>주인</th><th>하지 않는 것</th><th>상태</th></tr></thead>
       <tbody>
         <tr class="bb"><td class="nm"><i></i>Backbone</td><td>설치·운영·복구, 용량·공급 풀, 영역 사이 칸막이, 엔진 버전 공급</td><td>플랫폼 운영자</td><td>수요 결정, 영역 자격·키 보유, 내용 열람</td><td><span class="s pr">제안</span></td></tr>
-        <tr class="me"><td class="nm"><i></i>Middle-earth</td><td>공유 구성요소를 제공한다. 공급 면은 Backbone, 사용 면은 할당받은 쪽. Governance 판단을 <b>집행</b>(PEP)</td><td>얼굴마다 다름</td><td>누구에게 줄지 판단</td><td><span class="s pr">제안</span> <span class="s tbd">명칭 미정</span></td></tr>
+        <tr class="me"><td class="nm"><i></i>Fabric</td><td>공유 구성요소를 제공한다. 공급 면은 Backbone, 사용 면은 할당받은 쪽. Governance 판단을 <b>집행</b>(PEP)</td><td>얼굴마다 다름</td><td>누구에게 줄지 판단</td><td><span class="s pr">제안</span> <span class="s tbd">명칭 미정</span></td></tr>
         <tr class="gov"><td class="nm"><i></i>Governance</td><td>사용 면을 사람·단위·에이전트·앱에 권한에 맞게 쪼갠다. <b>판단</b>(PDP), 결재, 승격 관문</td><td>회사 권한 관리자</td><td>엔진 운영, 집행 직접 수행</td><td><span class="s pr">제안</span></td></tr>
         <tr class="ws"><td class="nm"><i></i>Workspace</td><td>할당된 사용 면의 묶음. 사원·에이전트가 자유롭게 쓰고 앱을 만든다</td><td>사원(팀은 팀장)</td><td>권한 판단, 받은 몫을 넘는 사용</td><td><span class="s pr">제안</span></td></tr>
       </tbody>
@@ -255,9 +255,9 @@ a{color:var(--me)}
   </div>
 </section>
 
-<!-- Middle-earth 두 얼굴 -->
+<!-- Fabric 두 얼굴 -->
 <section aria-labelledby="h-me">
-  <h2 id="h-me">Middle-earth: 구성요소마다 두 얼굴</h2>
+  <h2 id="h-me">Fabric: 구성요소마다 두 얼굴</h2>
   <p class="lead">경계는 구성요소 사이가 아니라 구성요소 한가운데를 지난다. 얼굴을 나눴다고 선언하는 것만으로는 부족하고, 가운데 열(인스턴스)에서 실제로 떼어 놓아야 한다.</p>
   <div class="tier" aria-label="구성요소의 세 층">
     <div class="t1"><b>엔진</b><span>코드 · 버전 · CRD</span><span class="who">공급자(Backbone)가 제공</span></div>
@@ -289,7 +289,7 @@ a{color:var(--me)}
       <tbody><tr><td class="nm" rowspan="5">데이터</td><td><b>PostgreSQL</b></td><td>Provider <code>postgres</code> · StackGres operator 1.19.0</td><td class="sup">operator, PG 버전, 클러스터 수명주기, 용량</td><td class="use">Claim → DB·역할·연결 Secret</td><td>Governance 원장(D-57), 업무 코어 Odoo DB(C6)의 기반</td><td><span class="s ok">유지</span></td></tr><tr><td><b>OpenSearch</b></td><td>Provider <code>opensearch</code> · OpenSearch operator 배포판</td><td class="sup">operator, 클러스터, heap·디스크</td><td class="use">Claim → 인덱스·역할</td><td>메일·문서 검색 색인(어셈블리 index 연결)</td><td><span class="s ok">유지</span></td></tr><tr><td><b>Valkey</b></td><td>Provider <code>valkey</code></td><td class="sup">엔진, 메모리 한도</td><td class="use">Claim → 키 공간·ACL 사용자</td><td>세션·캐시. 어셈블리 연결 유형 추가 필요(cache)</td><td><span class="s ok">유지</span></td></tr><tr><td><b>RustFS</b></td><td>Provider <code>rustfs</code></td><td class="sup">엔진, 저장 용량</td><td class="use">Claim → 버킷·접근 키</td><td>객체 저장(blob 연결), 백업 저장소</td><td><span class="s ok">유지</span></td></tr><tr><td><b>Percona MongoDB</b></td><td>Provider <code>percona-psmdb</code> · <code>data.document.mongodb</code></td><td class="sup">operator, 레플리카셋</td><td class="use">Claim → DB·사용자</td><td>현재 소비자는 없다. 예비 설치(D-78), 소비자 Claim은 Governance 승인으로 연다</td><td><span class="s ok">예비 설치(합의)</span></td></tr><tr><td class="nm" rowspan="5">신원·정책</td><td><b>Samba AD DC</b></td><td>Provider <code>samba-ad</code></td><td class="sup">DC 이미지·버전, 복제 토폴로지</td><td class="use">설치 → 도메인·첫 관리자 자격(Genesis)</td><td>사원 신원 원천(D-3). identity 핵심 어셈블리</td><td><span class="s ok">유지</span></td></tr><tr><td><b>외부 디렉터리 연결</b></td><td>Provider <code>external-directory</code> · <code>identity.directory.external</code></td><td class="sup">연결기 엔진</td><td class="use">연결 → 바인드 자격·동기화 범위</td><td>외부 AD 모드(D-6). 쓰기 여부는 설치 선택</td><td><span class="s ok">유지</span></td></tr><tr><td><b>Keycloak</b></td><td>Provider <code>keycloak</code> · <code>identity.iam.workspace</code></td><td class="sup">이미지·버전</td><td class="use">영역별 인스턴스 → realm·클라이언트</td><td>사원 SSO(D-56), 고객 CIAM은 별도 인스턴스(D-63)</td><td><span class="s ok">유지</span></td></tr><tr><td><b>OPA</b></td><td>Provider <code>opa</code> · <code>identity.policy.opa</code></td><td class="sup">엔진</td><td class="use">정책 번들</td><td>드롭 제안. 앱 권한 판단은 OpenFGA(SpiceDB와 PoC 비교), K8s admission은 Kyverno로 나눈다</td><td><span class="s pr">제안</span></td></tr><tr><td><b><s>Apache Syncope</s></b></td><td>Provider <code>apache-syncope</code> · <code>identity.iga.syncope</code></td><td class="sup">—</td><td class="use">—</td><td>드롭(D-77). Governance의 SCIM 형태 프로비저닝 어댑터로 대체</td><td><span class="s ok">드롭(합의)</span></td></tr><tr><td class="nm" rowspan="1">연산</td><td><b>KubeVirt</b></td><td>Provider <code>kubevirt</code> · <code>compute.virtualization.vm</code></td><td class="sup">operator, KVM 노드, 공급 한도</td><td class="use">VM 생성 → 디스크·게스트</td><td>에이전트·개발자 자리 VM(D-51, D-54, D-55)</td><td><span class="s ok">유지</span></td></tr><tr><td class="nm" rowspan="2">보호·관측</td><td><b>백업 서비스</b> <small class="muted">(구 PFS Backup)</small></td><td><code>opensphere-backup</code> operator(BackupPolicy·BackupRun·RestoreRun → Velero). Velero 설치는 Platform Support 소유</td><td class="sup">백업 엔진·실행·저장 위치·최소 보호 기준</td><td class="use">영역별 백업 정책, 복구 승인, 백업 내용(영역 키로 암호화)</td><td>엔진과 실행은 Backbone, 정책·키·복구 승인은 영역</td><td><span class="s pr">제안</span></td></tr><tr><td><b>관측 서비스</b> <small class="muted">(구 PFS Observability)</small></td><td>Grafana operator 배포판, Loki, Tempo, 관측 테넌트 게이트웨이(<code>X-Scope-OrgID</code> 주입)</td><td class="sup">수집·저장 엔진, 게이트웨이</td><td class="use">테넌트별 로그·추적 본문(게이트웨이 grant)</td><td>&quot;로그 본문 경로는 영역별&quot;을 이미 게이트웨이로 구현한 사례</td><td><span class="s ok">유지</span></td></tr><tr><td class="nm" rowspan="3">공유 서비스 제어 기능</td><td><b>공급 풀·Grant 검증</b></td><td>SupplyPool, 서명 Grant(D-31), 과할당 비율(D-32)</td><td class="sup">Backbone이 설정</td><td class="use">—</td><td>엔진이 아니라 공급 면의 제어 기능</td><td><span class="s ok">유지</span></td></tr><tr><td><b>Claim 프로비저닝</b></td><td>FoundationClaim → 엔진 라우팅 → DB·인덱스·역할·Secret 발급</td><td class="sup">컨트롤러</td><td class="use">Binding(자격 인도)</td><td>인도 지점 자체. 어셈블리 명세의 연결 객체가 감싼다</td><td><span class="s ok">유지</span></td></tr><tr><td><b>Provider 수명주기</b></td><td><code>foundation.provider-modules.*</code> 13개 명령(adopt·update·approve 등, OS Shell 경유)</td><td class="sup">Backbone(Console 관리자)</td><td class="use">—</td><td>엔진 채택·갱신은 공급 면. 영역 인스턴스 적용은 영역이 끌어간다(제안)</td><td><span class="s ok">유지</span></td></tr></tbody>
     </table>
   </div>
-  <h3 style="margin:16px 0 6px">공유 서비스(구 PFSS) 밖의 Middle-earth 구성요소</h3>
+  <h3 style="margin:16px 0 6px">공유 서비스(구 PFSS) 밖의 Fabric 구성요소</h3>
   <div class="g3 other"><div class="box"><b>기반(구 HISS)</b><span class="muted">K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진</span></div><div class="box"><b>배포 지원(구 PSSS)</b><span class="muted">Argo CD, Crossplane, Velero 설치</span></div><div class="box"><b>업무 엔진</b><span class="muted">Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어)</span></div><div class="box"><b>런타임</b><span class="muted">이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이</span></div><div class="box"><b>신뢰</b><span class="muted">영역 KMS, 내부 CA, SPIRE(테넌트 명세 trust 어셈블리)</span></div></div>
   <h3 style="margin:16px 0 6px">정리 과제</h3>
   <div class="scroll card" style="padding:0"><table>
@@ -399,7 +399,7 @@ a{color:var(--me)}
 
 <section aria-labelledby="h-guard">
   <h2 id="h-guard">앱 실행 가드레일</h2>
-  <p class="lead"><span class="s risk">위험</span> "Governance 안에서 일어나니 위험이 아니다"는 성립하지 않는다. Governance는 <b>누가 어떤 자원을 갖는가</b>를 정하지만, <b>그 자원으로 만든 코드가 무엇을 하는가</b>는 정하지 않는다. 그래서 플랫폼이 Middle-earth 사용 면에 아래 네 가지를 강제한다. <span class="s pr">제안</span></p>
+  <p class="lead"><span class="s risk">위험</span> "Governance 안에서 일어나니 위험이 아니다"는 성립하지 않는다. Governance는 <b>누가 어떤 자원을 갖는가</b>를 정하지만, <b>그 자원으로 만든 코드가 무엇을 하는가</b>는 정하지 않는다. 그래서 플랫폼이 Fabric 사용 면에 아래 네 가지를 강제한다. <span class="s pr">제안</span></p>
   <div class="g4">
     <div class="box"><b>인증은 플랫폼이</b><span class="muted">앱 앞에 SSO 프록시. 앱이 로그인을 직접 구현하지 않는다. 취약한 인증 코드가 생기지 않는다</span></div>
     <div class="box"><b>기본은 비공개</b><span class="muted">처음엔 소유자만 접근. 공유·외부 공개는 승격 단계에서 연다</span></div>
@@ -428,15 +428,15 @@ a{color:var(--me)}
       <thead><tr><th>대상</th><th>지금</th><th>바뀌는 방향</th><th>상태</th></tr></thead>
       <tbody>
         <tr><td class="nm">D-7, D-28</td><td>Workspace = 사원용 업무 제품 전체</td><td>Workspace = 할당된 사용 면 + 에이전트 + 사원 앱</td><td><span class="s pr">제안</span></td></tr>
-        <tr><td class="nm">D-70</td><td>Stalwart·Mattermost·Univer = Workspace 제품</td><td>Middle-earth 엔진. 선정 기준에 <b>API·프로토콜 우선</b> 추가</td><td><span class="s pr">제안</span></td></tr>
-        <tr><td class="nm">기준선 §3, 계층 지도</td><td>HISS·PSSS·PFSS = "공통 기반" 한 칸</td><td>네 면 구조. 기반 계층과 업무 엔진은 Middle-earth 아래</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">D-70</td><td>Stalwart·Mattermost·Univer = Workspace 제품</td><td>Fabric 엔진. 선정 기준에 <b>API·프로토콜 우선</b> 추가</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">기준선 §3, 계층 지도</td><td>HISS·PSSS·PFSS = "공통 기반" 한 칸</td><td>네 면 구조. 기반 계층과 업무 엔진은 Fabric 아래</td><td><span class="s pr">제안</span></td></tr>
         <tr><td class="nm">D-79</td><td>HISS·PSSS·PFSS, L1~L6, "공통 기반"</td><td>상위 구조어로 쓰지 않음. 기반·배포 지원·공유 서비스로 부르고, 코드 식별자는 다음 메이저까지 유지(용어 대응표: docs/overview/GLOSSARY)</td><td><span class="s ok">합의</span></td></tr>
         <tr><td class="nm">B-2, B-3</td><td>약속 수준의 경계</td><td>인도 지점 + 영역 KMS + cluster-admin 봉인으로 기술 강제, 노드 root만 신뢰 가정</td><td><span class="s pr">제안</span></td></tr>
         <tr><td class="nm">D-16</td><td>에이전트 소스 변경 규칙</td><td>사원 앱 승격 3단계로 확장</td><td><span class="s pr">제안</span></td></tr>
         <tr><td class="nm">신규</td><td>—</td><td>회사 기본 앱 제공</td><td><span class="s ok">합의</span></td></tr>
         <tr><td class="nm">신규</td><td>—</td><td>사원 앱 전용 등록 도메인</td><td><span class="s ok">합의</span></td></tr>
-        <tr><td class="nm">신규</td><td>—</td><td>앱 실행 가드레일 4종, Governance 판단과 Middle-earth 집행 분리</td><td><span class="s pr">제안</span></td></tr>
-        <tr><td class="nm">신규</td><td>—</td><td>Middle-earth 공식 명칭(톨킨 저작물 상표라 제품 용어로는 중립 명칭 권장)</td><td><span class="s tbd">미정</span></td></tr>
+        <tr><td class="nm">신규</td><td>—</td><td>앱 실행 가드레일 4종, Governance 판단과 Fabric 집행 분리</td><td><span class="s pr">제안</span></td></tr>
+        <tr><td class="nm">D-80</td><td>—</td><td>공유 구성요소 집합의 공식 명칭 = <b>OpenSphere Fabric</b>(약칭 Fabric). 대외 표기 전 상표 확인</td><td><span class="s ok">합의</span></td></tr>
         <tr><td class="nm">신규</td><td>—</td><td>현장 Backbone 관리자(고객사 인프라팀 / 공급사 원격 / 둘 다)</td><td><span class="s tbd">미정</span></td></tr>
       </tbody>
     </table>

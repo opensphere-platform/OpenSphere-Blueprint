@@ -136,7 +136,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
 
 <!-- ============ 1. MAP ============ -->
 <section id="v-map" role="tabpanel" aria-labelledby="t-map">
-  <p class="hint">위쪽 세 열은 신원·데이터가 분리된 <b>세 영역</b>, 아래 세 줄은 모든 영역이 함께 쓰는 <b>Middle-earth</b>(가칭)의 세 묶음입니다(기반·배포 지원·공유 서비스, D-79). 계층을 누르면 아래에 역할·제품·통신·통제가 나옵니다.</p>
+  <p class="hint">위쪽 세 열은 신원·데이터가 분리된 <b>세 영역</b>, 아래 세 줄은 모든 영역이 함께 쓰는 <b>Fabric</b>(OpenSphere Fabric)의 세 묶음입니다(기반·배포 지원·공유 서비스, D-79). 계층을 누르면 아래에 역할·제품·통신·통제가 나옵니다.</p>
   <div class="map">
     <div class="area-h a-admin">admin 영역<small>플랫폼 운영자 · admin 신원(Supabase Auth)</small></div>
     <div class="area-h a-user">사원 영역<small>회사 사원 · 사원 신원(Samba AD DC → Keycloak)</small></div>
@@ -174,7 +174,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
 
 <!-- ============ 2. FLOW ============ -->
 <section id="v-flow" role="tabpanel" aria-labelledby="t-flow" hidden>
-  <p class="hint">세 영역은 신원과 채널을 공유하지 않습니다. 영역 안에서는 <b>Shell → 판단 → 소유 모듈</b>로 통제되고, 영역 사이는 <b>등록된 경계 API</b>만 지납니다. Middle-earth는 <b>공급·배분·배포</b> 경로로 연결됩니다.</p>
+  <p class="hint">세 영역은 신원과 채널을 공유하지 않습니다. 영역 안에서는 <b>Shell → 판단 → 소유 모듈</b>로 통제되고, 영역 사이는 <b>등록된 경계 API</b>만 지납니다. Fabric은 <b>공급·배분·배포</b> 경로로 연결됩니다.</p>
   <div class="card">
   <svg viewBox="0 0 1000 690" role="img" aria-label="OpenSphere 통신과 통제 흐름도">
     <defs>
@@ -410,17 +410,17 @@ const L = {
       ['고객·협력사 포털 UI (OpenSphere 자체)','tbd',null,'P'],['헤드리스 CMS (웹사이트, 아카이브 계획은 Directus)','tbd','directus'],['고객용 앱·API (GitLab에서 개발)','ok','gitlab'],['고객 AI 에이전트 (경량 격리)','ok',null,'AI'],['영역 채널: Dapr (PoC)','cand','dapr'],['공개 ingress · WAF · 속도 제한','ok','nginx']],
     comm:['외부: 별도 공개 진입점 (B-8)','SCM: 포털 → 커머스 계층(고객 토큰) → 경계 API·이벤트 → 사원 영역 SCM 코어','사원 영역과: 업무 시스템의 고객용 API로만 (B-6)','영역 채널 (Dapr PoC + 브로커)','에이전트 데이터 조회는 고객 토큰으로만'],
     ctrl:['고객 자격 = 업무 시스템(계약·주문·구독)','고객 영역 정책·사원의 고객정보 열람 = Governance','B2B 고객 조직 관리자는 CIAM 안의 고객 측 역할']},
-  pfss:{name:'공유 서비스 (구 PFSS)', area:'Middle-earth', role:'공유 자원을 만들고 권한을 투영. Backbone은 공급, Governance는 배분, 공유 서비스는 집행 (O-2)',
+  pfss:{name:'공유 서비스 (구 PFSS)', area:'Fabric', role:'공유 자원을 만들고 권한을 투영. Backbone은 공급, Governance는 배분, 공유 서비스는 집행 (O-2)',
     does:['Plan → Claim → Instance → Binding','서명 Grant 오프라인 검증, quota 강제','엔진별 권한 투영 (PG role, S3 IAM, ACL 등)','사용량 보고, drift 대조','VM(compute) 제공'],
     products:[['Foundation control plane','ok',null,'F'],['SupplyPool (신규)','ok',null,'SP'],['PostgreSQL (StackGres)','ok','pg'],['RustFS (S3)','ok','rustfs'],['Valkey','ok','valkey'],['OpenSearch','ok','opensearch'],['Percona MongoDB','ok','percona'],['KubeVirt VM (compute 모델 신설)','ok','kubevirt'],['Samba AD DC Provider','ok','samba'],['Keycloak Provider','ok','keycloak']],
     comm:['Backbone → 공급 풀 설정','Governance → 서명 Grant + Claim','→ 각 영역에 Binding (엔드포인트·Secret 참조)','사용량 → Governance (단위별) → Backbone (보고서)'],
     ctrl:['Backbone 공급 한도가 배분보다 우선','영구 삭제는 Governance 결정, 공유 서비스 실행 (D-33)','과할당 비율은 풀마다 Backbone 설정 (D-32)']},
-  psss:{name:'배포 지원 (구 PSSS)', area:'Middle-earth', role:'배포·동기화·adapter·백업·정책 실행 연계. 영역을 가로지르는 안전망',
+  psss:{name:'배포 지원 (구 PSSS)', area:'Fabric', role:'배포·동기화·adapter·백업·정책 실행 연계. 영역을 가로지르는 안전망',
     does:['선언 배포와 drift 복구','operator·Helm 릴리스 관리','백업·복원 연계','사원·고객 영역 배포 실행'],
     products:[['Argo CD','ok','argocd'],['Crossplane + provider-helm','ok','crossplane'],['Helm','ok','helm'],['백업 (Velero 계열)','cand','velero']],
     comm:['GitLab CI → Argo CD (사원·고객 영역, D-18)','Backbone은 Gitea Actions로 자기 관리'],
     ctrl:['소스 → 검토 → 고정 산출물 → 배포','에이전트는 PR까지만 (D-16)']},
-  hiss:{name:'기반 (구 HISS)', area:'Middle-earth', role:'모든 영역이 쓰는 클러스터 공통 실행 기반',
+  hiss:{name:'기반 (구 HISS)', area:'Fabric', role:'모든 영역이 쓰는 클러스터 공통 실행 기반',
     does:['K8s·네트워크·DNS·저장·인증서','ingress·관측 기반','DB·VM operator 같은 공통 설비','Ready는 canary 증거로 판정'],
     products:[['RKE2 (Rancher)','ok','rancher'],['Kubernetes · CNI · CoreDNS','ok','k8s'],['StorageClass·CSI (Longhorn 등)','ok','longhorn'],['ingress-nginx','ok','nginx'],['cert-manager','ok','certm'],['kube-prometheus-stack (Prometheus·Grafana·Loki·Tempo)','ok','prom'],['OpenTelemetry Collector','ok','otel'],['StackGres operator','ok',null,'SG'],['KubeVirt operator · KVM 노드 (D-54)','ok','kubevirt'],['Kata Containers (경량 격리)','cand',null,'K']],
     comm:['Kubernetes API · 네트워크 정책 · 공유 관측'],

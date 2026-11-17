@@ -8,7 +8,7 @@
 - [O-2 PFSS 경계](OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md): Q-D
 
 
-> **용어 안내 (D-79, 2026-11-17):** 이 문서의 HISS·PSSS·PFSS, L1~L6 번호, "공통 기반"은 옛 용어다. 지금은 각각 기반·배포 지원·공유 서비스, Middle-earth로 부른다. 본문은 작성 당시 기록으로 두었다. 대응은 [용어 대응표](../overview/GLOSSARY.md)를 본다.
+> **용어 안내 (D-79, 2026-11-17):** 이 문서의 HISS·PSSS·PFSS, L1~L6 번호, "공통 기반"은 옛 용어다. 지금은 각각 기반·배포 지원·공유 서비스, Fabric(OpenSphere Fabric)으로 부른다. 본문은 작성 당시 기록으로 두었다. 대응은 [용어 대응표](../overview/GLOSSARY.md)를 본다.
 
 ---
 

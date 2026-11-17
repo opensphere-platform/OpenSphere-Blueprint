@@ -45,14 +45,14 @@
 
 | 기능 | 참고 대상 | 네 면 위치 | OpenSphere에서의 쓰임 |
 |---|---|---|---|
-| 자원 조합·수명주기 | **Crossplane**(XRD, Composition, Usage) | Middle-earth | 어셈블리 = Composite Resource, 삭제 보호 = Usage. 이미 배포 지원 계열에 보유 |
-| | KubeVela(OAM), Kratix(Promise) | Middle-earth | "플랫폼이 파는 조합 상품" 모델 참고 |
-| K8s 테넌트 경계 | **Capsule**(Tenant CRD), vCluster | Middle-earth | 테넌트 = 네임스페이스 묶음 + 정책, 또는 가상 클러스터(T-Q2) |
-| 권한 판단(PDP) | **OpenFGA**, **SpiceDB**(Zanzibar 방식), Cedar, Cerbos, OPA | Governance가 정의, Middle-earth가 실행 | 기존 비교 후보 그대로(D-26, 최소 설계 §9) |
+| 자원 조합·수명주기 | **Crossplane**(XRD, Composition, Usage) | Fabric | 어셈블리 = Composite Resource, 삭제 보호 = Usage. 이미 배포 지원 계열에 보유 |
+| | KubeVela(OAM), Kratix(Promise) | Fabric | "플랫폼이 파는 조합 상품" 모델 참고 |
+| K8s 테넌트 경계 | **Capsule**(Tenant CRD), vCluster | Fabric | 테넌트 = 네임스페이스 묶음 + 정책, 또는 가상 클러스터(T-Q2) |
+| 권한 판단(PDP) | **OpenFGA**, **SpiceDB**(Zanzibar 방식), Cedar, Cerbos, OPA | Governance가 정의, Fabric이 실행 | 기존 비교 후보 그대로(D-26, 최소 설계 §9) |
 | 판단 질의 표준 | **OpenID AuthZEN** | 계약 | PDP 교체 가능성 확보 |
-| 집행(admission) | **Kyverno**, Gatekeeper | Middle-earth | 연결 그래프 밖 리소스, 미서명 이미지, 테넌트 경계 위반 거부 |
-| 워크로드 신원 | **SPIFFE/SPIRE** | Middle-earth(trust 핵심 어셈블리) | 연결 전용 신원, mTLS(통신 규칙 §3) |
-| 키·비밀 | OpenBao, cert-manager | Middle-earth(trust) | 테넌트 KMS·CA(T-Q3) |
+| 집행(admission) | **Kyverno**, Gatekeeper | Fabric | 연결 그래프 밖 리소스, 미서명 이미지, 테넌트 경계 위반 거부 |
+| 워크로드 신원 | **SPIFFE/SPIRE** | Fabric(trust 핵심 어셈블리) | 연결 전용 신원, mTLS(통신 규칙 §3) |
+| 키·비밀 | OpenBao, cert-manager | Fabric(trust) | 테넌트 KMS·CA(T-Q3) |
 | 신원 거버넌스 모델 | **midPoint**(공개 IGA 중 가장 완결된 모델), SailPoint(상용 기준) | 참고서 | 역할 모델, 재인증 캠페인, 직무 분리(SoD), 정책 규칙. D-4로 정본에서는 제외했지만 모델 참고서로는 가치가 크다 |
 | 카탈로그·소유 | Backstage | Workspace 표면 | 어셈블리·사원 앱의 소유자, 의존 관계, 승격 이력 |
 | 프로비저닝 계약 | SCIM 2.0 | 계약 | 어댑터 계약(기준선 §6) |
@@ -67,7 +67,7 @@
 | **부품에 맡긴다** | 권한 판단 실행(PDP), 집행(admission·네트워크), 워크로드 신원, 자원 조합, 키 관리 | 성숙한 부품이 있고, 직접 만들면 위험만 커진다 |
 | **계약만 정한다** | AuthZEN 질의, SCIM 투영, CloudEvents, RFC 8693 위임 토큰 | 부품 교체 가능성 |
 
-이 구분으로 Governance는 **판단을 정의하는 곳**이 되고, 집행은 Middle-earth에서 한다(네 면 구조의 PDP / PEP 분리).
+이 구분으로 Governance는 **판단을 정의하는 곳**이 되고, 집행은 Fabric에서 한다(네 면 구조의 PDP / PEP 분리).
 
 ## 5. 계층과 권한 모델 (관계 기반 스케치)
 
@@ -139,5 +139,5 @@ role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
 |---|---|
 | GR-Q1 | 관계 엔진(OpenFGA·SpiceDB)과 요청 판단 엔진(Cedar·Cerbos·OPA)을 조합할지, 하나로 갈지(S1~S10 결과로 판단) |
 | GR-Q2 | 테넌트 경계를 Capsule로 할지 vCluster로 할지(구성 명세 T-Q2와 같음) |
-| GR-Q3 | 예방 가드레일 정책을 어디에 둘지: Governance 정의에서 생성할지, Middle-earth 운영 정책으로 둘지 |
+| GR-Q3 | 예방 가드레일 정책을 어디에 둘지: Governance 정의에서 생성할지, Fabric 운영 정책으로 둘지 |
 | GR-Q4 | Backstage를 카탈로그로 도입할지, Workspace 셀프서비스에 내장할지 |

@@ -3,7 +3,7 @@
 **상태:** 초안. 결정 대장(D-번호)에 반영되지 않은 명세 후보다. 구현 승인이 아니다.
 **작성:** 2026-11-17 · Claude(설계 검토 AI), 사용자 요구 반영
 **상위 기준:**
-- [네 면 구조](../overview/FOUR-PLANES.md): Backbone · Middle-earth · Governance · Workspace
+- [네 면 구조](../overview/FOUR-PLANES.md): Backbone · Fabric · Governance · Workspace
 - OpenSphere 기준선 v0.2([OPENSPHERE-LAYER-BASELINE-v0.2.md](../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md)): B-1~B-4, D-14, D-30~D-33, D-54, D-57, D-58
 - O-2 PFSS 경계([OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md](../architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md)): Plan → Claim → Instance → Binding
 
@@ -25,7 +25,7 @@ PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 �
 
 | 용어 | 정의 |
 |---|---|
-| **테넌트** | 하나의 영역(사원 영역, 고객 영역)을 이루는 Middle-earth 자원의 결속 묶음. **신뢰의 뿌리**(테넌트 KMS, 내부 CA, 첫 소유자 자격, 네트워크 칸막이)를 갖는다. "누구의 것인가"의 경계다 |
+| **테넌트** | 하나의 영역(사원 영역, 고객 영역)을 이루는 Fabric 자원의 결속 묶음. **신뢰의 뿌리**(테넌트 KMS, 내부 CA, 첫 소유자 자격, 네트워크 칸막이)를 갖는다. "누구의 것인가"의 경계다 |
 | **어셈블리** (가칭) | 테넌트 안에서 하나의 목적을 위해 묶인 구성요소 조합. "무엇을 위해 묶였나"의 경계다. 예: 메일 어셈블리 |
 | **핵심 어셈블리** | 테넌트 발생(Genesis) 때 만들어지고, 다른 어셈블리가 모두 기대는 어셈블리. 신원, 신뢰, Governance, 채널이 여기에 속한다 |
 | **구성요소** | 어셈블리를 이루는 개별 제품 인스턴스. 예: Stalwart 인스턴스, PG 클러스터 |
@@ -121,7 +121,7 @@ spec:
   purpose: 사원 메일·일정·연락처
   components:
     - name: stalwart
-      engine: stalwart            # Middle-earth 엔진(D-70)
+      engine: stalwart            # Fabric 엔진(D-70)
       claim: { plan: compute.standard, replicas: 2 }
     - name: store
       engine: postgresql          # 공유 서비스 Claim

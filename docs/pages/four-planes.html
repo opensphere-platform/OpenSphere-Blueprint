@@ -130,6 +130,22 @@ td.nm i{display:inline-block;width:10px;height:10px;border-radius:3px;background
 /* 결정 표 */
 .t-dec{min-width:720px}
 
+/* 세 층 도식 · 한 줄 도식 · 경계선 표 */
+.tier{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-bottom:12px}
+.tier>div{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.2fr);gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-size:13px}
+.tier b{font-size:13.5px}
+.tier .who{font-weight:600}
+.tier .t1{border-left:5px solid var(--bb)} .tier .t1 .who{color:var(--bb)}
+.tier .t2{border-left:5px solid var(--cut);background:var(--cut-bg)} .tier .t2 .who{color:var(--cut)}
+.tier .t3{border-left:5px solid var(--ws)} .tier .t3 .who{color:var(--ws)}
+.oneline{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:pre;line-height:1.85;margin-top:10px}
+.oneline .a{color:var(--bb)} .oneline .u{color:var(--ws)} .oneline .h{color:var(--cut);font-weight:700}
+.t-bd{min-width:780px}
+.t-bd td.in{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-bd td.hand{background:var(--cut-bg);color:var(--cut);font-weight:600;font-size:12.5px;text-align:center;border-left:2px dashed var(--cut);border-right:2px dashed var(--cut)}
+.t-bd td.out{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+.t-bd tr.key td{font-weight:600}
+@media (max-width:680px){.tier>div{grid-template-columns:minmax(0,1fr);gap:2px}}
 footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:4px}
 a{color:var(--me)}
 
@@ -238,6 +254,12 @@ a{color:var(--me)}
 <section aria-labelledby="h-me">
   <h2 id="h-me">Middle-earth: 구성요소마다 두 얼굴</h2>
   <p class="lead">경계는 구성요소 사이가 아니라 구성요소 한가운데를 지난다. 얼굴을 나눴다고 선언하는 것만으로는 부족하고, 가운데 열(인스턴스)에서 실제로 떼어 놓아야 한다.</p>
+  <div class="tier" aria-label="구성요소의 세 층">
+    <div class="t1"><b>엔진</b><span>코드 · 버전 · CRD</span><span class="who">공급자(Backbone)가 제공</span></div>
+    <div class="t2"><b>인스턴스 ★</b><span>실행 중인 컨트롤러와 그 권한</span><span class="who">여기서 공유할지 나눌지 정한다</span></div>
+    <div class="t3"><b>설정·자격·내용</b><span>AppProject, DB 자격, 메일함, 데이터</span><span class="who">소비자(영역)가 소유</span></div>
+  </div>
+  <p class="lead">인스턴스를 공유하면 싸고 단순하지만 분리는 관리 규칙 수준에 그친다. 영역별로 두면 기술적으로 분리되고, 공급자는 엔진 버전만 올린다. 아래 표의 "인스턴스 판단" 열이 구성요소마다 이 판단을 적은 것이다.</p>
   <div class="scroll card" style="padding:0">
     <table class="t-me">
       <thead><tr><th>구성요소</th><th>공급 면 · Backbone</th><th>인스턴스 판단</th><th>사용 면 · 할당받은 쪽</th></tr></thead>
@@ -270,6 +292,28 @@ a{color:var(--me)}
     <div class="box"><b>영역 KMS</b><span class="muted">서명 Grant·정의 서명·백업 암호화·복구 키의 뿌리</span></div>
     <div class="box"><b>cluster-admin 봉인</b><span class="muted">평상시 권한이 아니다. 고객 확인 또는 M-of-N으로 C3 경로에서만 연다</span></div>
   </div>
+
+  <h3 style="margin:16px 0 8px">계층별 경계선</h3>
+  <div class="scroll card" style="padding:0">
+    <table class="t-bd">
+      <thead><tr><th>대상</th><th>Backbone 안</th><th style="text-align:center">인도 지점</th><th>Backbone 밖 (사원·고객 영역)</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">HISS</td><td class="in">노드, K8s 제어면, CNI, 저장 엔진, ingress 컨트롤러, 인증서·DNS 엔진, <b>영역 사이 차단 정책</b>(X-1의 바닥)</td><td class="hand">영역 네임스페이스 생성</td><td class="out">네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10)</td></tr>
+        <tr class="key"><td class="nm">PSSS</td><td class="in">Argo 엔진, Crossplane 엔진, 백업 실행</td><td class="hand">엔진 → 영역 인스턴스</td><td class="out">사원 영역 Argo 인스턴스·AppProject·동기화 대상, 배포 서명 키, 백업 내용(영역 키로 암호화)</td></tr>
+        <tr class="key"><td class="nm">PFSS</td><td class="in">Provider·Operator, Plan, SupplyPool, 과할당 비율(D-32), Instance 생성·확장·이전</td><td class="hand">Instance → Binding</td><td class="out">Claim·Binding부터: 수혜 단위, quota, 발급된 자격, 데이터</td></tr>
+        <tr><td class="nm">KubeVirt</td><td class="in">엔진, KVM 노드, 공급 한도</td><td class="hand">VM 생성</td><td class="out">VM 디스크, 게스트 내부</td></tr>
+        <tr class="key"><td class="nm">신원</td><td class="in">Supabase Auth(admin)</td><td class="hand">설치 → 첫 관리자 자격</td><td class="out">Samba AD·외부 AD, 사원 Keycloak, 고객 CIAM. 설치는 Backbone이 하되 첫 관리자 자격은 영역에서 태어난다</td></tr>
+        <tr><td class="nm">관측</td><td class="in">상태·건강·용량 지표, 단위별 사용량(D-41)</td><td class="hand">지표 ↔ 본문</td><td class="out">로그·추적 본문. 사원 영역 자체 관측 스택 필요</td></tr>
+        <tr><td class="nm">소스·배포</td><td class="in">Gitea, Backbone 자기 배포</td><td class="hand">분리</td><td class="out">GitLab, 사원 영역 CI</td></tr>
+        <tr><td class="nm">모델</td><td class="in">Magpie</td><td class="hand">분리</td><td class="out">사원 영역 게이트웨이, 고객 AI 게이트웨이</td></tr>
+        <tr class="key"><td class="nm">키</td><td class="in">Backbone 자신의 키</td><td class="hand">키 생성</td><td class="out"><b>영역별 KMS.</b> 이것이 없으면 경계 전체가 성립하지 않는다(R-07)</td></tr>
+      </tbody>
+    </table>
+  </div>
+<div class="oneline" aria-label="한 줄 요약"><span class="a">Backbone 안 ── 엔진 · 공급 · 수명주기 · 건강 · 영역 사이 칸막이</span>
+<span class="h">──────── 인도 지점: Instance → Binding · 설치 → 첫 관리자 자격 · 키 생성 ────────</span>
+<span class="u">Backbone 밖 ── 자격 · 수요 결정 · 내용 · 영역 키 · 영역 내부 설정</span></div>
+  <p class="muted" style="margin-top:6px"><small>클라우드에 비유하면 하이퍼바이저와 용량은 사업자 몫이고, 게스트 OS·데이터·IAM은 테넌트 몫인 것과 같은 자리다.</small></p>
   <p class="rule">노드 root(물리 서버·하이퍼바이저)만 기술적으로 막을 수 없다. 여기만 <b>신뢰 가정</b>으로 명시한다. 현장의 Backbone 관리자가 고객사 인프라팀인지 공급사 원격 운영인지에 따라 위 4개를 기본값으로 둘지 선택으로 둘지가 달라진다 <span class="s tbd">미정</span></p>
 </section>
 
@@ -355,7 +399,7 @@ a{color:var(--me)}
 </section>
 
 <footer>
-  <span>이 페이지는 방향안이며 결정 대장(D-번호)에 반영되지 않았다. 관련 설계: <a href="../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md">기준선 v0.2</a> · <a href="../architecture/OPENSPHERE-LAYER-MAP.html">계층 지도</a> · <a href="../architecture/OPENSPHERE-AGENT-IDENTITY-O4-O7-v0.1.md">에이전트 신원</a> · <a href="../architecture/OPENSPHERE-EXCHANGE-LAYER-v0.1.md">교류 계층</a> · <a href="backbone-boundary.html">Backbone 경계 제안(흡수됨)</a></span>
+  <span>이 페이지는 방향안이며 결정 대장(D-번호)에 반영되지 않았다. 관련 설계: <a href="../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md">기준선 v0.2</a> · <a href="../architecture/OPENSPHERE-LAYER-MAP.html">계층 지도</a> · <a href="../architecture/OPENSPHERE-AGENT-IDENTITY-O4-O7-v0.1.md">에이전트 신원</a> · <a href="../architecture/OPENSPHERE-EXCHANGE-LAYER-v0.1.md">교류 계층</a> · <a href="backbone-boundary.html">Backbone 경계 제안(이전 판, 내용 모두 흡수됨)</a></span>
   <span>이 저장소: <a href="../overview/FOUR-PLANES.md">네 면 구조(문서판)</a> · <a href="../specs/TENANT-ASSEMBLY-SPEC-v0.1.md">테넌트·어셈블리 구성 명세</a> · <a href="../specs/TENANT-COMMUNICATION-RULES-v0.1.md">테넌트 내부 통신 규칙</a> · <a href="../specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.md">Governance 참고 아키텍처</a></span>
 </footer>
 

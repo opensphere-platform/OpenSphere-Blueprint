@@ -25,8 +25,9 @@ PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 �
 
 | 용어 | 정의 |
 |---|---|
-| **테넌트** | 하나의 영역(사원 영역, 고객 영역)을 이루는 Fabric 자원의 결속 묶음. **신뢰의 뿌리**(테넌트 KMS, 내부 CA, 첫 소유자 자격, 네트워크 칸막이)를 갖는다. "누구의 것인가"의 경계다 |
-| **어셈블리** (가칭) | 테넌트 안에서 하나의 목적을 위해 묶인 구성요소 조합. "무엇을 위해 묶였나"의 경계다. 예: 메일 어셈블리 |
+| **테넌트** | **회사 하나**의 모든 리소스(사원 영역, 고객 영역, 업무 서비스, 외부에서 편입한 리소스)를 결속한 묶음(D-83). **신뢰의 뿌리**(테넌트 KMS, 내부 CA, 첫 소유자 자격)를 갖는다. "누구(어느 회사)의 것인가"의 경계다 |
+| **영역** | 테넌트 안의 칸막이. 사원 영역, 고객 영역. 영역마다 신원과 채널이 다르고, 영역 사이는 교류 계층으로만 오간다 |
+| **어셈블리** (가칭) | 영역 안에서 하나의 목적을 위해 묶인 구성요소 조합. "무엇을 위해 묶였나"의 경계다. 예: 메일 어셈블리 |
 | **핵심 어셈블리** | 테넌트 발생(Genesis) 때 만들어지고, 다른 어셈블리가 모두 기대는 어셈블리. 신원, 신뢰, Governance, 채널이 여기에 속한다 |
 | **구성요소** | 어셈블리를 이루는 개별 제품 인스턴스. 예: Stalwart 인스턴스, PG 클러스터 |
 | **연결(Link)** | 두 구성요소 사이의 선언된 의존. 연결 전용 신원·자격·인증서·네트워크 허용 규칙을 갖는 **일급 객체**다 |
@@ -35,7 +36,7 @@ PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 �
 | **연결 그래프** | 테넌트 안 모든 연결의 집합. 네트워크 허용 목록과 삭제 보호의 근거다 |
 | **테넌트 기록** | 매니페스트와 연결 그래프의 서명된 사본. 테넌트 키로 서명한다 |
 
-> **명칭 메모:** OpenSphere는 한 설치 = 한 회사다(D-14). 그래서 여기서 "테넌트"는 고객사 구분이 아니라 **영역 단위 결속 묶음**을 뜻한다. 일반 SaaS 용어와 혼동되면 이름을 바꿀 수 있다(T-Q1).
+> **명칭 메모:** OpenSphere는 한 설치 = 한 회사 = 한 테넌트다(D-14, D-83). "사원 테넌트·고객 테넌트"라는 표현은 쓰지 않는다. 사원 개인이 받는 몫은 테넌트가 아니라 Workspace다.
 
 ## 3. 불변식
 
@@ -49,34 +50,38 @@ PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 �
 | **T-6** | **연결의 생성·변경·해제는 테넌트 관리자의 고위험 결재 대상이다(D-82).** Governance는 연결에 관여하지 않는다. 단, 어셈블리 정의에 따라 자동 생성되는 연결은 어셈블리 승인으로 갈음한다 |
 | **T-7** | **해체는 해체 절차(§10)로만 한다.** 개별 자원을 직접 지워 테넌트를 무너뜨리지 않는다 |
 | **T-8** | **테넌트 기록은 테넌트 키로 서명한다.** 선언과 실제가 다르면 drift로 보고 복구하거나 보고한다(D-20을 연결에 적용) |
-| **T-9** | **테넌트 경계를 넘는 연결은 없다.** 사원 테넌트와 고객 테넌트 사이는 교류 계층(X-1)이나 등록된 경계 API로만 오간다 |
+| **T-9** | **영역 경계를 넘는 연결은 없다.** 사원 영역과 고객 영역 사이는 교류 계층(X-1)이나 등록된 경계 API로만 오간다(D-83) |
 
 ## 4. 테넌트 구성
 
 ### 4.1 핵심 어셈블리 (Genesis에서 생성)
 
-| 핵심 어셈블리 | 구성요소 (사원 영역 예) | 다른 어셈블리가 받는 것 |
-|---|---|---|
-| **trust** | 테넌트 KMS, 내부 CA, 비밀 저장 | 연결 자격, TLS 인증서, 서명·암호화 키 |
-| **identity** | Samba AD DC ×2 또는 외부 AD 연결, Keycloak | 디렉터리 조회(LDAPS), SSO(OIDC), 워크로드 신원 발급 |
-| **governance** | Governance, 전용 PG(D-57) | 할당·결재 결과, 프로비저닝 신호 |
-| **channel** | 테넌트 이벤트 채널, 스키마 레지스트리 | 이벤트 발행·구독 |
+| 핵심 어셈블리 | 범위 | 구성요소 | 다른 어셈블리가 받는 것 |
+|---|---|---|---|
+| **trust** | 회사(테넌트)에 하나 | 테넌트 KMS(영역별 하위 키), 내부 CA, 비밀 저장 | 연결 자격, TLS 인증서, 서명·암호화 키 |
+| **identity** | 영역마다 | 사원 영역: Samba AD DC ×2 또는 외부 AD, Keycloak · 고객 영역: 고객 CIAM(Keycloak 별도 인스턴스, D-63) | 디렉터리 조회(LDAPS), SSO(OIDC), 워크로드 신원 발급 |
+| **governance** | 사원 영역(D-19) | Governance, 전용 PG(D-57) | 할당·결재 결과, 프로비저닝 신호 |
+| **channel** | 영역마다(D-66) | 이벤트 채널, 스키마 레지스트리 | 이벤트 발행·구독 |
 
 ### 4.2 업무 어셈블리 (Genesis 이후 추가)
 
-메일, 메신저, 문서, 검색, 업무 코어, 에이전트 자리, 사원 앱 실행 환경 같은 것들이다. 업무 어셈블리는 핵심 어셈블리에만 **기대고**, 다른 업무 어셈블리와는 연결 객체로만 이어진다.
+메일, 메신저, 문서, 검색, 업무 코어, 에이전트 자리, 사원 앱 실행 환경 같은 것들이다. 업무 어셈블리는 자기 영역의 핵심 어셈블리와 회사 trust에만 **기대고**, 다른 업무 어셈블리와는 연결 객체로만 이어진다.
 
 ```
- ┌───────────── 사원 테넌트 ─────────────────────────────────────┐
- │  핵심:  trust ── identity ── governance ── channel             │
- │           ▲         ▲            ▲            ▲                │
- │  업무:  메일 · 메신저 · 문서 · 검색 · 업무 코어 · 에이전트 자리 · 사원 앱 │
- └───────────────────────────────┬───────────────────────────────┘
-                                 │ 교류 계층(X-1)만
- ┌───────────── 고객 테넌트 ─────┴───────────────────────────────┐
- │  핵심:  trust ── identity(CIAM) ── channel                    │
- │  업무:  포털 · 커머스 · 고객 AI                                │
- └───────────────────────────────────────────────────────────────┘
+ ┌─ 테넌트 = 회사 하나 (example) ─────────────────────────────────────
+ │  trust  회사 단위 신뢰 뿌리 · 영역별 하위 키
+ │
+ │  ┌─ 사원 영역 ────────────────────────────────────────────────
+ │  │  핵심:  identity(AD · Keycloak) · governance · channel
+ │  │  업무:  메일 · 메신저 · 문서 · 업무 코어 · 데이터 서비스 · 개발 · 에이전트 자리 · 사원 앱 …
+ │  └──────────────────────────────┬─────────────────────────────
+ │                                 │ 교류 계층(X-1)만
+ │  ┌─ 고객 영역 (필요할 때 추가) ──┴─────────────────────────────
+ │  │  핵심:  identity(고객 CIAM) · channel
+ │  │  업무:  포털 · 커머스 · 고객 AI
+ │  └────────────────────────────────────────────────────────────
+ │  외부 편입 리소스는 둘 중 한 영역에 속한다(ER-11)
+ └────────────────────────────────────────────────────────────────
 ```
 
 ## 5. 선언 형식
@@ -87,9 +92,9 @@ PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 �
 apiVersion: blueprint.opensphere.io/v1alpha1
 kind: Tenant
 metadata:
-  name: employee            # 영역 단위: employee | customer
+  name: example             # 회사 하나 = 테넌트 하나(D-14, D-83)
 spec:
-  area: employee
+  company: { domain: example.co.kr }
   profile: standard         # 설치 프로파일(R-13): standard | external-ad | regulated
   owners:
     bootstrapGroup: "Domain Admins"   # D-34. 외부 AD면 설치 시 지정
@@ -99,11 +104,20 @@ spec:
   network:
     defaultDeny: true
     exposure: profile-default         # O-10, D-59
-  coreAssemblies: [trust, identity, governance, channel]
-  assemblies:
-    - ref: catalog/mail@1.0
-    - ref: catalog/messenger@1.0
-    - ref: catalog/business-core@1.0
+  areas:
+    - name: employee
+      identity: samba-ad          # samba-ad | external-ad-write | external-ad-read
+      coreAssemblies: [identity, governance, channel]
+      assemblies:
+        - ref: catalog/mail@1.0
+        - ref: catalog/messenger@1.0
+        - ref: catalog/business-core@1.0
+    - name: customer            # 생성 후 테넌트 콘솔에서 영역 추가
+      identity: ciam
+      coreAssemblies: [identity, channel]
+      assemblies:
+        - ref: catalog/portal@1.0
+  exchange: { enabled: true }   # 영역 사이 교류 계층(X-1)
 status:
   phase: Active
   recordDigest: sha256:...  # 서명된 테넌트 기록의 해시
@@ -164,7 +178,8 @@ apiVersion: blueprint.opensphere.io/v1alpha1
 kind: Link
 metadata:
   name: mail.stalwart--store
-  tenant: employee
+  tenant: example
+  area: employee
 spec:
   from: { assembly: mail, component: stalwart }
   to:   { assembly: mail, component: store }
@@ -172,7 +187,7 @@ spec:
   protocol: postgresql
   access: owner               # read | write | owner (최소 권한)
   identity:
-    workload: spiffe://employee.tenant/mail/stalwart     # 통신 규칙 문서 §3
+    workload: spiffe://example.tenant/employee/mail/stalwart     # 통신 규칙 문서 §3
     credential: { kind: db-role, ref: kms://employee/links/mail.stalwart--store, rotateEvery: 30d }
   tls: { ca: tenant-ca, mutual: true }
   network: { allow: "stalwart → store:5432" }            # T-5: 그래프에서 정책 생성
@@ -310,7 +325,7 @@ Genesis는 Backbone 경계가 그어지는 순간이다(키가 태어나는 지�
 |---|---|---|
 | 어셈블리 정의·조립 | Crossplane XRD·Composition | 이미 배포 지원 계열에 보유. 어셈블리 = Composite Resource |
 | 삭제 보호 | Crossplane Usage, K8s finalizer | T-4 |
-| 테넌트 경계 | 네임스페이스 집합 + Capsule, 또는 vCluster | T-Q2 |
+| 테넌트·영역 경계 | 네임스페이스 집합 + Capsule, 또는 vCluster | T-Q2 |
 | 연결 신원 | SPIFFE/SPIRE | 통신 규칙 문서 §3 |
 | 인증서 | cert-manager + 테넌트 CA | T-1 |
 | 키·비밀 | OpenBao(MPL-2.0) 등 | T-Q3. Vault는 BSL이라 D-73 대장 확인 필요 |
@@ -323,7 +338,7 @@ Genesis는 Backbone 경계가 그어지는 순간이다(키가 태어나는 지�
 
 | 기존 | 이 명세에서 |
 |---|---|
-| D-14 한 설치 = 한 회사 | 테넌트는 회사 안의 영역 단위다 |
+| D-14 한 설치 = 한 회사 | 테넌트도 회사 하나(D-83). 영역은 테넌트 안의 칸막이 |
 | D-30 Workspace 앱 기반 자원도 Governance가 Claim | **D-82로 개정.** 어셈블리 Claim 주체는 테넌트(관리자), Governance는 인계받은 리소스의 배분 |
 | D-31 서명 Grant | 연결 자격 발급의 근거로 쓴다 |
 | D-33 영구 삭제 = Governance 결정 | 해체 6단계 |
@@ -337,7 +352,7 @@ Genesis는 Backbone 경계가 그어지는 순간이다(키가 태어나는 지�
 | ID | 미결 |
 |---|---|
 | T-Q1 | 명칭: "테넌트·어셈블리"를 유지할지. 일반 SaaS의 "테넌트"와 혼동 가능 |
-| T-Q2 | 테넌트 경계 기술: 네임스페이스 + Capsule, vCluster, 별도 클러스터(규제 프로파일) |
+| T-Q2 | 테넌트·영역 경계 기술: 네임스페이스 + Capsule, vCluster, 별도 클러스터(규제 프로파일) |
 | T-Q3 | 테넌트 KMS·비밀 저장 제품 |
 | T-Q4 | 공유 구성요소 허용 범위: 여러 어셈블리가 PG 클러스터 하나를 함께 쓸지, 어셈블리마다 둘지 |
 | T-Q5 | 첫 소유자 인도 의식의 세부: 인도 코드 전달 경로, 외부 AD일 때의 소유자 지정 |

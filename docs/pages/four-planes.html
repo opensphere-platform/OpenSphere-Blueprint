@@ -304,8 +304,8 @@ a{color:var(--me)}
 
   <h3 style="margin:18px 0 6px">권한 판단 엔진: OPA 대신 <span class="s pr">제안</span></h3>
   <div class="g2">
-    <div class="box"><b>앱 권한 판단(PDP) → OpenFGA 1순위, SpiceDB와 PoC 비교</b><span class="muted">사원·에이전트·앱이 이 자원에 이 행위를 할 수 있나, 누가 접근할 수 있나(역질의). 회사 → 테넌트 → 어셈블리 → 자원, AD 조직·프로젝트 계층. 둘 다 Zanzibar 계열, 관계·역질의·조건(CEL), PostgreSQL 저장소. OpenFGA는 CNCF라 특정 회사에 덜 묶이고, SpiceDB는 일관성 보장이 더 정교하다.</span></div>
-    <div class="box"><b>K8s admission(집행) → Kyverno</b><span class="muted">연결 그래프 밖 리소스, 테넌트 경계 위반 거부. 서명 이미지 검증이 내장되어 "영역 키로 서명된 이미지만 통과"를 정책 하나로 쓴다.</span></div>
+    <div class="box"><b>앱 권한 판단(PDP) → OpenFGA 1순위, SpiceDB와 PoC 비교</b><span class="muted">사원·에이전트·앱이 이 자원에 이 행위를 할 수 있나, 누가 접근할 수 있나(역질의). 테넌트(회사) → 영역 → 어셈블리 → 자원, AD 조직·프로젝트 계층. 둘 다 Zanzibar 계열, 관계·역질의·조건(CEL), PostgreSQL 저장소. OpenFGA는 CNCF라 특정 회사에 덜 묶이고, SpiceDB는 일관성 보장이 더 정교하다.</span></div>
+    <div class="box"><b>K8s admission(집행) → Kyverno</b><span class="muted">연결 그래프 밖 리소스, 영역 경계 위반 거부. 서명 이미지 검증이 내장되어 "영역 키로 서명된 이미지만 통과"를 정책 하나로 쓴다.</span></div>
   </div>
   <p class="rule">OPA를 빼는 이유: 범용 엔진이라 앱 권한에 필요한 관계 저장·역질의·시점 일관성이 내장되어 있지 않고, Rego는 회사 권한 관리자가 화면으로 다루기 어렵다. D-26 비교를 건너뛰자는 것이 아니라 후보를 둘로 좁히자는 것이다. PDP 어댑터는 AuthZEN 형태로 두어 엔진 교체가 가능하게 한다. Cerbos는 조건 판단 보조 후보로 남긴다.</p>
 

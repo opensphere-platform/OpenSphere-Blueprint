@@ -67,7 +67,7 @@
 | **ER-8** | **리소스 유형을 등록해야 할당할 수 있다.** 이름은 `ext.<종류>` 형식이고, 카탈로그 문서 §3의 리소스 유형 정의를 따른다 |
 | **ER-9** | **감사 경로를 정한다.** 외부 쪽 감사 로그를 테넌트로 수집하는 경로를 정한다. 수집할 수 없으면 "감사 불가"로 표시하고 위험으로 기록한다 |
 | **ER-10** | **비용 단위를 맞춘다.** 외부 과금 단위(사용자 수, 호출 수, 용량)를 showback 단위(D-25)로 대응시킨다 |
-| **ER-11** | **한 테넌트에만 속한다.** 외부 리소스는 사원 테넌트나 고객 테넌트 중 하나에만 등록한다. 두 테넌트를 잇는 외부 리소스는 교류 계층 우회이므로 금지한다(T-9) |
+| **ER-11** | **한 영역에만 속한다.** 외부 리소스는 사원 영역이나 고객 영역 중 하나에만 편입한다. 두 영역을 잇는 외부 리소스는 교류 계층 우회이므로 금지한다(T-9, D-83) |
 | **ER-12** | **해체 절차를 미리 적는다.** 연결을 끊을 때 외부 쪽 계정·자격 회수, 데이터 반출·삭제 요청 방법을 등록 시점에 적는다 |
 | **ER-13** | **편입 자체가 고위험 결재다.** 외부 어셈블리 편입은 테넌트 관리자와 보안 담당 결재를 거친다(D-82). 연결 변경도 T-6에 따라 고위험이다. 편입 후 배분은 Governance가 한다 |
 | **ER-14** | **정기 재검토한다.** 외부 리소스는 약관·API·보안 상태가 Fabric 밖에서 바뀐다. 등급을 재검토 주기마다 다시 시험한다 |
@@ -94,12 +94,13 @@ metadata:
   version: "1.0"
 spec:
   purpose: 이미 쓰고 있는 외부 협업 SaaS를 Governance로 통제
-  tenant: employee                         # ER-11
+  tenant: example
+  area: employee                           # ER-11
   owner: { unit: "IT운영팀", contact: "운영 책임자" }   # ER-2
   contract: { license: "구독 계약서 위치", dpa: "데이터 처리 계약 위치" }
   endpoint: { host: "saas.example", egress: recorded }  # ER-6, D-53
   connector:
-    identity: spiffe://employee.tenant/ext-collab-saas/connector
+    identity: spiffe://example.tenant/employee/ext-collab-saas/connector
     credential: { kind: oauth-client, ref: kms://employee/links/ext-collab-saas, rotateEvery: 90d }  # ER-3
   identityMapping:                         # ER-5
     key: email

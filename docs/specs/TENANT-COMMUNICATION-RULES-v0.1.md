@@ -11,7 +11,7 @@
 
 ## 1. 범위와 현재 공백
 
-이 규칙은 **한 테넌트 안**의 구성요소·어셈블리 사이 통신을 다룬다. 테넌트 경계를 넘는 통신(사원 ↔ 고객)은 교류 계층(X-1)이나 등록된 경계 API만 쓴다. 이 문서는 그 경계 밖 통신을 정하지 않는다.
+이 규칙은 **한 테넌트 안**의 구성요소·어셈블리 사이 통신을 다룬다. 영역 경계를 넘는 통신(사원 영역 ↔ 고객 영역)은 교류 계층(X-1)이나 등록된 경계 API만 쓴다. 이 문서는 그 경계 밖 통신을 정하지 않는다.
 
 **공백:**
 - 지금 설계의 통신 규칙(D-66, D-69)은 **비동기 이벤트**만 다룬다.
@@ -34,10 +34,10 @@
 ### 3.1 워크로드 신원 (모든 통신에 필수)
 
 ```
-spiffe://<tenant>.tenant/<assembly>/<component>
-예) spiffe://employee.tenant/mail/stalwart
-    spiffe://employee.tenant/core-governance/adapter-stalwart
-    spiffe://employee.tenant/apps/kim/webmail         # 사원 앱
+spiffe://<tenant>.tenant/<area>/<assembly>/<component>
+예) spiffe://example.tenant/employee/mail/stalwart
+    spiffe://example.tenant/employee/core-governance/adapter-stalwart
+    spiffe://example.tenant/employee/apps/kim/webmail         # 사원 앱
 ```
 
 - 테넌트 CA(trust 핵심 어셈블리)가 짧은 수명의 인증서를 발급한다. 기본 24시간 이하, 자동 갱신.
@@ -54,7 +54,7 @@ spiffe://<tenant>.tenant/<assembly>/<component>
 | `act` | 행위자 사슬. 에이전트·앱의 워크로드 신원을 중첩해 기록한다. 최대 깊이 2(D-47) |
 | `aud` | 호출 대상 어셈블리. 다른 어셈블리에 재사용할 수 없다 |
 | `scope` | 요청 범위. **할당 ∩ 위임자 현재 권한 ∩ 자율 상한**(D-46) |
-| `tenant` | 테넌트 ID. 다르면 거부한다 |
+| `tenant`, `area` | 테넌트(회사) ID와 영역. 다르면 거부한다 |
 
 - 받는 쪽은 워크로드 신원과 위임 토큰을 **둘 다** 검증한다. 둘 중 하나라도 실패하면 거부한다.
 
@@ -128,7 +128,7 @@ D-69의 계약 규칙 6개(CloudEvents, 스키마 등록, outbox, 멱등, 위임
 - 이벤트로 명령 보내기
 - 이벤트 본문에 개인정보 싣기
 - 제어 신호를 업무 채널로 보내기
-- 테넌트 경계를 직접 넘는 통신(교류 계층 우회)
+- 영역 경계를 직접 넘는 통신(교류 계층 우회)
 - `/internal/*`처럼 "내부라서 안전하다"는 가정에 기댄 무인증 경로
 
 ## 10. Nexus 감사 교훈과의 대응

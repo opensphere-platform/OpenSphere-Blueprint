@@ -24,7 +24,7 @@
 | OpenSphere 개념 | AWS | Azure | Google Cloud |
 |---|---|---|---|
 | 테넌트 구성(Genesis) | Control Tower Account Factory | 랜딩존 구독 발급(subscription vending) | Project Factory |
-| 회사 → 테넌트 → 어셈블리 → 자원 | Organizations → OU → 계정 → 리소스 | 관리 그룹 → 구독 → 리소스 그룹 → 리소스 | 조직 → 폴더 → 프로젝트 → 리소스 |
+| 테넌트(회사) → 영역 → 어셈블리 → 자원 | Organizations → OU → 계정 → 리소스 | 관리 그룹 → 구독 → 리소스 그룹 → 리소스 | 조직 → 폴더 → 프로젝트 → 리소스 |
 | 예방 가드레일 | SCP | Azure Policy(deny) | Organization Policy |
 | 탐지 가드레일 | AWS Config 규칙 | Azure Policy(audit) | Security Command Center |
 | 신원 거버넌스 | IAM Identity Center + Access Analyzer | Entra ID Governance(액세스 검토, 권한 관리) | Cloud IAM + Policy Intelligence |
@@ -35,7 +35,7 @@
 | 원칙 | 의미 | OpenSphere 적용 |
 |---|---|---|
 | **공장** | 테넌트·계정은 손으로 조립하지 않고 정해진 틀에서 찍어 낸다 | 어셈블리 정의 카탈로그 + Genesis 절차(구성 명세 §5, §8) |
-| **계층 상속** | 상위에 건 정책이 하위에 자동 적용되고, 하위는 더 좁힐 수만 있다 | 회사 → 테넌트 → 어셈블리 → 자원. 조직 계층(AD)과 교차 |
+| **계층 상속** | 상위에 건 정책이 하위에 자동 적용되고, 하위는 더 좁힐 수만 있다 | 테넌트(회사) → 영역 → 어셈블리 → 자원. 조직 계층(AD)과 교차 |
 | **두 종류 가드레일** | 예방(아예 못 하게)과 탐지(했으면 찾아서 고침)를 같이 둔다 | 예방 = admission·PDP 거부, 탐지 = 대조·drift 회수(D-20) |
 | **관리 계정 분리** | 거버넌스를 집행하는 계정은 업무 계정과 분리한다 | Governance 관리 콘솔 별도 세션(D-49), 제어 신호 전용 경로(TC-C3) |
 
@@ -50,7 +50,7 @@
 | K8s 테넌트 경계 | **Capsule**(Tenant CRD), vCluster | Fabric | 테넌트 = 네임스페이스 묶음 + 정책, 또는 가상 클러스터(T-Q2) |
 | 권한 판단(PDP) | **OpenFGA**, **SpiceDB**(Zanzibar 방식), Cedar, Cerbos, OPA | Governance가 정의, Fabric이 실행 | 기존 비교 후보 그대로(D-26, 최소 설계 §9) |
 | 판단 질의 표준 | **OpenID AuthZEN** | 계약 | PDP 교체 가능성 확보 |
-| 집행(admission) | **Kyverno**, Gatekeeper | Fabric | 연결 그래프 밖 리소스, 미서명 이미지, 테넌트 경계 위반 거부 |
+| 집행(admission) | **Kyverno**, Gatekeeper | Fabric | 연결 그래프 밖 리소스, 미서명 이미지, 영역 경계 위반 거부 |
 | 워크로드 신원 | **SPIFFE/SPIRE** | Fabric(trust 핵심 어셈블리) | 연결 전용 신원, mTLS(통신 규칙 §3) |
 | 키·비밀 | OpenBao, cert-manager | Fabric(trust) | 테넌트 KMS·CA(T-Q3) |
 | 신원 거버넌스 모델 | **midPoint**(공개 IGA 중 가장 완결된 모델), SailPoint(상용 기준) | 참고서 | 역할 모델, 재인증 캠페인, 직무 분리(SoD), 정책 규칙. D-4로 정본에서는 제외했지만 모델 참고서로는 가치가 크다 |
@@ -74,13 +74,13 @@
 테넌트 구조는 관계 기반 권한(Zanzibar 방식)과 잘 맞는다.
 
 ```
-company:acme
-  └─ tenant:employee                parent: company:acme
-       ├─ assembly:mail             parent: tenant:employee
+tenant:example                      (회사 하나 = 테넌트 하나, D-83)
+  └─ area:employee                  parent: tenant:example
+       ├─ assembly:mail             parent: area:employee
        │    └─ mailbox:kim          parent: assembly:mail,  owner: user:kim
-       ├─ assembly:business-core    parent: tenant:employee
+       ├─ assembly:business-core    parent: area:employee
        │    └─ ledger:sales         parent: assembly:business-core
-       └─ app:kim/webmail           parent: tenant:employee, owner: user:kim, level: 1
+       └─ app:kim/webmail           parent: area:employee, owner: user:kim, level: 1
 
 unit:sales-hq   member: user:kim          (AD에서 수집)
 role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
@@ -101,7 +101,7 @@ role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
 
 | # | 시나리오 | 보는 것 |
 |---|---|---|
-| S8 | 회사 → 테넌트 → 어셈블리 → 자원 계층 상속, 하위는 좁히기만 가능 | 계층 상속과 거부 우선 표현 |
+| S8 | 테넌트(회사) → 영역 → 어셈블리 → 자원 계층 상속, 하위는 좁히기만 가능 | 계층 상속과 거부 우선 표현 |
 | S9 | 사원 앱 1 → 2 → 3단계 승격 시 실행 신원·권한 전환 | 소유자 위임 → 서비스 신원 전환의 일관성 |
 | S10 | 연결 객체 승인 판단(T-6): 어떤 연결이 고위험인가 | 자원 속성·연결 유형 기반 규칙 |
 

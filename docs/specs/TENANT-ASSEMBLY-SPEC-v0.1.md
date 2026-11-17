@@ -141,7 +141,7 @@ spec:
     - { from: stalwart, to: core/channel,            type: event,     events: [mail.user.provisioned] }
     - { from: core/governance.adapter, to: stalwart, type: control,   protocol: scim-shape }
   names:
-    - { record: MX,    value: "mail.{{company.domain}}" }
+    - { record: MX,    value: "mail.${company.domain}" }
     - { record: TXT,   value: "spf, dkim, dmarc" }     # 공인 DNS는 HISS·Backbone 운영(O-10)
   init:
     - schema: stalwart.store.migrate

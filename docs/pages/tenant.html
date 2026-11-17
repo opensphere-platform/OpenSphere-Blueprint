@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenSphere 테넌트 구조</title>
+<style>
+
+/* 레이아웃: 핵심 문장 → 네 면 도식(우측에 고객 영역) → 면별 정의 → Fabric 두 얼굴 → Backbone 경계 → Workspace 리소스 풀 → 사원 앱(승격·가드레일·도메인) → 바뀌는 결정 */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b1f24; --muted:#5b6470; --line:#d9dee5; --soft:#eef1f5;
+  --bb:#4f46e5; --bb-bg:#eef0ff;
+  --me:#0e7490; --me-bg:#e3f4f8;
+  --gov:#b45309; --gov-bg:#fdf3e2;
+  --ws:#0f8a5f; --ws-bg:#e7f6ef;
+  --cust:#c2410c; --cust-bg:#fdf0e7;
+  --cut:#be123c; --cut-bg:#fdecef;
+  --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+    --bb:#a5b4fc; --bb-bg:#1e1f3a; --me:#67e8f9; --me-bg:#0f2a31; --gov:#fbbf24; --gov-bg:#33270f;
+    --ws:#5eead4; --ws-bg:#10291f; --cust:#fdba74; --cust-bg:#33200f; --cut:#fb7185; --cut-bg:#3a1520;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --panel:#171b21; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2b323c; --soft:#1e242c;
+  --bb:#a5b4fc; --bb-bg:#1e1f3a; --me:#67e8f9; --me-bg:#0f2a31; --gov:#fbbf24; --gov-bg:#33270f;
+  --ws:#5eead4; --ws-bg:#10291f; --cust:#fdba74; --cust-bg:#33200f; --cut:#fb7185; --cut-bg:#3a1520;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 var(--sans)}
+.wrap{max-width:1160px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:30px}
+h1{font-size:24px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0 0 4px;text-wrap:balance}
+h3{font-size:14.5px;margin:0}
+p{margin:0}
+ul{margin:0;padding-left:18px}
+.lead{color:var(--muted);margin-bottom:12px}
+.meta{color:var(--muted);font-size:12.5px;margin-top:4px}
+.muted{color:var(--muted)}
+small{font-size:12.5px}
+code{font-family:var(--mono);font-size:12.5px;background:var(--soft);padding:0 5px;border-radius:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+
+/* 상태 표시 */
+.s{display:inline-block;font-size:11.5px;font-weight:600;padding:0 8px;border-radius:999px;vertical-align:1px;white-space:nowrap}
+.s.ok{background:var(--ws-bg);color:var(--ws)}
+.s.pr{background:var(--me-bg);color:var(--me)}
+.s.tbd{background:var(--soft);color:var(--muted)}
+.s.risk{background:var(--cut-bg);color:var(--cut)}
+
+/* 핵심 문장 */
+.thesis{border-left:5px solid var(--me);display:flex;flex-direction:column;gap:8px}
+.thesis .big{font-size:18.5px;font-weight:700;line-height:1.5;text-wrap:balance}
+
+/* 도식 */
+.dia{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:12px;align-items:stretch}
+.stack{display:flex;flex-direction:column;gap:0}
+.band{border-radius:12px;padding:12px 14px;border:1px solid var(--c);background:var(--cb);display:flex;flex-direction:column;gap:6px}
+.band>.hd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.band>.hd b{color:var(--c);font-size:15px}
+.band>.hd span{color:var(--muted);font-size:12.5px}
+.bb{--c:var(--bb);--cb:var(--bb-bg)} .me{--c:var(--me);--cb:var(--me-bg)} .gov{--c:var(--gov);--cb:var(--gov-bg)} .ws{--c:var(--ws);--cb:var(--ws-bg)} .cu{--c:var(--cust);--cb:var(--cust-bg)}
+.flow{font-size:12.5px;color:var(--muted);padding:5px 0 5px 22px;position:relative}
+.flow::before{content:"";position:absolute;left:12px;top:0;bottom:0;border-left:2px solid var(--line)}
+.flow b{color:var(--ink);font-weight:600}
+.faces{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:stretch}
+.face{background:var(--panel);border-radius:9px;padding:9px 11px;border:1px solid var(--line);font-size:13px}
+.face b{display:block;font-size:12.5px;margin-bottom:2px}
+.face.sup b{color:var(--bb)} .face.use b{color:var(--ws)}
+.cutline{writing-mode:vertical-rl;text-orientation:upright;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--cut);border-left:2px dashed var(--cut);border-right:2px dashed var(--cut);background:var(--cut-bg);padding:6px 3px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:12px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:1px 9px}
+.slices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.slice{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.slice b{font-size:13px}
+.slice.base{border-style:dashed}
+.side{display:flex;flex-direction:column;gap:8px}
+.side .band{flex:1}
+.xg{border:2px dashed var(--cut);border-radius:12px;padding:10px 12px;background:var(--cut-bg);font-size:12.5px}
+.xg b{color:var(--cut)}
+
+/* 정의 표 */
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{font-size:12.5px;color:var(--muted);font-weight:600;background:var(--soft)}
+td.nm{font-weight:700;white-space:nowrap}
+td.nm i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px;vertical-align:0}
+.t-def{min-width:820px}
+.t-me{min-width:760px}
+.t-me td.sup{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-me td.mid{background:var(--cut-bg);color:var(--ink)}
+.t-me td.use{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+
+/* 그리드 */
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.box .k{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.rule{padding:10px 14px;border-radius:10px;background:var(--soft);font-size:13.5px;margin-top:10px}
+
+/* 메일 예시 흐름 */
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;counter-reset:st}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:13px;position:relative;min-width:0}
+.step::before{counter-increment:st;content:counter(st);display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--ws);color:var(--panel);font-size:11.5px;font-weight:700;align-items:center;justify-content:center;margin-bottom:6px}
+.step b{display:block;margin-bottom:2px}
+
+/* 승격 */
+.promo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+.stage{padding:14px;display:flex;flex-direction:column;gap:8px;border-right:1px solid var(--line);min-width:0}
+.stage:last-child{border-right:0}
+.stage h3{display:flex;align-items:center;gap:8px}
+.stage h3 .lv{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.stage dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:0;font-size:13px}
+.stage dt{color:var(--muted)} .stage dd{margin:0}
+.stage .gate{font-size:12.5px;padding:6px 9px;border-radius:8px;background:var(--gov-bg);color:var(--gov);font-weight:600}
+
+/* 도메인 비교 */
+.dom{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dom .box.no{border-color:var(--cut)}
+.dom .box.yes{border-color:var(--ws)}
+.addr{font-family:var(--mono);font-size:13px;padding:6px 9px;border-radius:7px;background:var(--soft);overflow-wrap:anywhere}
+
+/* 결정 표 */
+.t-dec{min-width:720px}
+
+/* 세 층 도식 · 한 줄 도식 · 경계선 표 */
+.tier{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-bottom:12px}
+.tier>div{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.2fr);gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-size:13px}
+.tier b{font-size:13.5px}
+.tier .who{font-weight:600}
+.tier .t1{border-left:5px solid var(--bb)} .tier .t1 .who{color:var(--bb)}
+.tier .t2{border-left:5px solid var(--cut);background:var(--cut-bg)} .tier .t2 .who{color:var(--cut)}
+.tier .t3{border-left:5px solid var(--ws)} .tier .t3 .who{color:var(--ws)}
+.oneline{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:pre;line-height:1.85;margin-top:10px}
+.oneline .a{color:var(--bb)} .oneline .u{color:var(--ws)} .oneline .h{color:var(--cut);font-weight:700}
+.t-bd{min-width:780px}
+.t-bd td.in{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-bd td.hand{background:var(--cut-bg);color:var(--cut);font-weight:600;font-size:12.5px;text-align:center;border-left:2px dashed var(--cut);border-right:2px dashed var(--cut)}
+.t-bd td.out{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+.t-bd tr.key td{font-weight:600}
+@media (max-width:680px){.tier>div{grid-template-columns:minmax(0,1fr);gap:2px}}
+.t-pf{min-width:980px}
+.t-pf td.sup{background:color-mix(in srgb,var(--bb-bg) 50%,var(--panel))}
+.t-pf td.use{background:color-mix(in srgb,var(--ws-bg) 50%,var(--panel))}
+.t-pf td.nm{vertical-align:top;background:var(--soft)}
+.other{margin-bottom:4px}
+footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:4px}
+a{color:var(--me)}
+
+@media (max-width:900px){
+  .dia{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:680px){
+  .g2,.g3,.g4,.dom,.slices,.steps{grid-template-columns:minmax(0,1fr)}
+  .promo{grid-template-columns:minmax(0,1fr)}
+  .stage{border-right:0;border-bottom:1px solid var(--line)}
+  .stage:last-child{border-bottom:0}
+  .faces{grid-template-columns:minmax(0,1fr)}
+  .cutline{writing-mode:horizontal-tb;border:0;border-top:2px dashed var(--cut);border-bottom:2px dashed var(--cut)}
+  h1{font-size:21px}
+}
+
+/* ---- 테넌트 페이지 추가 ---- */
+.tdia{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:12px;align-items:stretch}
+.tbox{border:2px solid var(--me);border-radius:14px;padding:12px 14px;background:var(--me-bg);display:flex;flex-direction:column;gap:10px}
+.tbox>.hd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.tbox>.hd b{color:var(--me);font-size:15px}
+.tbox>.hd span{color:var(--muted);font-size:12.5px}
+.row-l{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.asm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.asm.biz{grid-template-columns:repeat(3,minmax(0,1fr))}
+.am{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12.5px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.am b{font-size:13px}
+.am.core{border-left:4px solid var(--me)}
+.am.biz{border-left:4px solid var(--ws)}
+.weave{font-size:12px;color:var(--me);text-align:center;border-top:2px dashed var(--me);border-bottom:2px dashed var(--me);padding:4px 6px;background:var(--panel);border-radius:6px}
+.tfoot{font-size:12px;color:var(--muted)}
+.xbar{border:2px dashed var(--cut);border-radius:10px;background:var(--cut-bg);padding:7px 12px;font-size:12.5px;text-align:center}
+.xbar b{color:var(--cut)}
+.ctbox{border:2px solid var(--cust);border-radius:14px;padding:10px 14px;background:var(--cust-bg);font-size:12.5px}
+.ctbox b{color:var(--cust)}
+.actor{border-radius:12px;padding:12px 14px;border:1px solid var(--c);background:var(--cb);display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.actor b{color:var(--c);font-size:14.5px}
+.actor ul{padding-left:16px;margin:0}
+.flowrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.st8{font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
+.st8.gen{border-color:var(--cut);color:var(--cut);background:var(--cut-bg)}
+.st8.ok{border-color:var(--ws);color:var(--ws);background:var(--ws-bg)}
+.st8.bad{border-color:var(--gov);color:var(--gov);background:var(--gov-bg)}
+.st8.end{color:var(--muted)}
+.arr{color:var(--muted);font-size:13px}
+.steps6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;counter-reset:s6}
+.s6{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:13px;min-width:0}
+.s6::before{counter-increment:s6;content:counter(s6);display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--cut);color:var(--panel);font-size:11.5px;font-weight:700;align-items:center;justify-content:center;margin-right:6px}
+.s6 b{font-size:13.5px}
+.s6.key{border-color:var(--cut);background:var(--cut-bg)}
+.link{border:1px solid var(--me);border-radius:12px;background:var(--panel);overflow:hidden}
+.link .top{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--me-bg);flex-wrap:wrap;font-size:13.5px}
+.link .top .node{padding:3px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-weight:600}
+.link .top .wire{flex:1;min-width:60px;border-top:3px solid var(--me);position:relative;height:0}
+.link .fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.link .f{padding:9px 12px;border-top:1px solid var(--line);border-right:1px solid var(--line);font-size:12.5px;min-width:0}
+.link .f:nth-child(4n){border-right:0}
+.link .f b{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:2px}
+.kinds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kind{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0;font-size:13px}
+.kind b{font-size:14.5px;color:var(--c)}
+.kind .ex{font-family:var(--mono);font-size:12px;background:var(--soft);border-radius:6px;padding:5px 7px;overflow-wrap:anywhere}
+.kind ul{padding-left:16px;margin:0;color:var(--muted);font-size:12.5px}
+.k1{--c:var(--me)} .k2{--c:var(--bb)} .k3{--c:var(--ws)} .k4{--c:var(--gov)}
+.idrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.code{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;white-space:pre;overflow-x:auto;line-height:1.7}
+.loop{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.lp{font-size:13px;font-weight:600;padding:5px 11px;border-radius:9px;border:1px solid var(--c);background:var(--cb);color:var(--c)}
+.lp.g{--c:var(--gov);--cb:var(--gov-bg)} .lp.f{--c:var(--me);--cb:var(--me-bg)}
+.t-gov{min-width:880px}
+.t-gov td.ev{font-weight:600}
+.t-gov td.gv{background:color-mix(in srgb,var(--gov-bg) 55%,var(--panel))}
+.t-gov td.fx{background:color-mix(in srgb,var(--me-bg) 55%,var(--panel))}
+.ban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ban div{font-size:12.5px;padding:7px 10px;border-radius:8px;background:var(--cut-bg);color:var(--ink);border:1px solid color-mix(in srgb,var(--cut) 35%,transparent)}
+@media (max-width:900px){.tdia{grid-template-columns:minmax(0,1fr)}.kinds{grid-template-columns:repeat(2,minmax(0,1fr))}.link .fields{grid-template-columns:repeat(2,minmax(0,1fr))}.link .f:nth-child(4n){border-right:1px solid var(--line)}.link .f:nth-child(2n){border-right:0}}
+@media (max-width:680px){.asm,.asm.biz,.steps6,.kinds,.idrow,.ban,.link .fields{grid-template-columns:minmax(0,1fr)}.link .f{border-right:0}}
+</style>
+<script src="../../assets/js/logos.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>OpenSphere 테넌트 구조</h1>
+  <p class="meta">2026-11-17 · 테넌트를 만들고, 유지하고, 그 안에서 통신하고, Governance로 통제하는 방법 · 근거: 테넌트·어셈블리 구성 명세 v0.1, 테넌트 내부 통신 규칙 v0.1, Governance 참고 아키텍처 v0.1</p>
+  <p class="meta"><span class="s ok">결정</span> 결정 대장에 있음 &nbsp; <span class="s pr">제안</span> 명세 초안, 결정 전 &nbsp; <span class="s tbd">미정</span> 정해야 할 것</p>
+</header>
+
+<section class="card thesis" aria-label="핵심">
+  <p class="big">테넌트는 Fabric 자원을 <span style="color:var(--me)">연결</span>로 엮은 묶음이다. 엮은 실이 테넌트를 붙들고, 모든 실은 <span style="color:var(--gov)">Governance</span>가 승인하고 대조한다.</p>
+  <ul>
+    <li><b>만든다:</b> Backbone이 Genesis를 시작하지만, 신뢰의 뿌리(키·CA·첫 소유자 자격)는 테넌트 안에서 태어난다.</li>
+    <li><b>유지한다:</b> 구성요소 사이의 의존을 <b>연결 객체</b>라는 일급 객체로 만든다. 연결이 있는 자원은 지울 수 없고, 연결마다 전용 신원을 쓴다.</li>
+    <li><b>통신한다:</b> 결속·요청·이벤트·제어 네 종류로 나누고, 연결 그래프에 없는 통신은 존재할 수 없다.</li>
+    <li><b>통제한다:</b> Governance가 판단(Claim·연결·권한)하고 Fabric이 집행한다. 대조가 둘을 다시 잇는다.</li>
+  </ul>
+</section>
+
+<!-- 한눈에 -->
+<section aria-labelledby="h-dia">
+  <h2 id="h-dia">한눈에</h2>
+  <p class="lead">테넌트는 영역 단위다. 사원 테넌트와 고객 테넌트는 교류 계층으로만 만난다. 오른쪽 두 주체가 테넌트에 손대는 방식은 다르다.</p>
+  <div class="tdia">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="tbox">
+        <div class="hd"><b>사원 테넌트</b><span>영역 단위 결속 묶음 · 신뢰의 뿌리를 가진다</span></div>
+        <span class="row-l">핵심 어셈블리 · Genesis에서 생성</span>
+        <div class="asm">
+          <div class="am core"><b>trust</b>테넌트 KMS · 내부 CA · 비밀 저장</div>
+          <div class="am core"><b>identity</b>Samba AD DC 또는 외부 AD · Keycloak</div>
+          <div class="am core"><b>governance</b>Governance · 전용 PostgreSQL</div>
+          <div class="am core"><b>channel</b>이벤트 채널 · 스키마 레지스트리</div>
+        </div>
+        <div class="weave">연결(Link) — 연결 전용 신원 · 테넌트 CA 인증서 · 네트워크 허용 · 삭제 보호</div>
+        <span class="row-l">업무 어셈블리 · Genesis 이후 추가</span>
+        <div class="asm biz">
+          <div class="am biz"><b>메일</b>Stalwart + PostgreSQL + OpenSearch + 객체 저장</div>
+          <div class="am biz"><b>메신저 · 문서</b>Mattermost · Univer</div>
+          <div class="am biz"><b>업무 코어</b>Odoo + PostgreSQL</div>
+          <div class="am biz"><b>에이전트 자리</b>KubeVirt VM</div>
+          <div class="am biz"><b>사원 앱 실행 환경</b>1~3단계 승격, 전용 도메인</div>
+          <div class="am biz"><b>…</b>카탈로그의 어셈블리 정의로 추가</div>
+        </div>
+        <p class="tfoot">연결 그래프 = 네트워크 허용 목록 = 삭제 보호의 근거 · 테넌트 기록은 테넌트 키로 서명</p>
+      </div>
+      <div class="xbar"><b>교류 계층</b> · 두 테넌트 사이의 유일한 통과 지점(X-1) · 테넌트 경계를 넘는 연결은 없다(T-9)</div>
+      <div class="ctbox"><b>고객 테넌트</b> · 핵심: trust · identity(고객 CIAM) · channel · 업무: 포털 · 커머스 · 고객 AI</div>
+    </div>
+    <div class="side">
+      <div class="actor bb" style="--c:var(--bb);--cb:var(--bb-bg)"><b>Backbone</b>
+        <ul><li>Genesis를 <b>시작</b>만 한다</li><li>Instance 생성·용량 공급</li><li>엔진 버전을 카탈로그에 공급</li><li>테넌트 기록 해시만 받는다</li></ul>
+        <span class="muted">테넌트 키·Secret·내용에는 닿지 않는다</span></div>
+      <div class="actor gov" style="--c:var(--gov);--cb:var(--gov-bg)"><b>Governance</b>
+        <ul><li>Claim·연결 승인</li><li>권한 판단(PDP)</li><li>제어 신호로 투영</li><li>연결·권한 대조와 회수</li><li>해체·영구 삭제 결정</li></ul>
+        <span class="muted">판단만 하고 집행은 Fabric이 한다</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 1. 정의 -->
+<section aria-labelledby="h-def">
+  <h2 id="h-def">1. 테넌트와 어셈블리</h2>
+  <p class="lead">PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 생기지는 않는다. 넷은 서로 관계없는 독립 제품이다. 그래서 묶음을 두 단계로 정의한다. <span class="s pr">제안</span></p>
+  <div class="scroll card" style="padding:0">
+    <table>
+      <thead><tr><th>단위</th><th>정의</th><th>경계의 뜻</th><th>예</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">테넌트</td><td>하나의 영역을 이루는 Fabric 자원의 결속 묶음. 신뢰의 뿌리(테넌트 KMS, 내부 CA, 첫 소유자 자격, 네트워크 칸막이)를 가진다</td><td>누구의 것인가</td><td>사원 테넌트, 고객 테넌트</td></tr>
+        <tr><td class="nm">어셈블리</td><td>테넌트 안에서 하나의 목적을 위해 묶인 구성요소 조합</td><td>무엇을 위해 묶였나</td><td>메일 = Stalwart + PostgreSQL + OpenSearch + AD + DNS</td></tr>
+        <tr><td class="nm">연결(Link)</td><td>두 구성요소 사이의 선언된 의존. 연결 전용 신원·자격·인증서·네트워크 허용 규칙을 갖는 일급 객체</td><td>무엇과 무엇이 엮였나</td><td>Stalwart → PostgreSQL(store)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="rule">한 설치 = 한 회사(D-14)이므로 여기서 "테넌트"는 고객사 구분이 아니라 <b>영역 단위 결속 묶음</b>이다. 일반 SaaS 용어와 혼동되면 이름을 바꿀 수 있다 <span class="s tbd">미정 T-Q1</span></p>
+</section>
+
+<!-- 2. 생성 -->
+<section aria-labelledby="h-gen">
+  <h2 id="h-gen">2. 테넌트 생성</h2>
+  <p class="lead">선언에서 시작해 검증을 통과해야 활성이 된다. 어느 단계든 실패하면 그 단계만 되돌린다. <span class="s pr">제안</span></p>
+  <div class="flowrow" aria-label="테넌트 상태">
+    <span class="st8">Declared</span><span class="arr">→</span>
+    <span class="st8 gen">Genesis</span><span class="arr">→</span>
+    <span class="st8">Provisioning</span><span class="arr">→</span>
+    <span class="st8">Binding</span><span class="arr">→</span>
+    <span class="st8">Initializing</span><span class="arr">→</span>
+    <span class="st8">Verifying</span><span class="arr">→</span>
+    <span class="st8 ok">Active</span><span class="arr">⇄</span>
+    <span class="st8 bad">Degraded</span><span class="arr">·</span>
+    <span class="st8 ok">Active</span><span class="arr">→</span>
+    <span class="st8">Decommissioning</span><span class="arr">→</span>
+    <span class="st8 end">Retired</span>
+  </div>
+
+  <h3 style="margin:16px 0 8px">Genesis: Backbone 경계가 그어지는 순간</h3>
+  <div class="steps6">
+    <div class="s6"><b>칸막이</b><br>설치기가 빈 테넌트 네임스페이스 집합과 네트워크 칸막이를 만든다(공급 면)</div>
+    <div class="s6"><b>발생 작업 시작</b><br>설치기가 테넌트 <b>안에서</b> 발생 작업을 실행한다. Backbone에 돌아가는 것은 테넌트 ID·공개 키·상태뿐</div>
+    <div class="s6"><b>뿌리 생성</b><br>테넌트 KMS 루트 키, 내부 CA, identity(AD·Keycloak), governance(Governance + 전용 PostgreSQL)</div>
+    <div class="s6 key"><b>첫 소유자 인도</b><br>일회용 인도 코드를 시스템 밖 경로로 전달. 첫 로그인에서 자격과 MFA를 확정하면 코드는 폐기</div>
+    <div class="s6 key"><b>설치기 자격 폐기</b><br>발생 작업이 자기 실행 자격을 폐기한다. 이 뒤로 설치기 자격으로는 테넌트에 들어갈 수 없다</div>
+    <div class="s6"><b>기록 서명</b><br>테넌트 기록 v1을 테넌트 키로 서명하고, 해시만 Backbone에 알린다(위변조 탐지용)</div>
+  </div>
+
+  <h3 style="margin:16px 0 8px">누가 무엇을 하나</h3>
+  <div class="scroll card" style="padding:0">
+    <table class="t-bd">
+      <thead><tr><th>단계</th><th>Backbone (공급)</th><th>테넌트 · Governance</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">Declared</td><td class="in">설치기 실행, 매니페스트 등록</td><td class="out">설치 프로파일 확인</td></tr>
+        <tr class="key"><td class="nm">Genesis</td><td class="in">발생 작업을 시작만 한다. 키를 보지 않는다</td><td class="out">첫 소유자가 자격 확정, 복구 키(M-of-N) 분할 보관</td></tr>
+        <tr><td class="nm">Provisioning</td><td class="in">Instance 생성, 용량</td><td class="out">Claim 승인(D-30)</td></tr>
+        <tr><td class="nm">Binding · Initializing</td><td class="in">실행 기반 제공</td><td class="out">연결 승인, 초기 정의 활성화</td></tr>
+        <tr><td class="nm">Verifying</td><td class="in">성공·실패 결과만 받는다</td><td class="out">적합성 시험 결과 확인</td></tr>
+        <tr><td class="nm">Decommissioning</td><td class="in">공급 회수 실행</td><td class="out">해체 결정, 데이터 반출, 영구 삭제 결정(D-33)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 3. 유지 -->
+<section aria-labelledby="h-keep">
+  <h2 id="h-keep">3. 테넌트를 유지하는 힘</h2>
+  <p class="lead">테넌트를 붙드는 것은 <b>연결 객체</b>다. 설정 파일에 흩어진 접속 문자열 대신, 연결 하나하나를 신원·자격·네트워크·보호가 달린 객체로 만든다. <span class="s pr">제안</span></p>
+
+  <div class="link" aria-label="연결 객체의 구조">
+    <div class="top"><span class="node">mail / Stalwart</span><span class="wire"></span><span>type <b>store</b> · protocol <b>postgresql</b> · access <b>owner</b></span><span class="wire"></span><span class="node">mail / PostgreSQL</span></div>
+    <div class="fields">
+      <div class="f"><b>워크로드 신원</b>spiffe://employee.tenant/mail/stalwart</div>
+      <div class="f"><b>자격</b>연결 전용 DB 역할 · 테넌트 KMS · 30일 회전</div>
+      <div class="f"><b>TLS</b>테넌트 CA · 상호 인증</div>
+      <div class="f"><b>네트워크</b>stalwart → store:5432만 허용(그래프에서 생성)</div>
+      <div class="f"><b>삭제 보호</b>연결 대상 삭제 차단</div>
+      <div class="f"><b>상태 검사</b>30초 주기 확인</div>
+      <div class="f"><b>승인</b>Governance 결재 참조</div>
+      <div class="f"><b>상태</b>Declared → Issuing → Bound → Degraded → Unbinding → Released</div>
+    </div>
+  </div>
+
+  <h3 style="margin:16px 0 8px">연결을 단단하게 만드는 일곱 장치</h3>
+  <div class="scroll card" style="padding:0">
+    <table>
+      <thead><tr><th>장치</th><th>불변식</th><th>막는 사고</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">삭제 보호</td><td>T-4</td><td>쓰이고 있는 PostgreSQL을 실수로 지워 메일이 멈추는 일</td></tr>
+        <tr><td class="nm">연결 전용 신원</td><td>T-3</td><td>비밀번호 하나가 새어 테넌트 전체로 번지는 일</td></tr>
+        <tr><td class="nm">자격 회전을 연결 객체가 수행</td><td>T-2</td><td>사람이 비밀번호를 바꾸다 연결이 끊기는 일</td></tr>
+        <tr><td class="nm">연결 drift 대조</td><td>T-8</td><td>손으로 바꾼 접속 설정이 조용히 남는 일</td></tr>
+        <tr><td class="nm">연결 변경 결재</td><td>T-6</td><td>몰래 새 연결을 만들어 데이터를 빼내는 일</td></tr>
+        <tr><td class="nm">호환 행렬</td><td>—</td><td>한 구성요소 업그레이드로 연결 상대가 깨지는 일</td></tr>
+        <tr><td class="nm">해체 절차</td><td>T-7</td><td>부분 삭제로 고아 데이터·고아 자격이 남는 일</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:16px 0 8px">풀 때도 절차로만: 해체는 결속의 역순</h3>
+  <div class="flowrow">
+    <span class="st8 bad">결정 · 소유자 2인</span><span class="arr">→</span>
+    <span class="st8">동결</span><span class="arr">→</span>
+    <span class="st8">반출 확인</span><span class="arr">→</span>
+    <span class="st8">연결 해제 · 자격 폐기</span><span class="arr">→</span>
+    <span class="st8">공급 회수(Backbone)</span><span class="arr">→</span>
+    <span class="st8 gen">영구 삭제 · 키 파기(D-33)</span><span class="arr">→</span>
+    <span class="st8 end">기록 보존</span>
+  </div>
+  <p class="rule">어느 단계든 실패하면 멈추고 보고한다. 강제로 진행하지 않는다. 영구 삭제는 암호화 키를 파기하는 것(crypto-shred)으로 완료를 보장한다.</p>
+</section>
+
+<!-- 4. 통신 -->
+<section aria-labelledby="h-comm">
+  <h2 id="h-comm">4. 테넌트 안의 통신</h2>
+  <p class="lead">지금까지의 규칙(D-66, D-69)은 이벤트만 다뤘다. 실제 결속 통신은 SQL·LDAP·HTTP 같은 각 제품의 고유 프로토콜이라 규칙이 비어 있었다. 통신을 네 종류로 나누고, 서로 경로와 자격을 공유하지 않게 한다. <span class="s pr">제안</span></p>
+  <div class="kinds">
+    <div class="kind k1"><b>결속 통신</b><span>구성요소가 자기 의존 자원을 쓰는 고유 프로토콜</span><div class="ex">Stalwart → PostgreSQL(SQL), → AD(LDAPS), → OpenSearch(HTTPS)</div>
+      <ul><li>연결 그래프에 있는 선만</li><li>연결 전용 자격, 선언된 접근 범위 이하</li><li>DB는 주인 구성요소만 연다</li><li>공유 관리자 계정 금지</li></ul></div>
+    <div class="kind k2"><b>서비스 요청</b><span>다른 어셈블리 기능을 동기 API로 호출</span><div class="ex">사원 앱 → 메일 API, 에이전트 → 업무 코어 API</div>
+      <ul><li>등록된 API 계약만</li><li>워크로드 신원 + 위임 토큰</li><li>받는 쪽이 PDP에 질의</li><li>멱등 키, 제한 시간 5초</li></ul></div>
+    <div class="kind k3"><b>이벤트</b><span>일어난 사실의 비동기 통지</span><div class="ex">order.created, user.disabled</div>
+      <ul><li>테넌트마다 채널 하나</li><li>사실 통지만, 명령은 API로</li><li>본문에 개인정보 없음(식별자만)</li><li>outbox · 멱등 · 키 순서</li></ul></div>
+    <div class="kind k4"><b>제어 신호</b><span>Governance가 원하는 상태를 앱·엔진에 투영</span><div class="ex">어댑터 → Stalwart 계정 생성·비활성</div>
+      <ul><li>SCIM 형태 계약만</li><li>앱마다 어댑터 하나</li><li>업무 채널을 쓰지 않는다</li><li>업무 채널이 막혀도 회수는 동작</li></ul></div>
+  </div>
+
+  <h3 style="margin:16px 0 8px">모든 통신에 신원을 싣는다</h3>
+  <div class="idrow">
+<div class="code"># 워크로드 신원 (모든 통신, 필수)
+spiffe://&lt;tenant&gt;.tenant/&lt;assembly&gt;/&lt;component&gt;
+  spiffe://employee.tenant/mail/stalwart
+  spiffe://employee.tenant/core-governance/adapter-stalwart
+  spiffe://employee.tenant/apps/kim/webmail
+# 테넌트 CA가 24시간 이하 인증서 발급 · mTLS 기본</div>
+    <div class="scroll card" style="padding:0"><table>
+      <thead><tr><th colspan="2">사용자 위임 토큰 (사람 대신 하는 요청, 5분 이하)</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">sub</td><td>원래 사용자(사원)</td></tr>
+        <tr><td class="nm">act</td><td>행위자 사슬(에이전트·앱), 최대 깊이 2(D-47)</td></tr>
+        <tr><td class="nm">aud</td><td>호출 대상 어셈블리. 다른 곳에 재사용 불가</td></tr>
+        <tr><td class="nm">scope</td><td><b>할당 ∩ 위임자 현재 권한 ∩ 자율 상한</b>(D-46)</td></tr>
+        <tr><td class="nm">tenant</td><td>테넌트 ID. 다르면 거부</td></tr>
+      </tbody></table></div>
+  </div>
+
+  <h3 style="margin:16px 0 8px">금지</h3>
+  <div class="ban">
+    <div>연결 그래프에 없는 통신</div><div>다른 어셈블리 DB에 직접 접속</div><div>공유 관리자 계정으로 하는 결속</div>
+    <div>워크로드 신원 없는 호출</div><div>이벤트로 명령 보내기</div><div>이벤트 본문에 개인정보</div>
+    <div>제어 신호를 업무 채널로</div><div>교류 계층을 우회한 테넌트 간 통신</div><div>"내부라서 안전하다"는 무인증 경로</div>
+  </div>
+  <p class="rule">Nexus 감사(2026-11-16)의 지적이 이 규칙으로 막힌다. 관리자 여부만 보던 정책 게이트 → 받는 쪽이 주체·행위·자원·맥락으로 PDP 질의. 노출된 <code>/internal/*</code> → 기본 거부와 워크로드 신원 필수. 트랜잭션 안의 외부 호출 → outbox와 제한 시간. 영구 pending → 격리 큐와 경보.</p>
+</section>
+
+<!-- 5. Governance로 잇기 -->
+<section aria-labelledby="h-gov">
+  <h2 id="h-gov">5. Governance로 이어지게 하는 방법</h2>
+  <p class="lead">테넌트에서 일어나는 모든 변화가 Governance의 판단을 거치고, 그 결과가 Fabric에서 집행되며, 대조가 그 둘을 다시 잇는다. <span class="s pr">제안</span></p>
+  <div class="loop" aria-label="통제 순환">
+    <span class="lp g">정의</span><span class="arr">→</span>
+    <span class="lp g">할당·신청</span><span class="arr">→</span>
+    <span class="lp g">결재</span><span class="arr">→</span>
+    <span class="lp g">판단(PDP)</span><span class="arr">→</span>
+    <span class="lp f">투영·정책 생성</span><span class="arr">→</span>
+    <span class="lp f">집행</span><span class="arr">→</span>
+    <span class="lp f">대조</span><span class="arr">→</span>
+    <span class="lp g">회수·보고</span><span class="arr">↺</span>
+  </div>
+  <p class="muted" style="margin-top:6px"><small>주황 = Governance(판단), 청록 = Fabric(집행). Governance는 엔진을 직접 운영하지 않는다.</small></p>
+
+  <h3 style="margin:16px 0 8px">테넌트에서 일어나는 일과 Governance의 접점</h3>
+  <div class="scroll card" style="padding:0">
+    <table class="t-gov">
+      <thead><tr><th>테넌트에서 일어나는 일</th><th>Governance가 하는 일</th><th>Fabric에서 집행하는 장치</th><th>단계</th></tr></thead>
+      <tbody>
+        <tr><td class="ev">Genesis</td><td class="gv">첫 소유자 인도 확인, 테넌트 기록 해시 수신</td><td class="fx">발생 작업, 테넌트 KMS</td><td>G0</td></tr>
+        <tr><td class="ev">어셈블리 추가</td><td class="gv">어셈블리 Claim 승인(D-30), 서비스 배분</td><td class="fx">공유 서비스 Claim → Instance</td><td>G2</td></tr>
+        <tr><td class="ev">연결 생성·변경·해제</td><td class="gv">고위험 결재(T-6). 어셈블리 정의로 자동 생성되는 연결은 어셈블리 승인으로 갈음</td><td class="fx">연결 객체, 그래프 → 네트워크 정책 생성, Kyverno admission</td><td>G1</td></tr>
+        <tr><td class="ev">서비스 요청</td><td class="gv">권한 판단(PDP). 질의는 AuthZEN 형태(주체·행위·자원·맥락)</td><td class="fx">받는 쪽 집행, Keycloak 토큰 교환, 위임 토큰 scope = 할당에서 계산</td><td>G3</td></tr>
+        <tr><td class="ev">이벤트 발행·구독</td><td class="gv">주제별 발행·구독 권한을 정의에 둔다</td><td class="fx">연결 객체의 주제 선언, 채널 ACL</td><td>G2</td></tr>
+        <tr><td class="ev">사원 입사·이동·퇴사</td><td class="gv">원하는 상태 계산, 회수 시한(D-21: SSO 1분, 앱 20분 p95)</td><td class="fx">제어 신호(SCIM 형태 어댑터)</td><td>G0~G1</td></tr>
+        <tr><td class="ev">앱 관리 화면 직접 변경</td><td class="gv">초과 권한으로 보고 자동 회수(R-11 권고)</td><td class="fx">대조(list) 결과</td><td>G1</td></tr>
+        <tr><td class="ev">연결·구성 drift</td><td class="gv">선언과 다르면 복구 또는 보고(T-8, D-20)</td><td class="fx">테넌트 기록 서명 대조, 연결 상태 검사</td><td>G2</td></tr>
+        <tr><td class="ev">사원 앱 승격</td><td class="gv">1단계 자동 → 2단계 팀장 승인 → 3단계 보안 검토·서비스 신원·회사 도메인</td><td class="fx">앱 가드레일, SSO 프록시, 전용 도메인</td><td>G4</td></tr>
+        <tr><td class="ev">해체</td><td class="gv">소유자 2인 결재, 영구 삭제 결정(D-33)</td><td class="fx">공급 회수, 키 파기</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:6px"><small>단계 G0~G4는 Governance 최소 설계 §13의 구현 단계다.</small></p>
+
+  <h3 style="margin:16px 0 8px">판단과 집행을 잇는 부품</h3>
+  <div class="g3">
+    <div class="box"><b>권한 판단(PDP)</b><span class="muted">OpenFGA 1순위, SpiceDB와 PoC 비교. 관계 계층 회사 → 테넌트 → 어셈블리 → 자원, 역질의 지원</span><span class="s pr">제안</span></div>
+    <div class="box"><b>질의 계약</b><span class="muted">AuthZEN 형태. 엔진을 바꿔도 Governance 코드는 그대로</span><span class="s pr">제안</span></div>
+    <div class="box"><b>K8s admission</b><span class="muted">Kyverno. 연결 그래프 밖 리소스·미서명 이미지·테넌트 경계 위반 거부</span><span class="s pr">제안</span></div>
+    <div class="box"><b>워크로드 신원</b><span class="muted">SPIRE. 연결 전용 신원과 mTLS</span><span class="s pr">제안</span></div>
+    <div class="box"><b>토큰 교환</b><span class="muted">Keycloak(D-56). 사용자 위임 토큰 발급</span><span class="s ok">결정</span></div>
+    <div class="box"><b>프로비저닝</b><span class="muted">SCIM 형태 어댑터(D-4). Syncope Provider는 드롭(D-77)</span><span class="s ok">결정</span></div>
+  </div>
+  <p class="rule">Governance의 대상은 접근·자원·비용·준수(D-10)이고, 하는 일은 정의·할당·결재·재검토·회수·승격의 판단과 원장이다(D-81). 집행·분석·보고 엔진은 Fabric 부품이 맡는다.</p>
+</section>
+
+<!-- 6. 미결 -->
+<section aria-labelledby="h-open">
+  <h2 id="h-open">6. 정해야 할 것</h2>
+  <div class="scroll card" style="padding:0">
+    <table>
+      <thead><tr><th>ID</th><th>미결</th></tr></thead>
+      <tbody>
+        <tr><td class="nm">T-Q1</td><td>"테넌트·어셈블리" 명칭 유지 여부</td></tr>
+        <tr><td class="nm">T-Q2 · GR-Q2</td><td>테넌트 경계 기술: 네임스페이스 + Capsule, vCluster, 별도 클러스터(규제 프로파일)</td></tr>
+        <tr><td class="nm">T-Q3</td><td>테넌트 KMS·비밀 저장 제품(OpenBao 등)</td></tr>
+        <tr><td class="nm">T-Q4</td><td>여러 어셈블리가 PostgreSQL 클러스터 하나를 함께 쓸지</td></tr>
+        <tr><td class="nm">T-Q6</td><td>어셈블리 정의(카탈로그)의 소유와 서명: 공급사 정의만 허용할지, 회사 정의도 허용할지</td></tr>
+        <tr><td class="nm">TC-Q1</td><td>서비스 메시 도입 여부</td></tr>
+        <tr><td class="nm">TC-Q4</td><td>위임 토큰 수명(5분)과 에이전트의 장시간 예약 작업(D-46)의 관계</td></tr>
+        <tr><td class="nm">GR-Q1</td><td>관계 엔진과 조건 엔진을 조합할지, 하나로 갈지(시나리오 S1~S10 결과로)</td></tr>
+        <tr><td class="nm">—</td><td>Valkey(cache), MongoDB(document) 연결 유형 추가</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <span>이 페이지는 명세 초안을 요약한 것이며, 결정 표시가 없는 항목은 결정 대장(D-번호)에 반영되지 않았다.</span>
+  <span>상세: <a href="../specs/TENANT-ASSEMBLY-SPEC-v0.1.html">테넌트·어셈블리 구성 명세</a> · <a href="../specs/TENANT-COMMUNICATION-RULES-v0.1.html">테넌트 내부 통신 규칙</a> · <a href="../specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.html">Governance 참고 아키텍처</a> · <a href="four-planes.html">네 면 구조</a> · <a href="../overview/GLOSSARY.html">용어 대응표</a></span>
+</footer>
+
+</div>
+</body>
+</html>

@@ -37,6 +37,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [어셈블리 카탈로그 v0.1](docs/specs/ASSEMBLY-CATALOG-v0.1.md) | 어셈블리 19종이 나눠 주는 Governance 리소스 유형, 리소스 유형 정의 형식, 카탈로그 등재 조건 | 초안 |
 | [외부 리소스 편입 규칙 v0.1](docs/specs/EXTERNAL-RESOURCE-ADMISSION-v0.1.md) | 외부 AD·SaaS·DB·모델 API를 외부 어셈블리로 묶어 Governance 리소스로 올리는 규칙 ER-1~ER-14, 통제 등급 | 초안 |
 | [OpenSphere Registry(OSR) 규격 v0.1](docs/specs/OPENSPHERE-REGISTRY-OSR-v0.1.md) | Backbone 밖 모듈의 등록 · 형식적/실질적 멤버, 필수 기여(매뉴얼 · OS Shell 명령 · OCI · RAG), GHCR 발행과 확장 설치 흐름, Backbone 준비도 점검(부록 A) | 초안 |
+| [OSR · 4종 인프라 종합 구현 계획서 v0.1](docs/specs/OSR-IMPLEMENTATION-PLAN-v0.1.md) | OSR 원장과 매뉴얼 · OS Shell 명령 · OCI · 지식 인프라의 Backbone 내 배치, 데이터 모델, 고정 액션 설계, M0~M6 단계와 PR 단위 · 완료 기준 | 초안 |
 | [Governance 참고 아키텍처 v0.1](docs/specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.md) | 랜딩존 대응표, 부품 지도, 판단 엔진 비교 시나리오 추가 | 초안 |
 
 ## 3. 계층 구조 설계 (결정 대장 포함)

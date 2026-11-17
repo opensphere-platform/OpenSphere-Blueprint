@@ -1,0 +1,25 @@
+{
+  "schema": "opensphere.materializer-profile/v1",
+  "id": "assembly.definition",
+  "version": "0.1.0",
+  "class": "assembly",
+  "appliesTo": ["assembly.mail", "assembly.chat"],
+  "mechanism": "definition-only",
+  "capabilities": ["osr.definition.read"],
+  "allowedEffects": ["none", "read-cost"],
+  "resources": [],
+  "forbiddenResources": [
+    { "apiVersion": "apps/v1", "kind": "StatefulSet" },
+    { "apiVersion": "apps/v1", "kind": "Deployment" },
+    { "apiVersion": "apps/v1", "kind": "DaemonSet" },
+    { "apiVersion": "v1", "kind": "Pod" },
+    { "apiVersion": "v1", "kind": "PersistentVolumeClaim" }
+  ],
+  "rbac": [],
+  "storage": { "mode": "none" },
+  "verification": [
+    { "id": "definition-registered", "description": "등록된 정의 digest·generation이 판정 대상과 같다." },
+    { "id": "members-substantive", "description": "필수 멤버 모듈이 모두 실질 상태이고 구성 가능하다." }
+  ],
+  "restrictedOperations": ["retire"]
+}

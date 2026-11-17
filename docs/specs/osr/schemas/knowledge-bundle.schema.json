@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/knowledge-bundle.schema.json",
+  "title": "RAG 등록 opensphere.knowledge-bundle/v1",
+  "description": "지식은 명령·정책·Memory가 아니다. source.part·source.digest는 같은 릴리스의 기여 artifact를 가리켜야 한다(KnowledgeProvenanceInvalid).",
+  "type": "object",
+  "required": [
+    "schema",
+    "module",
+    "documents"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.knowledge-bundle/v1"
+    },
+    "module": {
+      "$ref": "#/$defs/moduleId"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "module",
+          "kind",
+          "repository",
+          "path",
+          "sourceRevision",
+          "sha256",
+          "license",
+          "language",
+          "content",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^knowledge:[a-z]+\\.[a-z0-9-]+:[a-z0-9-]+$"
+          },
+          "module": {
+            "$ref": "#/$defs/moduleId"
+          },
+          "kind": {
+            "enum": [
+              "ReleaseDocumentation"
+            ]
+          },
+          "repository": {
+            "type": "string",
+            "pattern": "^https://github\\.com/opensphere-platform/"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceRevision": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "license": {
+            "type": "string",
+            "minLength": 1
+          },
+          "language": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "part",
+              "digest"
+            ],
+            "properties": {
+              "part": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "digest": {
+                "$ref": "#/$defs/digest"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)\\.[a-z][a-z0-9-]{1,40}$"
+    }
+  }
+}

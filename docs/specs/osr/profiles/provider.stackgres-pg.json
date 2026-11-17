@@ -1,0 +1,37 @@
+{
+  "schema": "opensphere.materializer-profile/v1",
+  "id": "provider.stackgres-pg",
+  "version": "0.1.0",
+  "class": "provider",
+  "appliesTo": ["provider.postgres"],
+  "mechanism": "stackgres",
+  "capabilities": ["db.instance.manage", "db.backup.manage", "db.connection.issue", "storage.claim.bind"],
+  "allowedEffects": ["none", "read-cost", "mutation", "destructive"],
+  "resources": [
+    { "apiVersion": "stackgres.io/v1", "kind": "SGCluster", "max": 1 },
+    { "apiVersion": "stackgres.io/v1", "kind": "SGPostgresConfig", "max": 1 },
+    { "apiVersion": "stackgres.io/v1", "kind": "SGPoolingConfig", "max": 1 },
+    { "apiVersion": "stackgres.io/v1", "kind": "SGInstanceProfile", "max": 1 },
+    { "apiVersion": "stackgres.io/v1", "kind": "SGObjectStorage", "max": 1 },
+    { "apiVersion": "v1", "kind": "Secret", "max": 2 }
+  ],
+  "forbiddenResources": [
+    { "apiVersion": "apps/v1", "kind": "StatefulSet" },
+    { "apiVersion": "apps/v1", "kind": "Deployment" },
+    { "apiVersion": "apps/v1", "kind": "DaemonSet" },
+    { "apiVersion": "rbac.authorization.k8s.io/v1", "kind": "ClusterRole" },
+    { "apiVersion": "rbac.authorization.k8s.io/v1", "kind": "ClusterRoleBinding" },
+    { "apiVersion": "apiextensions.k8s.io/v1", "kind": "CustomResourceDefinition" }
+  ],
+  "rbac": [
+    { "apiGroups": ["stackgres.io"], "resources": ["sgclusters", "sgpostgresconfigs", "sgpoolingconfigs", "sginstanceprofiles", "sgobjectstorages"], "verbs": ["get", "list", "watch", "create", "update", "patch", "delete"] },
+    { "apiGroups": [""], "resources": ["secrets"], "verbs": ["get", "create", "update"] }
+  ],
+  "storage": { "mode": "foundation-profile", "allowedProfiles": ["foundation.block-rwo"] },
+  "verification": [
+    { "id": "sgcluster-ready", "description": "SGCluster의 모든 인스턴스가 Ready이고 primary가 하나다." },
+    { "id": "connection-check", "description": "발급한 연결 정보로 읽기·쓰기 질의가 성공한다." },
+    { "id": "backup-configured", "description": "SGObjectStorage 백업 대상이 검증된 Foundation 저장 프로필이다." }
+  ],
+  "restrictedOperations": ["recover", "retire", "suspend"]
+}

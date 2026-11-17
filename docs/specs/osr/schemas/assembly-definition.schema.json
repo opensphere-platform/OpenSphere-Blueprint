@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/assembly-definition.schema.json",
+  "title": "어셈블리 정의",
+  "description": "실행하지 않는 정의. 구성 멤버와 리소스 유형만 담는다. 실질 판정(10단계 대체)은 등록된 정의 digest·generation과 멤버 모듈의 실질 상태·구성 가능성으로 한다.",
+  "type": "object",
+  "required": [
+    "schema",
+    "module",
+    "members",
+    "resourceTypes",
+    "composition"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.assembly-definition/v1"
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^assembly\\.[a-z][a-z0-9-]{1,40}$"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "module",
+          "role",
+          "required"
+        ],
+        "properties": {
+          "module": {
+            "$ref": "#/$defs/moduleId"
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "resourceTypes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "composition": {
+      "type": "object",
+      "required": [
+        "claims"
+      ],
+      "properties": {
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "member",
+              "claim"
+            ],
+            "properties": {
+              "member": {
+                "$ref": "#/$defs/moduleId"
+              },
+              "claim": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)\\.[a-z][a-z0-9-]{1,40}$"
+    }
+  }
+}

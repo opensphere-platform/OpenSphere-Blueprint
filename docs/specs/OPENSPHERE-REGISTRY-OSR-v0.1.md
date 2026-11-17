@@ -1,5 +1,7 @@
 # OpenSphere Registry(OSR) 규격 초안 v0.1 — 모듈 멤버십 · GHCR 발행 · 확장 설치
 
+> **대체됨(2026-11-18):** 이 판은 [v0.2](OPENSPHERE-REGISTRY-OSR-v0.2.md)로 대체됐다. 2026-11-17 계획 검토를 반영한 v0.2를 기준으로 읽는다. 이 문서는 기록으로 남긴다.
+
 **상태:** 명세 초안이다. 결정 대장(D-번호)에 오르기 전까지 결정이 아니며 구현 승인도 아니다. §14의 결정 후보는 모두 `제안`이다.
 **작성:** 2026-11-17 · Claude(설계 검토 AI)
 **상위 기준:** [Backbone 설계](../backbone/DESIGN.md), [네 면 구조](../overview/FOUR-PLANES.md), [용어 대응표](../overview/GLOSSARY.md), [결정 대장](../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md)(D-79, D-82, D-86), [테넌트·어셈블리 구성 명세](TENANT-ASSEMBLY-SPEC-v0.1.md), [어셈블리 카탈로그](ASSEMBLY-CATALOG-v0.1.md)

@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/materializer-profile.schema.json",
+  "title": "materializer profile",
+  "description": "클래스별 설치 형태. profile 하나는 적용 방식 하나만 갖는다. 지문(fingerprint)은 이 문서의 canonical digest이며 검증 맥락과 설치 계획에 묶인다. RBAC은 profile의 고정 규칙으로 Backbone이 생성하고 모듈이 가져온 RBAC은 쓰지 않는다.",
+  "type": "object",
+  "required": [
+    "schema",
+    "id",
+    "version",
+    "class",
+    "appliesTo",
+    "mechanism",
+    "capabilities",
+    "allowedEffects",
+    "resources",
+    "forbiddenResources",
+    "rbac",
+    "storage",
+    "verification",
+    "restrictedOperations"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.materializer-profile/v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z]+\\.[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "class": {
+      "enum": [
+        "core",
+        "hiss",
+        "delivery",
+        "provider",
+        "engine",
+        "runtime",
+        "assembly",
+        "ui",
+        "product"
+      ]
+    },
+    "appliesTo": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/moduleId"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "mechanism": {
+      "enum": [
+        "stackgres",
+        "definition-only"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "allowedEffects": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "none",
+          "read-cost",
+          "mutation",
+          "destructive"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "kind",
+          "max"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "forbiddenResources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "kind"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rbac": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "apiGroups",
+          "resources",
+          "verbs"
+        ],
+        "properties": {
+          "apiGroups": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "verbs": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "get",
+                "list",
+                "watch",
+                "create",
+                "update",
+                "patch",
+                "delete"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "storage": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "none",
+            "foundation-profile"
+          ]
+        },
+        "allowedProfiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "restrictedOperations": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "recover",
+          "retire",
+          "suspend"
+        ]
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)\\.[a-z][a-z0-9-]{1,40}$"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/verdict.schema.json",
+  "title": "판정 영수증",
+  "description": "판정은 평가 맥락에 묶인다. 같은 릴리스라도 맥락(snapshot digest·신뢰 세대·정책 revision·profile 지문, 어셈블리는 정의 digest·generation)이 다르면 재판정한다.",
+  "type": "object",
+  "required": [
+    "schema",
+    "module",
+    "version",
+    "bundleDigest",
+    "level",
+    "result",
+    "context",
+    "evaluatedAt"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.osr-verdict/v1"
+    },
+    "module": {
+      "$ref": "#/$defs/moduleId"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d{2}\\.\\d{3,4}\\.\\d{4}\\.\\d+$"
+    },
+    "bundleDigest": {
+      "$ref": "#/$defs/digest"
+    },
+    "level": {
+      "enum": [
+        "formal",
+        "substantive"
+      ]
+    },
+    "result": {
+      "enum": [
+        "pass",
+        "reject"
+      ]
+    },
+    "code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "step": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 12
+    },
+    "context": {
+      "type": "object",
+      "required": [
+        "snapshotDigest",
+        "trustGeneration",
+        "policyRevision"
+      ],
+      "properties": {
+        "snapshotDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "trustGeneration": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profileFingerprint": {
+          "$ref": "#/$defs/digest"
+        },
+        "definitionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "definitionGeneration": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "evaluatedAt": {
+      "$ref": "#/$defs/time"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "time": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)\\.[a-z][a-z0-9-]{1,40}$"
+    }
+  }
+}

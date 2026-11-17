@@ -1,0 +1,894 @@
+{
+  "schema": "opensphere.osr-test-vectors/v1",
+  "group": "permission",
+  "generatedBy": "tools/make-vectors.mjs",
+  "evaluationTime": "2026-11-18T00:00:00Z",
+  "note": "유효 권한 = capability ∩ 호출자 ∩ scope ∩ Owner 검사. 키는 생성할 때마다 새로 만든 일회용 시험 키이며 어떤 실제 신뢰 경로에도 등록되지 않는다. 실행 입력은 { ...shared, ...vector.input }이다.",
+  "shared": {
+    "trustAnchor": {
+      "keyId": "osr-anchor-test",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "x": "n33OVcboYSJ2O7DvjlpwLJi4cuDYweUOz8LQfO1cA6E",
+        "y": "QDmAinyCUWJy0P9c0_nu8bMbXLpD-WVGaQN2oKxMqtY",
+        "crv": "P-256"
+      }
+    },
+    "context": {
+      "payload": {
+        "schema": "opensphere.osr-context/v1",
+        "authority": "osr.opensphere-platform",
+        "issuedAt": "2026-11-10T00:00:00Z",
+        "expiresAt": "2026-12-18T00:00:00Z",
+        "trustGeneration": 7,
+        "policyRevision": "pol-2026-11-18.1",
+        "backboneContract": "1.4.0",
+        "keys": [
+          {
+            "keyId": "release-test",
+            "purpose": "release",
+            "scope": {
+              "classes": [
+                "hiss",
+                "provider",
+                "engine",
+                "assembly"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "-HJAZZSUT13F4m2vjF0H7TviWlhkffFC_oJ1gRhCagQ",
+              "y": "O65l4DbxCtKUisSWCNRDnfsSlF8aw7r2jznT52QuQh0",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 5
+          },
+          {
+            "keyId": "release-ui-test",
+            "purpose": "release",
+            "scope": {
+              "classes": [
+                "ui"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "ooTKo7dwjT1qgLYKbq6C-BOx1sjczztdMQaZNJRP-z4",
+              "y": "3BOrVBsxwGoyWizBkq0lbQm_Fm1Syo_6taryWlZbUss",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 5
+          },
+          {
+            "keyId": "release-revoked-test",
+            "purpose": "release",
+            "scope": {
+              "classes": [
+                "provider"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "sWXkAEU868IQrrICSg6GksYBEYVeEjkFTUczzg4-C44",
+              "y": "gE50j227nbB-HbOPkSp-_dX-K_TseZ1rzOpOeHGPuYE",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 2,
+            "revokedAtGeneration": 6
+          },
+          {
+            "keyId": "catalog-test",
+            "purpose": "catalog",
+            "scope": {
+              "channels": [
+                "stable",
+                "candidate"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "FxndOhHGRh2nSE8fwKig2JiEr4JiAxiBKs93Cot1KDA",
+              "y": "ulo4Tm574YAJziOzo5BPU4LbfP5H9Mif2I1H4dzWV5Q",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 5
+          }
+        ],
+        "profiles": [
+          {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          {
+            "id": "assembly.definition",
+            "version": "0.1.0",
+            "fingerprint": "sha256:c0982d5295ae876e51b0585ab48ef5171c01e2979eab0232457392ad644d86e7"
+          }
+        ],
+        "policies": {
+          "provider": {
+            "allowedCapabilities": [
+              "db.instance.manage",
+              "db.backup.manage",
+              "db.connection.issue",
+              "storage.claim.bind"
+            ],
+            "allowedEffects": [
+              "none",
+              "read-cost",
+              "mutation",
+              "destructive"
+            ]
+          },
+          "assembly": {
+            "allowedCapabilities": [
+              "osr.definition.read"
+            ],
+            "allowedEffects": [
+              "none",
+              "read-cost"
+            ]
+          }
+        },
+        "trustedBuilders": [
+          "https://github.com/opensphere-platform/osr-builder/.github/workflows/release.yml@refs/heads/main"
+        ],
+        "dependencyLock": [
+          {
+            "module": "hiss.storage",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:59b081200de9c0c8cfeb3ed4d1b7b765852111590cda447af4a9490a4e2c113d",
+            "generation": 3
+          },
+          {
+            "module": "provider.postgres",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:64930be868c81ead4561eb6186343d798765a5d46ac95b1e07cd0d45bd96bf3a",
+            "generation": 3
+          },
+          {
+            "module": "provider.samba-ad",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:5ffb9b9b45d8d110bc8988c437437f6c7a4b5caa3c8885b82ee55a1bedcaf06d",
+            "generation": 3
+          },
+          {
+            "module": "engine.mail",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:9555f32a7ac1482e601f1cb97144c254a362348644833e62e35bce18638df881",
+            "generation": 3
+          }
+        ],
+        "channelSequences": [
+          {
+            "authority": "osr.opensphere-platform",
+            "channel": "stable",
+            "sequence": 40,
+            "digest": "sha256:11a40b3dc751a3e5038949ef3d384e41fd885ea7322219e0f4e7e7919e3f6f17"
+          }
+        ]
+      },
+      "signature": {
+        "alg": "ES256-P1363",
+        "keyId": "osr-anchor-test",
+        "value": "cmYDnYvt-YQs4BXmh8WZdP2XWlnALAK5TgO3z0oYjsec_3V6qvqs9s8GGemCo__tF85msFUu0RQX60-yHuu5VQ"
+      }
+    },
+    "profiles": [
+      {
+        "schema": "opensphere.materializer-profile/v1",
+        "id": "provider.stackgres-pg",
+        "version": "0.1.0",
+        "class": "provider",
+        "appliesTo": [
+          "provider.postgres"
+        ],
+        "mechanism": "stackgres",
+        "capabilities": [
+          "db.instance.manage",
+          "db.backup.manage",
+          "db.connection.issue",
+          "storage.claim.bind"
+        ],
+        "allowedEffects": [
+          "none",
+          "read-cost",
+          "mutation",
+          "destructive"
+        ],
+        "resources": [
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGCluster",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGPostgresConfig",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGPoolingConfig",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGInstanceProfile",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGObjectStorage",
+            "max": 1
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Secret",
+            "max": 2
+          }
+        ],
+        "forbiddenResources": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "StatefulSet"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "DaemonSet"
+          },
+          {
+            "apiVersion": "rbac.authorization.k8s.io/v1",
+            "kind": "ClusterRole"
+          },
+          {
+            "apiVersion": "rbac.authorization.k8s.io/v1",
+            "kind": "ClusterRoleBinding"
+          },
+          {
+            "apiVersion": "apiextensions.k8s.io/v1",
+            "kind": "CustomResourceDefinition"
+          }
+        ],
+        "rbac": [
+          {
+            "apiGroups": [
+              "stackgres.io"
+            ],
+            "resources": [
+              "sgclusters",
+              "sgpostgresconfigs",
+              "sgpoolingconfigs",
+              "sginstanceprofiles",
+              "sgobjectstorages"
+            ],
+            "verbs": [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+              "delete"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "secrets"
+            ],
+            "verbs": [
+              "get",
+              "create",
+              "update"
+            ]
+          }
+        ],
+        "storage": {
+          "mode": "foundation-profile",
+          "allowedProfiles": [
+            "foundation.block-rwo"
+          ]
+        },
+        "verification": [
+          {
+            "id": "sgcluster-ready",
+            "description": "SGCluster의 모든 인스턴스가 Ready이고 primary가 하나다."
+          },
+          {
+            "id": "connection-check",
+            "description": "발급한 연결 정보로 읽기·쓰기 질의가 성공한다."
+          },
+          {
+            "id": "backup-configured",
+            "description": "SGObjectStorage 백업 대상이 검증된 Foundation 저장 프로필이다."
+          }
+        ],
+        "restrictedOperations": [
+          "recover",
+          "retire",
+          "suspend"
+        ]
+      },
+      {
+        "schema": "opensphere.materializer-profile/v1",
+        "id": "assembly.definition",
+        "version": "0.1.0",
+        "class": "assembly",
+        "appliesTo": [
+          "assembly.mail",
+          "assembly.chat"
+        ],
+        "mechanism": "definition-only",
+        "capabilities": [
+          "osr.definition.read"
+        ],
+        "allowedEffects": [
+          "none",
+          "read-cost"
+        ],
+        "resources": [],
+        "forbiddenResources": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "StatefulSet"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "DaemonSet"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Pod"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim"
+          }
+        ],
+        "rbac": [],
+        "storage": {
+          "mode": "none"
+        },
+        "verification": [
+          {
+            "id": "definition-registered",
+            "description": "등록된 정의 digest·generation이 판정 대상과 같다."
+          },
+          {
+            "id": "members-substantive",
+            "description": "필수 멤버 모듈이 모두 실질 상태이고 구성 가능하다."
+          }
+        ],
+        "restrictedOperations": [
+          "retire"
+        ]
+      }
+    ]
+  },
+  "vectors": [
+    {
+      "id": "P01",
+      "kind": "permission",
+      "title": "부여된 capability 안의 읽기 명령은 바로 허용",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "substantive",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.status",
+          "description": "provider.postgres status 명령(시험 fixture)",
+          "kind": "read",
+          "mutation": false,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "none",
+          "requiredPermissions": [
+            "db.instance.manage"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "none"
+        },
+        "caller": {
+          "subject": "user:operator-a",
+          "permissions": [
+            "db.instance.manage",
+            "db.backup.manage"
+          ]
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-01",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "allow"
+      },
+      "expect": {
+        "result": "pass"
+      }
+    },
+    {
+      "id": "P02",
+      "kind": "permission",
+      "title": "쓰기 명령은 허용이어도 Execution Core 승인 경로로 간다",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "substantive",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.apply",
+          "description": "provider.postgres apply 명령(시험 fixture)",
+          "kind": "apply",
+          "mutation": true,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "request-id",
+          "requiredPermissions": [
+            "db.instance.manage"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "mutation",
+          "statusCommand": "provider.postgres.status",
+          "review": {
+            "reason": "apply은 설치본 상태를 바꾸므로 Execution Core 승인을 거친다."
+          }
+        },
+        "caller": {
+          "subject": "user:operator-a",
+          "permissions": [
+            "db.instance.manage",
+            "db.backup.manage"
+          ]
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-01",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "allow"
+      },
+      "expect": {
+        "result": "pass",
+        "route": "execution-core-approval"
+      }
+    },
+    {
+      "id": "P03",
+      "kind": "permission",
+      "title": "명령 계약이 더 넓은 권한을 요구해도 부여되지 않는다",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "substantive",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.status",
+          "description": "provider.postgres status 명령(시험 fixture)",
+          "kind": "read",
+          "mutation": false,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "none",
+          "requiredPermissions": [
+            "cluster.rbac.admin"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "none"
+        },
+        "caller": {
+          "subject": "user:operator-a",
+          "permissions": [
+            "db.instance.manage",
+            "db.backup.manage"
+          ]
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-01",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "allow"
+      },
+      "expect": {
+        "result": "reject",
+        "code": "CapabilityNotGranted",
+        "step": "permission"
+      }
+    },
+    {
+      "id": "P04",
+      "kind": "permission",
+      "title": "호출자에게 없는 권한은 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "substantive",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.status",
+          "description": "provider.postgres status 명령(시험 fixture)",
+          "kind": "read",
+          "mutation": false,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "none",
+          "requiredPermissions": [
+            "db.instance.manage"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "none"
+        },
+        "caller": {
+          "subject": "user:viewer",
+          "permissions": []
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-01",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "allow"
+      },
+      "expect": {
+        "result": "reject",
+        "code": "CallerPermissionMissing",
+        "step": "permission"
+      }
+    },
+    {
+      "id": "P05",
+      "kind": "permission",
+      "title": "만료된 위임은 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "substantive",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.status",
+          "description": "provider.postgres status 명령(시험 fixture)",
+          "kind": "read",
+          "mutation": false,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "none",
+          "requiredPermissions": [
+            "db.instance.manage"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "none"
+        },
+        "caller": {
+          "subject": "agent:r2d2",
+          "permissions": [
+            "db.instance.manage"
+          ],
+          "delegation": {
+            "issuedAt": "2026-11-10T00:00:00Z",
+            "expiresAt": "2026-11-17T00:00:00Z",
+            "installations": [
+              "inst-provider-postgres-01"
+            ]
+          }
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-01",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "allow"
+      },
+      "expect": {
+        "result": "reject",
+        "code": "DelegationExpired",
+        "step": "permission"
+      }
+    },
+    {
+      "id": "P06",
+      "kind": "permission",
+      "title": "다른 설치본을 대상으로 하면 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "substantive",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.status",
+          "description": "provider.postgres status 명령(시험 fixture)",
+          "kind": "read",
+          "mutation": false,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "none",
+          "requiredPermissions": [
+            "db.instance.manage"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "none"
+        },
+        "caller": {
+          "subject": "user:operator-a",
+          "permissions": [
+            "db.instance.manage",
+            "db.backup.manage"
+          ]
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-02",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "allow"
+      },
+      "expect": {
+        "result": "reject",
+        "code": "ScopeMismatch",
+        "step": "permission"
+      }
+    },
+    {
+      "id": "P07",
+      "kind": "permission",
+      "title": "형식 멤버(실질 아님) 설치본에 쓰기는 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "formal",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.apply",
+          "description": "provider.postgres apply 명령(시험 fixture)",
+          "kind": "apply",
+          "mutation": true,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "request-id",
+          "requiredPermissions": [
+            "db.instance.manage"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "mutation",
+          "statusCommand": "provider.postgres.status",
+          "review": {
+            "reason": "apply은 설치본 상태를 바꾸므로 Execution Core 승인을 거친다."
+          }
+        },
+        "caller": {
+          "subject": "user:operator-a",
+          "permissions": [
+            "db.instance.manage",
+            "db.backup.manage"
+          ]
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-01",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "allow"
+      },
+      "expect": {
+        "result": "reject",
+        "code": "ScopeMismatch",
+        "step": "permission"
+      }
+    },
+    {
+      "id": "P08",
+      "kind": "permission",
+      "title": "Owner 최종 검사가 거절하면 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "installation": {
+          "installationId": "inst-provider-postgres-01",
+          "module": "provider.postgres",
+          "class": "provider",
+          "namespace": "osr-provider-postgres",
+          "state": "substantive",
+          "profile": {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          "capabilityRequests": [
+            "db.instance.manage",
+            "db.backup.manage",
+            "db.connection.issue"
+          ]
+        },
+        "command": {
+          "id": "provider.postgres.status",
+          "description": "provider.postgres status 명령(시험 fixture)",
+          "kind": "read",
+          "mutation": false,
+          "arguments": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "scope": "installation",
+          "idempotency": "none",
+          "requiredPermissions": [
+            "db.instance.manage"
+          ],
+          "output": {
+            "type": "object"
+          },
+          "effect": "none"
+        },
+        "caller": {
+          "subject": "user:operator-a",
+          "permissions": [
+            "db.instance.manage",
+            "db.backup.manage"
+          ]
+        },
+        "target": {
+          "installationId": "inst-provider-postgres-01",
+          "namespace": "osr-provider-postgres"
+        },
+        "ownerCheck": "deny"
+      },
+      "expect": {
+        "result": "reject",
+        "code": "OwnerDenied",
+        "step": "permission"
+      }
+    }
+  ]
+}

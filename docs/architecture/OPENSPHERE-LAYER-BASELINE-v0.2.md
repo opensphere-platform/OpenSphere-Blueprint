@@ -255,7 +255,7 @@ OpenSphere는 **admin 영역**과 **사원 영역**으로 나뉜다. 두 영역�
 | O-10 | **외부 접속 정책의 소유 경계(D-59).** 누가 어떤 조건(위치, 장치, MFA, VPN)으로 어느 앱에 들어올지는 사원 영역(Governance)이 정한다. 공개 진입점, 인증서, 공인 DNS, VPN 같은 노출 설비는 HISS·Backbone 운영이다. 두 쪽의 계약이 필요하다 | Keycloak 조건부 접근 정책, Workspace origin 노출, O-6 C1·C2 범위 |
 | O-11 | **기본 저장 엔진(D-86).** HISS의 저장 엔진을 외부 Ceph(Rook External · CSI)로 둘지, Longhorn을 함께 둘지, 둘의 관계(기본 · 대체 · 등급별)를 정한다. 아카이브는 둘 다 쓴다: Cluster Manager는 외부 Ceph를 Rook External로 연결하고, PostgreSQL 프로필은 `hiss.storage.replicated-*`(Longhorn)를 쓴다 | 미정 |
 | O-12 | **사원 영역 AI 운영(토큰 공급 · 에이전트 상태 · 제어).** 모델 게이트웨이 확정, 가중 토큰, 부서 풀 집행, 개인 에이전트 재원, 공용 에이전트 정의, D-48 승계 보완, 비활성 · 재인증, 데이터 세 층 보존, 엔진의 콘텐츠 경계(D-29), 깊이 2 위임 구현, 관측 스키마, 고영향 용도 게이트, 개인 단위 지표 공개 범위의 결정 후보 A~M. [사원 영역 AI 운영 설계 초안](OPENSPHERE-AI-OPERATIONS-v0.1.md) | 미정 |
-| O-13 | **OpenSphere Registry(OSR)와 모듈 멤버십.** Backbone 밖 모듈의 등록 · 형식적/실질적 멤버 판정, 필수 기여(매뉴얼 · OS Shell 명령 · OCI 산출물 · RAG), GHCR 발행 · 채널 카탈로그, 일반 모듈 설치 경로의 결정 후보 OSR-A~J. [OSR 규격 초안](../specs/OPENSPHERE-REGISTRY-OSR-v0.1.md) | 미정 |
+| O-13 | **OpenSphere Registry(OSR)와 모듈 멤버십.** Backbone 밖 모듈의 등록 · 형식적/실질적 멤버 판정, 필수 기여(매뉴얼 · OS Shell 명령 · OCI 산출물 · RAG), GHCR 발행 · 채널 카탈로그, 일반 모듈 설치 경로, 유효 권한 · 고권한 profile · 회수 정책의 결정 후보 OSR-A~M. [OSR 규격 v0.2](../specs/OPENSPHERE-REGISTRY-OSR-v0.2.md) · [구현 계획서 v0.2](../specs/OSR-IMPLEMENTATION-PLAN-v0.2.md) | 미정 |
 
 ## 10. 기존 자료와 달라지는 점
 

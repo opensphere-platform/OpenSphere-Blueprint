@@ -64,7 +64,7 @@
 | 리소스 유형 | 어셈블리가 내놓고 Governance가 나눠 주는 단위. 예: `mail.mailbox`. 제품명이 아니라 영역 이름으로 짓는다 | 사원은 구성요소가 아니라 리소스 유형을 받는다 |
 | 외부 어셈블리 | Fabric 밖의 리소스를 연결기·연결 객체로 묶어 들인 어셈블리 | [외부 리소스 편입 규칙](../specs/EXTERNAL-RESOURCE-ADMISSION-v0.1.md) |
 | 관리형 · 연동형 · 참조형 | 외부 리소스의 통제 등급. 적합성 시험으로 판정 | managed · federated · referenced |
-| OSR (OpenSphere Registry) | Backbone 안의 모듈 원장. Backbone 밖 레이어의 모듈(Provider · 엔진 · 어셈블리 · HISS 구성요소 · UI 등)의 정체 · 릴리스 · 기여 · 멤버 상태를 기록한다. 설치는 하지 않는다 | `제안` · [OSR 규격](../specs/OPENSPHERE-REGISTRY-OSR-v0.1.md) |
+| OSR (OpenSphere Registry) | Backbone 안의 모듈 원장. Backbone 밖 레이어의 모듈(Provider · 엔진 · 어셈블리 · HISS 구성요소 · UI 등)의 정체 · 릴리스 · 기여 · 멤버 상태를 기록한다. 설치는 하지 않는다 | `제안` · [OSR 규격](../specs/OPENSPHERE-REGISTRY-OSR-v0.2.md) |
 | 형식적 멤버 · 실질적 멤버 | 형식적 멤버는 릴리스가 서명 · 필수 기여(매뉴얼 · OS Shell 명령 · OCI · RAG) 검증을 통과한 상태. 실질적 멤버는 설치본에서 그 기여가 동작함을 확인한 상태 | `제안` · 같은 문서 §8 |
 | 공용 에이전트 | 부서 · 프로젝트 · 회사 중 한 단위가 소유하는 서비스 신원. 책임자는 그 단위의 Governance 책임자 역할. 호출형 실행은 배정 ∩ 호출자 권한 | `제안` · [사원 영역 AI 운영](../architecture/OPENSPHERE-AI-OPERATIONS-v0.1.md) §5 |
 | 가중 토큰 | `model.usage`의 배분 단위. 모델 등급별 가중치를 곱한 토큰 | `제안` · 같은 문서 §4 |

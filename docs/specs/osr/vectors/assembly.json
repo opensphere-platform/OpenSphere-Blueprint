@@ -1,0 +1,2113 @@
+{
+  "schema": "opensphere.osr-test-vectors/v1",
+  "group": "assembly",
+  "generatedBy": "tools/make-vectors.mjs",
+  "evaluationTime": "2026-11-18T00:00:00Z",
+  "note": "어셈블리 형식 판정과 10단계 대체 판정(assembly.mail). 키는 생성할 때마다 새로 만든 일회용 시험 키이며 어떤 실제 신뢰 경로에도 등록되지 않는다. 실행 입력은 { ...shared, ...vector.input }이다.",
+  "shared": {
+    "trustAnchor": {
+      "keyId": "osr-anchor-test",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "x": "n33OVcboYSJ2O7DvjlpwLJi4cuDYweUOz8LQfO1cA6E",
+        "y": "QDmAinyCUWJy0P9c0_nu8bMbXLpD-WVGaQN2oKxMqtY",
+        "crv": "P-256"
+      }
+    },
+    "context": {
+      "payload": {
+        "schema": "opensphere.osr-context/v1",
+        "authority": "osr.opensphere-platform",
+        "issuedAt": "2026-11-10T00:00:00Z",
+        "expiresAt": "2026-12-18T00:00:00Z",
+        "trustGeneration": 7,
+        "policyRevision": "pol-2026-11-18.1",
+        "backboneContract": "1.4.0",
+        "keys": [
+          {
+            "keyId": "release-test",
+            "purpose": "release",
+            "scope": {
+              "classes": [
+                "hiss",
+                "provider",
+                "engine",
+                "assembly"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "-HJAZZSUT13F4m2vjF0H7TviWlhkffFC_oJ1gRhCagQ",
+              "y": "O65l4DbxCtKUisSWCNRDnfsSlF8aw7r2jznT52QuQh0",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 5
+          },
+          {
+            "keyId": "release-ui-test",
+            "purpose": "release",
+            "scope": {
+              "classes": [
+                "ui"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "ooTKo7dwjT1qgLYKbq6C-BOx1sjczztdMQaZNJRP-z4",
+              "y": "3BOrVBsxwGoyWizBkq0lbQm_Fm1Syo_6taryWlZbUss",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 5
+          },
+          {
+            "keyId": "release-revoked-test",
+            "purpose": "release",
+            "scope": {
+              "classes": [
+                "provider"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "sWXkAEU868IQrrICSg6GksYBEYVeEjkFTUczzg4-C44",
+              "y": "gE50j227nbB-HbOPkSp-_dX-K_TseZ1rzOpOeHGPuYE",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 2,
+            "revokedAtGeneration": 6
+          },
+          {
+            "keyId": "catalog-test",
+            "purpose": "catalog",
+            "scope": {
+              "channels": [
+                "stable",
+                "candidate"
+              ]
+            },
+            "publicKeyJwk": {
+              "kty": "EC",
+              "x": "FxndOhHGRh2nSE8fwKig2JiEr4JiAxiBKs93Cot1KDA",
+              "y": "ulo4Tm574YAJziOzo5BPU4LbfP5H9Mif2I1H4dzWV5Q",
+              "crv": "P-256"
+            },
+            "addedAtGeneration": 5
+          }
+        ],
+        "profiles": [
+          {
+            "id": "provider.stackgres-pg",
+            "version": "0.1.0",
+            "fingerprint": "sha256:ab9f4c87e778701cc10d5e26f26aa94935ed12563b1951ce6ddab3b8a3419a84"
+          },
+          {
+            "id": "assembly.definition",
+            "version": "0.1.0",
+            "fingerprint": "sha256:c0982d5295ae876e51b0585ab48ef5171c01e2979eab0232457392ad644d86e7"
+          }
+        ],
+        "policies": {
+          "provider": {
+            "allowedCapabilities": [
+              "db.instance.manage",
+              "db.backup.manage",
+              "db.connection.issue",
+              "storage.claim.bind"
+            ],
+            "allowedEffects": [
+              "none",
+              "read-cost",
+              "mutation",
+              "destructive"
+            ]
+          },
+          "assembly": {
+            "allowedCapabilities": [
+              "osr.definition.read"
+            ],
+            "allowedEffects": [
+              "none",
+              "read-cost"
+            ]
+          }
+        },
+        "trustedBuilders": [
+          "https://github.com/opensphere-platform/osr-builder/.github/workflows/release.yml@refs/heads/main"
+        ],
+        "dependencyLock": [
+          {
+            "module": "hiss.storage",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:59b081200de9c0c8cfeb3ed4d1b7b765852111590cda447af4a9490a4e2c113d",
+            "generation": 3
+          },
+          {
+            "module": "provider.postgres",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:64930be868c81ead4561eb6186343d798765a5d46ac95b1e07cd0d45bd96bf3a",
+            "generation": 3
+          },
+          {
+            "module": "provider.samba-ad",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:5ffb9b9b45d8d110bc8988c437437f6c7a4b5caa3c8885b82ee55a1bedcaf06d",
+            "generation": 3
+          },
+          {
+            "module": "engine.mail",
+            "compatibilityVersion": "1.2.0",
+            "bundleDigest": "sha256:9555f32a7ac1482e601f1cb97144c254a362348644833e62e35bce18638df881",
+            "generation": 3
+          }
+        ],
+        "channelSequences": [
+          {
+            "authority": "osr.opensphere-platform",
+            "channel": "stable",
+            "sequence": 40,
+            "digest": "sha256:11a40b3dc751a3e5038949ef3d384e41fd885ea7322219e0f4e7e7919e3f6f17"
+          }
+        ]
+      },
+      "signature": {
+        "alg": "ES256-P1363",
+        "keyId": "osr-anchor-test",
+        "value": "cmYDnYvt-YQs4BXmh8WZdP2XWlnALAK5TgO3z0oYjsec_3V6qvqs9s8GGemCo__tF85msFUu0RQX60-yHuu5VQ"
+      }
+    },
+    "profiles": [
+      {
+        "schema": "opensphere.materializer-profile/v1",
+        "id": "provider.stackgres-pg",
+        "version": "0.1.0",
+        "class": "provider",
+        "appliesTo": [
+          "provider.postgres"
+        ],
+        "mechanism": "stackgres",
+        "capabilities": [
+          "db.instance.manage",
+          "db.backup.manage",
+          "db.connection.issue",
+          "storage.claim.bind"
+        ],
+        "allowedEffects": [
+          "none",
+          "read-cost",
+          "mutation",
+          "destructive"
+        ],
+        "resources": [
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGCluster",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGPostgresConfig",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGPoolingConfig",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGInstanceProfile",
+            "max": 1
+          },
+          {
+            "apiVersion": "stackgres.io/v1",
+            "kind": "SGObjectStorage",
+            "max": 1
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Secret",
+            "max": 2
+          }
+        ],
+        "forbiddenResources": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "StatefulSet"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "DaemonSet"
+          },
+          {
+            "apiVersion": "rbac.authorization.k8s.io/v1",
+            "kind": "ClusterRole"
+          },
+          {
+            "apiVersion": "rbac.authorization.k8s.io/v1",
+            "kind": "ClusterRoleBinding"
+          },
+          {
+            "apiVersion": "apiextensions.k8s.io/v1",
+            "kind": "CustomResourceDefinition"
+          }
+        ],
+        "rbac": [
+          {
+            "apiGroups": [
+              "stackgres.io"
+            ],
+            "resources": [
+              "sgclusters",
+              "sgpostgresconfigs",
+              "sgpoolingconfigs",
+              "sginstanceprofiles",
+              "sgobjectstorages"
+            ],
+            "verbs": [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+              "delete"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "secrets"
+            ],
+            "verbs": [
+              "get",
+              "create",
+              "update"
+            ]
+          }
+        ],
+        "storage": {
+          "mode": "foundation-profile",
+          "allowedProfiles": [
+            "foundation.block-rwo"
+          ]
+        },
+        "verification": [
+          {
+            "id": "sgcluster-ready",
+            "description": "SGCluster의 모든 인스턴스가 Ready이고 primary가 하나다."
+          },
+          {
+            "id": "connection-check",
+            "description": "발급한 연결 정보로 읽기·쓰기 질의가 성공한다."
+          },
+          {
+            "id": "backup-configured",
+            "description": "SGObjectStorage 백업 대상이 검증된 Foundation 저장 프로필이다."
+          }
+        ],
+        "restrictedOperations": [
+          "recover",
+          "retire",
+          "suspend"
+        ]
+      },
+      {
+        "schema": "opensphere.materializer-profile/v1",
+        "id": "assembly.definition",
+        "version": "0.1.0",
+        "class": "assembly",
+        "appliesTo": [
+          "assembly.mail",
+          "assembly.chat"
+        ],
+        "mechanism": "definition-only",
+        "capabilities": [
+          "osr.definition.read"
+        ],
+        "allowedEffects": [
+          "none",
+          "read-cost"
+        ],
+        "resources": [],
+        "forbiddenResources": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "StatefulSet"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "DaemonSet"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Pod"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim"
+          }
+        ],
+        "rbac": [],
+        "storage": {
+          "mode": "none"
+        },
+        "verification": [
+          {
+            "id": "definition-registered",
+            "description": "등록된 정의 digest·generation이 판정 대상과 같다."
+          },
+          {
+            "id": "members-substantive",
+            "description": "필수 멤버 모듈이 모두 실질 상태이고 구성 가능하다."
+          }
+        ],
+        "restrictedOperations": [
+          "retire"
+        ]
+      }
+    ]
+  },
+  "vectors": [
+    {
+      "id": "A01",
+      "kind": "release",
+      "title": "runtime·PVC 없는 assembly.mail은 형식 판정을 통과한다",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "release": {
+          "repository": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+          "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8",
+          "index": {
+            "schemaVersion": 2,
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "artifactType": "application/vnd.opensphere.module.v1+json",
+            "manifests": [
+              {
+                "mediaType": "application/vnd.opensphere.descriptor.v1+json",
+                "digest": "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd",
+                "annotations": {
+                  "io.opensphere.part": "descriptor"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.manual.v1+json",
+                "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869",
+                "annotations": {
+                  "io.opensphere.part": "manual"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.commands.v1+json",
+                "digest": "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333",
+                "annotations": {
+                  "io.opensphere.part": "commands"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.knowledge.v1+json",
+                "digest": "sha256:85c785e0d832442136d4b765a76f94a7cc73d487f3e5901bedb2a0c2cc9826f7",
+                "annotations": {
+                  "io.opensphere.part": "knowledge"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.definition.v1+json",
+                "digest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+                "annotations": {
+                  "io.opensphere.part": "definition"
+                }
+              }
+            ]
+          },
+          "blobs": {
+            "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd": {
+              "schema": "opensphere.module/v1",
+              "id": "assembly.mail",
+              "class": "assembly",
+              "displayName": "메일 어셈블리",
+              "owner": "opensphere-platform/catalog",
+              "description": "메일 서비스를 구성하는 실행하지 않는 정의",
+              "version": "26.1118.0900.1",
+              "compatibilityVersion": "1.0.0",
+              "plane": "catalog",
+              "backboneCompat": "^1.0.0",
+              "dependencies": [
+                {
+                  "module": "provider.postgres",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                },
+                {
+                  "module": "provider.samba-ad",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                },
+                {
+                  "module": "engine.mail",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                }
+              ],
+              "profile": "assembly.definition",
+              "capabilityRequests": [
+                "osr.definition.read"
+              ],
+              "contributions": {
+                "manual": {
+                  "enabled": true,
+                  "artifact": "manual"
+                },
+                "commands": {
+                  "enabled": true,
+                  "artifact": "commands"
+                },
+                "oci": {
+                  "enabled": true
+                },
+                "knowledge": {
+                  "enabled": true,
+                  "artifact": "knowledge"
+                },
+                "definition": {
+                  "enabled": true,
+                  "artifact": "definition"
+                }
+              },
+              "supplyChain": {
+                "sourceRepository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "buildAuthority": "opensphere-platform/osr-builder"
+              },
+              "lifecycle": {
+                "register": "osr.assembly.register",
+                "update": "osr.assembly.update",
+                "retire": "osr.assembly.retire"
+              }
+            },
+            "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869": {
+              "schema": "opensphere.manual-bundle/v1",
+              "module": "assembly.mail",
+              "documents": [
+                {
+                  "sourceId": "manual:assembly.mail:overview",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/overview.md",
+                  "documentType": "overview",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "overview"
+                  ],
+                  "checksum": "sha256:d1e457374234123c89be9eef8de519206211a78b5b4d0d6a76837a784c97a134",
+                  "content": "# assembly.mail overview\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:composition",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/composition.md",
+                  "documentType": "composition",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "composition"
+                  ],
+                  "checksum": "sha256:7a647de06d1ffb154c7e8532124c1692802edfb4890ba66afe821f5e45941a08",
+                  "content": "# assembly.mail composition\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:operations",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/operations.md",
+                  "documentType": "operations",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "operations"
+                  ],
+                  "checksum": "sha256:e2f360d9a6eac2fa73cbbdf18ecf86e340b217c61ada3720c5b378b91089b5fa",
+                  "content": "# assembly.mail operations\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:troubleshooting",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/troubleshooting.md",
+                  "documentType": "troubleshooting",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "troubleshooting"
+                  ],
+                  "checksum": "sha256:31b76d77cec1c1a203acb8e6d6c5887a4cae11809d64a6771924338ef8ac16f4",
+                  "content": "# assembly.mail troubleshooting\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:commands",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/commands.md",
+                  "documentType": "commands",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "commands"
+                  ],
+                  "checksum": "sha256:0f225f9bc999169939be12f3766da132ee9c0cd6f6a48bbce5d5251b3ffd6e43",
+                  "content": "# assembly.mail commands\n시험 fixture 문서."
+                }
+              ]
+            },
+            "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333": {
+              "schema": "opensphere.owner-commands/v4",
+              "module": "assembly.mail",
+              "ownerBinding": "osr.definition-owner",
+              "commands": [
+                {
+                  "id": "assembly.mail.status",
+                  "description": "assembly.mail status 명령(시험 fixture)",
+                  "kind": "read",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "none"
+                },
+                {
+                  "id": "assembly.mail.inspect",
+                  "description": "assembly.mail inspect 명령(시험 fixture)",
+                  "kind": "read",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "none"
+                },
+                {
+                  "id": "assembly.mail.verify",
+                  "description": "assembly.mail verify 명령(시험 fixture)",
+                  "kind": "verify",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "read-cost"
+                }
+              ]
+            },
+            "sha256:85c785e0d832442136d4b765a76f94a7cc73d487f3e5901bedb2a0c2cc9826f7": {
+              "schema": "opensphere.knowledge-bundle/v1",
+              "module": "assembly.mail",
+              "documents": [
+                {
+                  "id": "knowledge:assembly.mail:overview",
+                  "module": "assembly.mail",
+                  "kind": "ReleaseDocumentation",
+                  "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                  "path": "docs/overview.md",
+                  "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "sha256": "c8ccc871cd4003100edbd2d202769af3b3eca9f4b6fdeb50350c99b0145ea104",
+                  "license": "Apache-2.0",
+                  "language": "ko",
+                  "content": "assembly.mail overview 요약(시험 fixture).",
+                  "source": {
+                    "part": "manual",
+                    "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869"
+                  }
+                },
+                {
+                  "id": "knowledge:assembly.mail:operations",
+                  "module": "assembly.mail",
+                  "kind": "ReleaseDocumentation",
+                  "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                  "path": "docs/operations.md",
+                  "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "sha256": "182061df8f46596ba335577cb99d7c0d5f4ff7e517c33aaf59e648d67c0f13fb",
+                  "license": "Apache-2.0",
+                  "language": "ko",
+                  "content": "assembly.mail operations 요약(시험 fixture).",
+                  "source": {
+                    "part": "manual",
+                    "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869"
+                  }
+                }
+              ]
+            },
+            "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726": {
+              "schema": "opensphere.assembly-definition/v1",
+              "module": "assembly.mail",
+              "members": [
+                {
+                  "module": "provider.postgres",
+                  "role": "메일 메타데이터 저장",
+                  "required": true
+                },
+                {
+                  "module": "provider.samba-ad",
+                  "role": "사용자 디렉터리",
+                  "required": true
+                },
+                {
+                  "module": "engine.mail",
+                  "role": "메일 송수신 엔진",
+                  "required": true
+                }
+              ],
+              "resourceTypes": [
+                "MailDomain",
+                "Mailbox"
+              ],
+              "composition": {
+                "claims": [
+                  {
+                    "member": "provider.postgres",
+                    "claim": "Database"
+                  },
+                  {
+                    "member": "provider.samba-ad",
+                    "claim": "DirectoryOU"
+                  }
+                ]
+              }
+            }
+          },
+          "referrers": {
+            "signature": {
+              "payload": {
+                "schema": "opensphere.release-signature/v1",
+                "subject": {
+                  "repository": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8"
+                },
+                "module": {
+                  "id": "assembly.mail",
+                  "class": "assembly",
+                  "version": "26.1118.0900.1"
+                },
+                "descriptorDigest": "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd",
+                "artifacts": [
+                  {
+                    "part": "descriptor",
+                    "digest": "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd"
+                  },
+                  {
+                    "part": "manual",
+                    "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869"
+                  },
+                  {
+                    "part": "commands",
+                    "digest": "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333"
+                  },
+                  {
+                    "part": "knowledge",
+                    "digest": "sha256:85c785e0d832442136d4b765a76f94a7cc73d487f3e5901bedb2a0c2cc9826f7"
+                  },
+                  {
+                    "part": "definition",
+                    "digest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726"
+                  }
+                ],
+                "evidence": {
+                  "sbom": "sha256:0816446acc8ec054502ba55d5cda3661f3d8aa17cc4275d0841556ef40f63542",
+                  "provenance": "sha256:1418a3f544575556b8f07dc52b45fe92dd913b82a063f3d11d6944fe25241c5e"
+                },
+                "keyId": "release-test",
+                "issuedAt": "2026-11-10T00:00:00Z",
+                "expiresAt": "2026-12-18T00:00:00Z"
+              },
+              "signature": {
+                "alg": "ES256-P1363",
+                "keyId": "release-test",
+                "value": "RF8fG2HC6MvGe8WDDST9wjchNokjqBVkDxQp07Dc1RoiQdFRsjVMEG-LobVZ5orc1q2M_9OvTI4rB30kRJJEDg"
+              }
+            },
+            "sbom": {
+              "_type": "https://in-toto.io/Statement/v1",
+              "subject": [
+                {
+                  "name": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "digest": {
+                    "sha256": "66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8"
+                  }
+                }
+              ],
+              "predicateType": "https://spdx.dev/Document/v2.3",
+              "predicate": {
+                "spdxVersion": "SPDX-2.3",
+                "name": "assembly.mail-26.1118.0900.1",
+                "packages": [
+                  {
+                    "name": "assembly.mail",
+                    "versionInfo": "26.1118.0900.1"
+                  }
+                ]
+              }
+            },
+            "provenance": {
+              "_type": "https://in-toto.io/Statement/v1",
+              "subject": [
+                {
+                  "name": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "digest": {
+                    "sha256": "66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8"
+                  }
+                }
+              ],
+              "predicateType": "https://slsa.dev/provenance/v1",
+              "predicate": {
+                "buildDefinition": {
+                  "buildType": "https://opensphere-platform.github.io/osr-builder/v1",
+                  "externalParameters": {
+                    "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                },
+                "runDetails": {
+                  "builder": {
+                    "id": "https://github.com/opensphere-platform/osr-builder/.github/workflows/release.yml@refs/heads/main"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "expect": {
+        "result": "pass"
+      }
+    },
+    {
+      "id": "A02",
+      "kind": "release",
+      "title": "어셈블리가 실행 이미지를 요구하면 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "release": {
+          "repository": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+          "bundleDigest": "sha256:0fdfd67411f8cb99025d4d6b4cde62a8a17e06aadbf26da4006d65dd30464482",
+          "index": {
+            "schemaVersion": 2,
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "artifactType": "application/vnd.opensphere.module.v1+json",
+            "manifests": [
+              {
+                "mediaType": "application/vnd.opensphere.descriptor.v1+json",
+                "digest": "sha256:72eb88615cbba12288de2681fea92897243e8cb3804640edaab7295c766c1923",
+                "annotations": {
+                  "io.opensphere.part": "descriptor"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.manual.v1+json",
+                "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869",
+                "annotations": {
+                  "io.opensphere.part": "manual"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.commands.v1+json",
+                "digest": "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333",
+                "annotations": {
+                  "io.opensphere.part": "commands"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.knowledge.v1+json",
+                "digest": "sha256:85c785e0d832442136d4b765a76f94a7cc73d487f3e5901bedb2a0c2cc9826f7",
+                "annotations": {
+                  "io.opensphere.part": "knowledge"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.definition.v1+json",
+                "digest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+                "annotations": {
+                  "io.opensphere.part": "definition"
+                }
+              }
+            ]
+          },
+          "blobs": {
+            "sha256:72eb88615cbba12288de2681fea92897243e8cb3804640edaab7295c766c1923": {
+              "schema": "opensphere.module/v1",
+              "id": "assembly.mail",
+              "class": "assembly",
+              "displayName": "메일 어셈블리",
+              "owner": "opensphere-platform/catalog",
+              "description": "메일 서비스를 구성하는 실행하지 않는 정의",
+              "version": "26.1118.0900.1",
+              "compatibilityVersion": "1.0.0",
+              "plane": "catalog",
+              "backboneCompat": "^1.0.0",
+              "dependencies": [
+                {
+                  "module": "provider.postgres",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                },
+                {
+                  "module": "provider.samba-ad",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                },
+                {
+                  "module": "engine.mail",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                }
+              ],
+              "profile": "assembly.definition",
+              "capabilityRequests": [
+                "osr.definition.read"
+              ],
+              "contributions": {
+                "manual": {
+                  "enabled": true,
+                  "artifact": "manual"
+                },
+                "commands": {
+                  "enabled": true,
+                  "artifact": "commands"
+                },
+                "oci": {
+                  "enabled": true
+                },
+                "knowledge": {
+                  "enabled": true,
+                  "artifact": "knowledge"
+                },
+                "definition": {
+                  "enabled": true,
+                  "artifact": "definition"
+                }
+              },
+              "supplyChain": {
+                "sourceRepository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "buildAuthority": "opensphere-platform/osr-builder"
+              },
+              "lifecycle": {
+                "register": "osr.assembly.register",
+                "update": "osr.assembly.update",
+                "retire": "osr.assembly.retire"
+              },
+              "runtime": {
+                "images": [
+                  {
+                    "name": "placeholder",
+                    "digest": "sha256:f924bb1b3e9ebc1afa3bed955c0004861a3dbb4a1ea3e7c3bb93072098c9a22e"
+                  }
+                ],
+                "health": {
+                  "path": "/h"
+                },
+                "ready": {
+                  "path": "/r"
+                },
+                "securityContext": {
+                  "runAsNonRoot": true
+                }
+              }
+            },
+            "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869": {
+              "schema": "opensphere.manual-bundle/v1",
+              "module": "assembly.mail",
+              "documents": [
+                {
+                  "sourceId": "manual:assembly.mail:overview",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/overview.md",
+                  "documentType": "overview",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "overview"
+                  ],
+                  "checksum": "sha256:d1e457374234123c89be9eef8de519206211a78b5b4d0d6a76837a784c97a134",
+                  "content": "# assembly.mail overview\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:composition",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/composition.md",
+                  "documentType": "composition",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "composition"
+                  ],
+                  "checksum": "sha256:7a647de06d1ffb154c7e8532124c1692802edfb4890ba66afe821f5e45941a08",
+                  "content": "# assembly.mail composition\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:operations",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/operations.md",
+                  "documentType": "operations",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "operations"
+                  ],
+                  "checksum": "sha256:e2f360d9a6eac2fa73cbbdf18ecf86e340b217c61ada3720c5b378b91089b5fa",
+                  "content": "# assembly.mail operations\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:troubleshooting",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/troubleshooting.md",
+                  "documentType": "troubleshooting",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "troubleshooting"
+                  ],
+                  "checksum": "sha256:31b76d77cec1c1a203acb8e6d6c5887a4cae11809d64a6771924338ef8ac16f4",
+                  "content": "# assembly.mail troubleshooting\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:commands",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/commands.md",
+                  "documentType": "commands",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "commands"
+                  ],
+                  "checksum": "sha256:0f225f9bc999169939be12f3766da132ee9c0cd6f6a48bbce5d5251b3ffd6e43",
+                  "content": "# assembly.mail commands\n시험 fixture 문서."
+                }
+              ]
+            },
+            "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333": {
+              "schema": "opensphere.owner-commands/v4",
+              "module": "assembly.mail",
+              "ownerBinding": "osr.definition-owner",
+              "commands": [
+                {
+                  "id": "assembly.mail.status",
+                  "description": "assembly.mail status 명령(시험 fixture)",
+                  "kind": "read",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "none"
+                },
+                {
+                  "id": "assembly.mail.inspect",
+                  "description": "assembly.mail inspect 명령(시험 fixture)",
+                  "kind": "read",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "none"
+                },
+                {
+                  "id": "assembly.mail.verify",
+                  "description": "assembly.mail verify 명령(시험 fixture)",
+                  "kind": "verify",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "read-cost"
+                }
+              ]
+            },
+            "sha256:85c785e0d832442136d4b765a76f94a7cc73d487f3e5901bedb2a0c2cc9826f7": {
+              "schema": "opensphere.knowledge-bundle/v1",
+              "module": "assembly.mail",
+              "documents": [
+                {
+                  "id": "knowledge:assembly.mail:overview",
+                  "module": "assembly.mail",
+                  "kind": "ReleaseDocumentation",
+                  "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                  "path": "docs/overview.md",
+                  "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "sha256": "c8ccc871cd4003100edbd2d202769af3b3eca9f4b6fdeb50350c99b0145ea104",
+                  "license": "Apache-2.0",
+                  "language": "ko",
+                  "content": "assembly.mail overview 요약(시험 fixture).",
+                  "source": {
+                    "part": "manual",
+                    "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869"
+                  }
+                },
+                {
+                  "id": "knowledge:assembly.mail:operations",
+                  "module": "assembly.mail",
+                  "kind": "ReleaseDocumentation",
+                  "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                  "path": "docs/operations.md",
+                  "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "sha256": "182061df8f46596ba335577cb99d7c0d5f4ff7e517c33aaf59e648d67c0f13fb",
+                  "license": "Apache-2.0",
+                  "language": "ko",
+                  "content": "assembly.mail operations 요약(시험 fixture).",
+                  "source": {
+                    "part": "manual",
+                    "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869"
+                  }
+                }
+              ]
+            },
+            "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726": {
+              "schema": "opensphere.assembly-definition/v1",
+              "module": "assembly.mail",
+              "members": [
+                {
+                  "module": "provider.postgres",
+                  "role": "메일 메타데이터 저장",
+                  "required": true
+                },
+                {
+                  "module": "provider.samba-ad",
+                  "role": "사용자 디렉터리",
+                  "required": true
+                },
+                {
+                  "module": "engine.mail",
+                  "role": "메일 송수신 엔진",
+                  "required": true
+                }
+              ],
+              "resourceTypes": [
+                "MailDomain",
+                "Mailbox"
+              ],
+              "composition": {
+                "claims": [
+                  {
+                    "member": "provider.postgres",
+                    "claim": "Database"
+                  },
+                  {
+                    "member": "provider.samba-ad",
+                    "claim": "DirectoryOU"
+                  }
+                ]
+              }
+            }
+          },
+          "referrers": {
+            "signature": {
+              "payload": {
+                "schema": "opensphere.release-signature/v1",
+                "subject": {
+                  "repository": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "bundleDigest": "sha256:0fdfd67411f8cb99025d4d6b4cde62a8a17e06aadbf26da4006d65dd30464482"
+                },
+                "module": {
+                  "id": "assembly.mail",
+                  "class": "assembly",
+                  "version": "26.1118.0900.1"
+                },
+                "descriptorDigest": "sha256:72eb88615cbba12288de2681fea92897243e8cb3804640edaab7295c766c1923",
+                "artifacts": [
+                  {
+                    "part": "descriptor",
+                    "digest": "sha256:72eb88615cbba12288de2681fea92897243e8cb3804640edaab7295c766c1923"
+                  },
+                  {
+                    "part": "manual",
+                    "digest": "sha256:106a79b75ae9e5f350ce70ae4452e2be4389b2a851d90d0990816541c7645869"
+                  },
+                  {
+                    "part": "commands",
+                    "digest": "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333"
+                  },
+                  {
+                    "part": "knowledge",
+                    "digest": "sha256:85c785e0d832442136d4b765a76f94a7cc73d487f3e5901bedb2a0c2cc9826f7"
+                  },
+                  {
+                    "part": "definition",
+                    "digest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726"
+                  }
+                ],
+                "evidence": {
+                  "sbom": "sha256:d25b30a7704d634dc46c233b53ee26bf92ad3fac5eb1b0f0ce1e1e6875f2fb61",
+                  "provenance": "sha256:3964474ac74f0aa41fdbbd542097a86578e588cdc13b411f6c3202f0d8d83499"
+                },
+                "keyId": "release-test",
+                "issuedAt": "2026-11-10T00:00:00Z",
+                "expiresAt": "2026-12-18T00:00:00Z"
+              },
+              "signature": {
+                "alg": "ES256-P1363",
+                "keyId": "release-test",
+                "value": "F6jziI-XzmaqOzDImS_QBXbRl0tYjNbuvCSyT0le6NY14CIbJPhaaOD-5nU0Q3_uN2vG39DyStGY3eFZT5Eymw"
+              }
+            },
+            "sbom": {
+              "_type": "https://in-toto.io/Statement/v1",
+              "subject": [
+                {
+                  "name": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "digest": {
+                    "sha256": "0fdfd67411f8cb99025d4d6b4cde62a8a17e06aadbf26da4006d65dd30464482"
+                  }
+                }
+              ],
+              "predicateType": "https://spdx.dev/Document/v2.3",
+              "predicate": {
+                "spdxVersion": "SPDX-2.3",
+                "name": "assembly.mail-26.1118.0900.1",
+                "packages": [
+                  {
+                    "name": "assembly.mail",
+                    "versionInfo": "26.1118.0900.1"
+                  }
+                ]
+              }
+            },
+            "provenance": {
+              "_type": "https://in-toto.io/Statement/v1",
+              "subject": [
+                {
+                  "name": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "digest": {
+                    "sha256": "0fdfd67411f8cb99025d4d6b4cde62a8a17e06aadbf26da4006d65dd30464482"
+                  }
+                }
+              ],
+              "predicateType": "https://slsa.dev/provenance/v1",
+              "predicate": {
+                "buildDefinition": {
+                  "buildType": "https://opensphere-platform.github.io/osr-builder/v1",
+                  "externalParameters": {
+                    "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                },
+                "runDetails": {
+                  "builder": {
+                    "id": "https://github.com/opensphere-platform/osr-builder/.github/workflows/release.yml@refs/heads/main"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "expect": {
+        "result": "reject",
+        "code": "ClassRuleViolation",
+        "step": 5
+      }
+    },
+    {
+      "id": "A03",
+      "kind": "release",
+      "title": "composition 문서가 없는 어셈블리 매뉴얼은 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "release": {
+          "repository": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+          "bundleDigest": "sha256:3b90590faeb5377465afb5a63529c92d048edd24f798800a62a53c61935f46b9",
+          "index": {
+            "schemaVersion": 2,
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "artifactType": "application/vnd.opensphere.module.v1+json",
+            "manifests": [
+              {
+                "mediaType": "application/vnd.opensphere.descriptor.v1+json",
+                "digest": "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd",
+                "annotations": {
+                  "io.opensphere.part": "descriptor"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.manual.v1+json",
+                "digest": "sha256:06cf7e62324ab901247743a4a5ccf5f100f91339b3acd51f52d62e20475d956a",
+                "annotations": {
+                  "io.opensphere.part": "manual"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.commands.v1+json",
+                "digest": "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333",
+                "annotations": {
+                  "io.opensphere.part": "commands"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.knowledge.v1+json",
+                "digest": "sha256:833ef31a15d898ef92b3fdcbb5e6e0903b614149c91f011e1bda253c46b5c906",
+                "annotations": {
+                  "io.opensphere.part": "knowledge"
+                }
+              },
+              {
+                "mediaType": "application/vnd.opensphere.definition.v1+json",
+                "digest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+                "annotations": {
+                  "io.opensphere.part": "definition"
+                }
+              }
+            ]
+          },
+          "blobs": {
+            "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd": {
+              "schema": "opensphere.module/v1",
+              "id": "assembly.mail",
+              "class": "assembly",
+              "displayName": "메일 어셈블리",
+              "owner": "opensphere-platform/catalog",
+              "description": "메일 서비스를 구성하는 실행하지 않는 정의",
+              "version": "26.1118.0900.1",
+              "compatibilityVersion": "1.0.0",
+              "plane": "catalog",
+              "backboneCompat": "^1.0.0",
+              "dependencies": [
+                {
+                  "module": "provider.postgres",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                },
+                {
+                  "module": "provider.samba-ad",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                },
+                {
+                  "module": "engine.mail",
+                  "range": "^1.0.0",
+                  "kind": "required"
+                }
+              ],
+              "profile": "assembly.definition",
+              "capabilityRequests": [
+                "osr.definition.read"
+              ],
+              "contributions": {
+                "manual": {
+                  "enabled": true,
+                  "artifact": "manual"
+                },
+                "commands": {
+                  "enabled": true,
+                  "artifact": "commands"
+                },
+                "oci": {
+                  "enabled": true
+                },
+                "knowledge": {
+                  "enabled": true,
+                  "artifact": "knowledge"
+                },
+                "definition": {
+                  "enabled": true,
+                  "artifact": "definition"
+                }
+              },
+              "supplyChain": {
+                "sourceRepository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "buildAuthority": "opensphere-platform/osr-builder"
+              },
+              "lifecycle": {
+                "register": "osr.assembly.register",
+                "update": "osr.assembly.update",
+                "retire": "osr.assembly.retire"
+              }
+            },
+            "sha256:06cf7e62324ab901247743a4a5ccf5f100f91339b3acd51f52d62e20475d956a": {
+              "schema": "opensphere.manual-bundle/v1",
+              "module": "assembly.mail",
+              "documents": [
+                {
+                  "sourceId": "manual:assembly.mail:overview",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/overview.md",
+                  "documentType": "overview",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "overview"
+                  ],
+                  "checksum": "sha256:d1e457374234123c89be9eef8de519206211a78b5b4d0d6a76837a784c97a134",
+                  "content": "# assembly.mail overview\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:operations",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/operations.md",
+                  "documentType": "operations",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "operations"
+                  ],
+                  "checksum": "sha256:e2f360d9a6eac2fa73cbbdf18ecf86e340b217c61ada3720c5b378b91089b5fa",
+                  "content": "# assembly.mail operations\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:troubleshooting",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/troubleshooting.md",
+                  "documentType": "troubleshooting",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "troubleshooting"
+                  ],
+                  "checksum": "sha256:31b76d77cec1c1a203acb8e6d6c5887a4cae11809d64a6771924338ef8ac16f4",
+                  "content": "# assembly.mail troubleshooting\n시험 fixture 문서."
+                },
+                {
+                  "sourceId": "manual:assembly.mail:commands",
+                  "version": "26.1118.0900.1",
+                  "sourcePath": "docs/commands.md",
+                  "documentType": "commands",
+                  "authorityTier": 2,
+                  "audience": [
+                    "operator"
+                  ],
+                  "plane": "catalog",
+                  "module": "assembly.mail",
+                  "tags": [
+                    "commands"
+                  ],
+                  "checksum": "sha256:0f225f9bc999169939be12f3766da132ee9c0cd6f6a48bbce5d5251b3ffd6e43",
+                  "content": "# assembly.mail commands\n시험 fixture 문서."
+                }
+              ]
+            },
+            "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333": {
+              "schema": "opensphere.owner-commands/v4",
+              "module": "assembly.mail",
+              "ownerBinding": "osr.definition-owner",
+              "commands": [
+                {
+                  "id": "assembly.mail.status",
+                  "description": "assembly.mail status 명령(시험 fixture)",
+                  "kind": "read",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "none"
+                },
+                {
+                  "id": "assembly.mail.inspect",
+                  "description": "assembly.mail inspect 명령(시험 fixture)",
+                  "kind": "read",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "none"
+                },
+                {
+                  "id": "assembly.mail.verify",
+                  "description": "assembly.mail verify 명령(시험 fixture)",
+                  "kind": "verify",
+                  "mutation": false,
+                  "arguments": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  },
+                  "scope": "definition",
+                  "idempotency": "none",
+                  "requiredPermissions": [
+                    "osr.definition.read"
+                  ],
+                  "output": {
+                    "type": "object"
+                  },
+                  "effect": "read-cost"
+                }
+              ]
+            },
+            "sha256:833ef31a15d898ef92b3fdcbb5e6e0903b614149c91f011e1bda253c46b5c906": {
+              "schema": "opensphere.knowledge-bundle/v1",
+              "module": "assembly.mail",
+              "documents": [
+                {
+                  "id": "knowledge:assembly.mail:overview",
+                  "module": "assembly.mail",
+                  "kind": "ReleaseDocumentation",
+                  "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                  "path": "docs/overview.md",
+                  "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "sha256": "c8ccc871cd4003100edbd2d202769af3b3eca9f4b6fdeb50350c99b0145ea104",
+                  "license": "Apache-2.0",
+                  "language": "ko",
+                  "content": "assembly.mail overview 요약(시험 fixture).",
+                  "source": {
+                    "part": "manual",
+                    "digest": "sha256:06cf7e62324ab901247743a4a5ccf5f100f91339b3acd51f52d62e20475d956a"
+                  }
+                },
+                {
+                  "id": "knowledge:assembly.mail:operations",
+                  "module": "assembly.mail",
+                  "kind": "ReleaseDocumentation",
+                  "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                  "path": "docs/operations.md",
+                  "sourceRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "sha256": "182061df8f46596ba335577cb99d7c0d5f4ff7e517c33aaf59e648d67c0f13fb",
+                  "license": "Apache-2.0",
+                  "language": "ko",
+                  "content": "assembly.mail operations 요약(시험 fixture).",
+                  "source": {
+                    "part": "manual",
+                    "digest": "sha256:06cf7e62324ab901247743a4a5ccf5f100f91339b3acd51f52d62e20475d956a"
+                  }
+                }
+              ]
+            },
+            "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726": {
+              "schema": "opensphere.assembly-definition/v1",
+              "module": "assembly.mail",
+              "members": [
+                {
+                  "module": "provider.postgres",
+                  "role": "메일 메타데이터 저장",
+                  "required": true
+                },
+                {
+                  "module": "provider.samba-ad",
+                  "role": "사용자 디렉터리",
+                  "required": true
+                },
+                {
+                  "module": "engine.mail",
+                  "role": "메일 송수신 엔진",
+                  "required": true
+                }
+              ],
+              "resourceTypes": [
+                "MailDomain",
+                "Mailbox"
+              ],
+              "composition": {
+                "claims": [
+                  {
+                    "member": "provider.postgres",
+                    "claim": "Database"
+                  },
+                  {
+                    "member": "provider.samba-ad",
+                    "claim": "DirectoryOU"
+                  }
+                ]
+              }
+            }
+          },
+          "referrers": {
+            "signature": {
+              "payload": {
+                "schema": "opensphere.release-signature/v1",
+                "subject": {
+                  "repository": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "bundleDigest": "sha256:3b90590faeb5377465afb5a63529c92d048edd24f798800a62a53c61935f46b9"
+                },
+                "module": {
+                  "id": "assembly.mail",
+                  "class": "assembly",
+                  "version": "26.1118.0900.1"
+                },
+                "descriptorDigest": "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd",
+                "artifacts": [
+                  {
+                    "part": "descriptor",
+                    "digest": "sha256:b26e97e279d1a409cd8df6ab58023da7c38855cf7c87d31aceb2da6876922dfd"
+                  },
+                  {
+                    "part": "manual",
+                    "digest": "sha256:06cf7e62324ab901247743a4a5ccf5f100f91339b3acd51f52d62e20475d956a"
+                  },
+                  {
+                    "part": "commands",
+                    "digest": "sha256:b5a093daa73c77edc1af563d0b956c8761ef7b447c2a3c1ccfb5d03ef5941333"
+                  },
+                  {
+                    "part": "knowledge",
+                    "digest": "sha256:833ef31a15d898ef92b3fdcbb5e6e0903b614149c91f011e1bda253c46b5c906"
+                  },
+                  {
+                    "part": "definition",
+                    "digest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726"
+                  }
+                ],
+                "evidence": {
+                  "sbom": "sha256:8b6edb7abd8e18e73aa598e17af1501ecb516ca0c4e359fbf7d88c0f4028af88",
+                  "provenance": "sha256:b996c853443cb744eb8c8b7d667dd525e7d9f71469dd5d8a1596c27784485ad9"
+                },
+                "keyId": "release-test",
+                "issuedAt": "2026-11-10T00:00:00Z",
+                "expiresAt": "2026-12-18T00:00:00Z"
+              },
+              "signature": {
+                "alg": "ES256-P1363",
+                "keyId": "release-test",
+                "value": "rqyGjl3uK3UVs2nVddQGLbuuvQ-guHIJMAphwUWtN1bfHEeRQs2c7VfK9KLojudiAmEVrwBc7OarUvHcWW5zhQ"
+              }
+            },
+            "sbom": {
+              "_type": "https://in-toto.io/Statement/v1",
+              "subject": [
+                {
+                  "name": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "digest": {
+                    "sha256": "3b90590faeb5377465afb5a63529c92d048edd24f798800a62a53c61935f46b9"
+                  }
+                }
+              ],
+              "predicateType": "https://spdx.dev/Document/v2.3",
+              "predicate": {
+                "spdxVersion": "SPDX-2.3",
+                "name": "assembly.mail-26.1118.0900.1",
+                "packages": [
+                  {
+                    "name": "assembly.mail",
+                    "versionInfo": "26.1118.0900.1"
+                  }
+                ]
+              }
+            },
+            "provenance": {
+              "_type": "https://in-toto.io/Statement/v1",
+              "subject": [
+                {
+                  "name": "ghcr.io/opensphere-platform/opensphere-assembly-mail",
+                  "digest": {
+                    "sha256": "3b90590faeb5377465afb5a63529c92d048edd24f798800a62a53c61935f46b9"
+                  }
+                }
+              ],
+              "predicateType": "https://slsa.dev/provenance/v1",
+              "predicate": {
+                "buildDefinition": {
+                  "buildType": "https://opensphere-platform.github.io/osr-builder/v1",
+                  "externalParameters": {
+                    "repository": "https://github.com/opensphere-platform/opensphere-assembly-mail",
+                    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                },
+                "runDetails": {
+                  "builder": {
+                    "id": "https://github.com/opensphere-platform/osr-builder/.github/workflows/release.yml@refs/heads/main"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "expect": {
+        "result": "reject",
+        "code": "ManualMissing",
+        "step": 7
+      }
+    },
+    {
+      "id": "A04",
+      "kind": "assembly-substantive",
+      "title": "멤버가 모두 실질 상태면 어셈블리는 구성 가능(실질 판정 통과)",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "definition": {
+          "schema": "opensphere.assembly-definition/v1",
+          "module": "assembly.mail",
+          "members": [
+            {
+              "module": "provider.postgres",
+              "role": "메일 메타데이터 저장",
+              "required": true
+            },
+            {
+              "module": "provider.samba-ad",
+              "role": "사용자 디렉터리",
+              "required": true
+            },
+            {
+              "module": "engine.mail",
+              "role": "메일 송수신 엔진",
+              "required": true
+            }
+          ],
+          "resourceTypes": [
+            "MailDomain",
+            "Mailbox"
+          ],
+          "composition": {
+            "claims": [
+              {
+                "member": "provider.postgres",
+                "claim": "Database"
+              },
+              {
+                "member": "provider.samba-ad",
+                "claim": "DirectoryOU"
+              }
+            ]
+          }
+        },
+        "registration": {
+          "module": "assembly.mail",
+          "version": "26.1118.0900.1",
+          "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8",
+          "definitionDigest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+          "generation": 1
+        },
+        "members": [
+          {
+            "module": "provider.postgres",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:64930be868c81ead4561eb6186343d798765a5d46ac95b1e07cd0d45bd96bf3a",
+            "generation": 3
+          },
+          {
+            "module": "provider.samba-ad",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:5ffb9b9b45d8d110bc8988c437437f6c7a4b5caa3c8885b82ee55a1bedcaf06d",
+            "generation": 3
+          },
+          {
+            "module": "engine.mail",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:9555f32a7ac1482e601f1cb97144c254a362348644833e62e35bce18638df881",
+            "generation": 3
+          }
+        ],
+        "request": "evaluate"
+      },
+      "expect": {
+        "result": "pass",
+        "step": 10
+      }
+    },
+    {
+      "id": "A05",
+      "kind": "assembly-substantive",
+      "title": "필수 멤버(engine.mail)가 실질 상태가 아니면 구성 불가",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "definition": {
+          "schema": "opensphere.assembly-definition/v1",
+          "module": "assembly.mail",
+          "members": [
+            {
+              "module": "provider.postgres",
+              "role": "메일 메타데이터 저장",
+              "required": true
+            },
+            {
+              "module": "provider.samba-ad",
+              "role": "사용자 디렉터리",
+              "required": true
+            },
+            {
+              "module": "engine.mail",
+              "role": "메일 송수신 엔진",
+              "required": true
+            }
+          ],
+          "resourceTypes": [
+            "MailDomain",
+            "Mailbox"
+          ],
+          "composition": {
+            "claims": [
+              {
+                "member": "provider.postgres",
+                "claim": "Database"
+              },
+              {
+                "member": "provider.samba-ad",
+                "claim": "DirectoryOU"
+              }
+            ]
+          }
+        },
+        "registration": {
+          "module": "assembly.mail",
+          "version": "26.1118.0900.1",
+          "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8",
+          "definitionDigest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+          "generation": 1
+        },
+        "members": [
+          {
+            "module": "provider.postgres",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:64930be868c81ead4561eb6186343d798765a5d46ac95b1e07cd0d45bd96bf3a",
+            "generation": 3
+          },
+          {
+            "module": "provider.samba-ad",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:5ffb9b9b45d8d110bc8988c437437f6c7a4b5caa3c8885b82ee55a1bedcaf06d",
+            "generation": 3
+          },
+          {
+            "module": "engine.mail",
+            "state": "formal",
+            "composable": false,
+            "bundleDigest": "sha256:9555f32a7ac1482e601f1cb97144c254a362348644833e62e35bce18638df881",
+            "generation": 3
+          }
+        ],
+        "request": "evaluate"
+      },
+      "expect": {
+        "result": "reject",
+        "code": "DependencyNotSubstantive",
+        "step": 10
+      }
+    },
+    {
+      "id": "A06",
+      "kind": "assembly-substantive",
+      "title": "정의가 바뀌면(generation 2) 이전 판정을 다시 쓰지 않는다",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "definition": {
+          "schema": "opensphere.assembly-definition/v1",
+          "module": "assembly.mail",
+          "members": [
+            {
+              "module": "provider.postgres",
+              "role": "메일 메타데이터 저장",
+              "required": true
+            },
+            {
+              "module": "provider.samba-ad",
+              "role": "사용자 디렉터리",
+              "required": true
+            },
+            {
+              "module": "engine.mail",
+              "role": "메일 송수신 엔진",
+              "required": true
+            }
+          ],
+          "resourceTypes": [
+            "MailDomain",
+            "Mailbox",
+            "MailAlias"
+          ],
+          "composition": {
+            "claims": [
+              {
+                "member": "provider.postgres",
+                "claim": "Database"
+              },
+              {
+                "member": "provider.samba-ad",
+                "claim": "DirectoryOU"
+              }
+            ]
+          }
+        },
+        "registration": {
+          "module": "assembly.mail",
+          "version": "26.1118.0900.1",
+          "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8",
+          "definitionDigest": "sha256:98753c9328cae1dfb00abb4be4978191e889924a1d046a446d786fadba8bbc6e",
+          "generation": 2
+        },
+        "members": [
+          {
+            "module": "provider.postgres",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:64930be868c81ead4561eb6186343d798765a5d46ac95b1e07cd0d45bd96bf3a",
+            "generation": 3
+          },
+          {
+            "module": "provider.samba-ad",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:5ffb9b9b45d8d110bc8988c437437f6c7a4b5caa3c8885b82ee55a1bedcaf06d",
+            "generation": 3
+          },
+          {
+            "module": "engine.mail",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:9555f32a7ac1482e601f1cb97144c254a362348644833e62e35bce18638df881",
+            "generation": 3
+          }
+        ],
+        "request": "reuse",
+        "priorVerdict": {
+          "schema": "opensphere.osr-verdict/v1",
+          "module": "assembly.mail",
+          "version": "26.1118.0900.1",
+          "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8",
+          "level": "substantive",
+          "result": "pass",
+          "context": {
+            "snapshotDigest": "sha256:e425d0354ab3445ad133c2b7e170ac09ead06d9fc7a6479e2c97080a63e3718a",
+            "trustGeneration": 7,
+            "policyRevision": "pol-2026-11-18.1",
+            "definitionDigest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+            "definitionGeneration": 1
+          },
+          "evaluatedAt": "2026-11-17T12:00:00Z"
+        }
+      },
+      "expect": {
+        "result": "reject",
+        "code": "VerdictContextChanged",
+        "step": 10
+      }
+    },
+    {
+      "id": "A07",
+      "kind": "assembly-substantive",
+      "title": "정의·맥락이 같으면 이전 판정을 다시 쓸 수 있다",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "evaluationTime": "2026-11-18T00:00:00Z",
+        "definition": {
+          "schema": "opensphere.assembly-definition/v1",
+          "module": "assembly.mail",
+          "members": [
+            {
+              "module": "provider.postgres",
+              "role": "메일 메타데이터 저장",
+              "required": true
+            },
+            {
+              "module": "provider.samba-ad",
+              "role": "사용자 디렉터리",
+              "required": true
+            },
+            {
+              "module": "engine.mail",
+              "role": "메일 송수신 엔진",
+              "required": true
+            }
+          ],
+          "resourceTypes": [
+            "MailDomain",
+            "Mailbox"
+          ],
+          "composition": {
+            "claims": [
+              {
+                "member": "provider.postgres",
+                "claim": "Database"
+              },
+              {
+                "member": "provider.samba-ad",
+                "claim": "DirectoryOU"
+              }
+            ]
+          }
+        },
+        "registration": {
+          "module": "assembly.mail",
+          "version": "26.1118.0900.1",
+          "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8",
+          "definitionDigest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+          "generation": 1
+        },
+        "members": [
+          {
+            "module": "provider.postgres",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:64930be868c81ead4561eb6186343d798765a5d46ac95b1e07cd0d45bd96bf3a",
+            "generation": 3
+          },
+          {
+            "module": "provider.samba-ad",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:5ffb9b9b45d8d110bc8988c437437f6c7a4b5caa3c8885b82ee55a1bedcaf06d",
+            "generation": 3
+          },
+          {
+            "module": "engine.mail",
+            "state": "substantive",
+            "composable": true,
+            "bundleDigest": "sha256:9555f32a7ac1482e601f1cb97144c254a362348644833e62e35bce18638df881",
+            "generation": 3
+          }
+        ],
+        "request": "reuse",
+        "priorVerdict": {
+          "schema": "opensphere.osr-verdict/v1",
+          "module": "assembly.mail",
+          "version": "26.1118.0900.1",
+          "bundleDigest": "sha256:66739eec62731ff695c1be5e334ad8434c0b6eed4443d78fadbd07a40c7b90a8",
+          "level": "substantive",
+          "result": "pass",
+          "context": {
+            "snapshotDigest": "sha256:e425d0354ab3445ad133c2b7e170ac09ead06d9fc7a6479e2c97080a63e3718a",
+            "trustGeneration": 7,
+            "policyRevision": "pol-2026-11-18.1",
+            "definitionDigest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
+            "definitionGeneration": 1
+          },
+          "evaluatedAt": "2026-11-17T12:00:00Z"
+        }
+      },
+      "expect": {
+        "result": "pass",
+        "step": 10
+      }
+    }
+  ]
+}

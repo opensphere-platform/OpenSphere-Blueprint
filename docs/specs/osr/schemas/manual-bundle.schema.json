@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/manual-bundle.schema.json",
+  "title": "매뉴얼 opensphere.manual-bundle/v1",
+  "description": "필수 문서 유형: overview·install·operations·troubleshooting·commands. assembly는 install 대신 composition. 문서 ID는 manual:<module-id>:<slug>.",
+  "type": "object",
+  "required": [
+    "schema",
+    "module",
+    "documents"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.manual-bundle/v1"
+    },
+    "module": {
+      "$ref": "#/$defs/moduleId"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sourceId",
+          "version",
+          "sourcePath",
+          "documentType",
+          "authorityTier",
+          "audience",
+          "plane",
+          "module",
+          "tags",
+          "checksum",
+          "content"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "pattern": "^manual:[a-z]+\\.[a-z0-9-]+:[a-z0-9-]+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d{2}\\.\\d{3,4}\\.\\d{4}\\.\\d+$"
+          },
+          "sourcePath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "documentType": {
+            "enum": [
+              "overview",
+              "install",
+              "composition",
+              "operations",
+              "troubleshooting",
+              "commands",
+              "reference"
+            ]
+          },
+          "authorityTier": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "audience": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "plane": {
+            "type": "string",
+            "minLength": 1
+          },
+          "module": {
+            "$ref": "#/$defs/moduleId"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "checksum": {
+            "$ref": "#/$defs/digest"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)\\.[a-z][a-z0-9-]{1,40}$"
+    }
+  }
+}

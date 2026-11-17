@@ -1,0 +1,141 @@
+{
+  "schema": "opensphere.osr-test-vectors/v1",
+  "group": "canonical",
+  "generatedBy": "tools/make-vectors.mjs",
+  "evaluationTime": "2026-11-18T00:00:00Z",
+  "note": "canonical JSON bytes와 digest를 고정한다. 키가 없어 재생성해도 바뀌지 않는다.",
+  "vectors": [
+    {
+      "id": "K01",
+      "kind": "canonical",
+      "title": "키는 UTF-16 code unit 순으로 정렬",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "value": {
+          "b": 1,
+          "a": 2,
+          "A": 3,
+          "é": 4,
+          "😀": 5,
+          "ａ": 6
+        }
+      },
+      "expect": {
+        "result": "pass",
+        "canonical": "{\"A\":3,\"a\":2,\"b\":1,\"é\":4,\"😀\":5,\"ａ\":6}",
+        "digest": "sha256:6ad61d582b0e7bd70fbba7d2d37c2f4cac94298f57ba54bbc63a6774690f9ef9"
+      }
+    },
+    {
+      "id": "K02",
+      "kind": "canonical",
+      "title": "중첩 객체·배열 순서 보존",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "value": {
+          "z": [
+            3,
+            1,
+            2
+          ],
+          "y": {
+            "d": null,
+            "c": true,
+            "b": false
+          }
+        }
+      },
+      "expect": {
+        "result": "pass",
+        "canonical": "{\"y\":{\"b\":false,\"c\":true,\"d\":null},\"z\":[3,1,2]}",
+        "digest": "sha256:f9bb542a71c781e2c83f98c7b86a65084a3bd3e52c13098ee564dbf83e10fa7e"
+      }
+    },
+    {
+      "id": "K03",
+      "kind": "canonical",
+      "title": "한글·이스케이프 문자열",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "value": {
+          "text": "한글 \"따옴표\" \\ 역슬래시\n줄바꿈\t탭\u0001"
+        }
+      },
+      "expect": {
+        "result": "pass",
+        "canonical": "{\"text\":\"한글 \\\"따옴표\\\" \\\\ 역슬래시\\n줄바꿈\\t탭\\u0001\"}",
+        "digest": "sha256:b963d99019d9dfcef8d95febf171deb09249ceb363c2b247aee242fd89514b4f"
+      }
+    },
+    {
+      "id": "K04",
+      "kind": "canonical",
+      "title": "음수·0·안전 범위 경계 정수",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "value": {
+          "n": [
+            -1,
+            0,
+            9007199254740991,
+            -9007199254740991
+          ]
+        }
+      },
+      "expect": {
+        "result": "pass",
+        "canonical": "{\"n\":[-1,0,9007199254740991,-9007199254740991]}",
+        "digest": "sha256:70d46d7e638b7033bce10424f2e54e86412c08ab5854988bb679024367af13a4"
+      }
+    },
+    {
+      "id": "K05",
+      "kind": "canonical",
+      "title": "빈 객체·빈 배열",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "value": {
+          "o": {},
+          "a": []
+        }
+      },
+      "expect": {
+        "result": "pass",
+        "canonical": "{\"a\":[],\"o\":{}}",
+        "digest": "sha256:9bee7ebfc94b459dacb8cbc72cb2900e61f0aa42189df18329f84f92568f4f89"
+      }
+    },
+    {
+      "id": "K06",
+      "kind": "canonical",
+      "title": "소수는 거절(정수만)",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "value": {
+          "size": 1.5
+        }
+      },
+      "expect": {
+        "result": "reject",
+        "code": "CanonicalizationError",
+        "step": "canonical"
+      }
+    },
+    {
+      "id": "K07",
+      "kind": "canonical",
+      "title": "안전 범위를 넘는 정수는 거절",
+      "evaluationTime": "2026-11-18T00:00:00Z",
+      "input": {
+        "value": {
+          "n": 9007199254740992
+        }
+      },
+      "expect": {
+        "result": "reject",
+        "code": "CanonicalizationError",
+        "step": "canonical"
+      }
+    }
+  ]
+}

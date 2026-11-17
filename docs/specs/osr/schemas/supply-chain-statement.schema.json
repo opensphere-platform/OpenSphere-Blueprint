@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/supply-chain-statement.schema.json",
+  "title": "SBOM·출처 진술(in-toto Statement v1)",
+  "description": "SBOM(SPDX)과 출처(SLSA provenance v1)를 담는 OCI referrer. subject[0].digest.sha256은 번들 digest의 hex여야 한다. 출처의 builder.id는 검증 맥락의 trustedBuilders에 있어야 한다.",
+  "type": "object",
+  "required": [
+    "_type",
+    "subject",
+    "predicateType",
+    "predicate"
+  ],
+  "properties": {
+    "_type": {
+      "const": "https://in-toto.io/Statement/v1"
+    },
+    "subject": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "digest"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^ghcr\\.io/opensphere-platform/opensphere-(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)-[a-z][a-z0-9-]{1,40}$"
+          },
+          "digest": {
+            "type": "object",
+            "required": [
+              "sha256"
+            ],
+            "properties": {
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "predicateType": {
+      "enum": [
+        "https://spdx.dev/Document/v2.3",
+        "https://slsa.dev/provenance/v1"
+      ]
+    },
+    "predicate": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "predicateType": {
+            "const": "https://slsa.dev/provenance/v1"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "predicate": {
+            "type": "object",
+            "required": [
+              "buildDefinition",
+              "runDetails"
+            ],
+            "properties": {
+              "runDetails": {
+                "type": "object",
+                "required": [
+                  "builder"
+                ],
+                "properties": {
+                  "builder": {
+                    "type": "object",
+                    "required": [
+                      "id"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "predicate": {
+            "type": "object",
+            "required": [
+              "spdxVersion",
+              "name",
+              "packages"
+            ],
+            "properties": {
+              "spdxVersion": {
+                "const": "SPDX-2.3"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

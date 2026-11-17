@@ -1,0 +1,479 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/module-descriptor.schema.json",
+  "title": "모듈 디스크립터 opensphere.module/v1",
+  "description": "릴리스마다 하나. 클래스 규칙: 실행 클래스는 profile·runtime·설치형 lifecycle(install·update·rollback·retire)이 필수다. assembly는 runtime·storage가 없고 lifecycle은 OSR 고정 명령(register·update·retire)이다. 참조 검증기는 클래스 규칙을 이 스키마보다 먼저 검사해 ClassRuleViolation으로 보고한다.",
+  "type": "object",
+  "required": [
+    "schema",
+    "id",
+    "class",
+    "displayName",
+    "owner",
+    "description",
+    "version",
+    "compatibilityVersion",
+    "plane",
+    "backboneCompat",
+    "dependencies",
+    "capabilityRequests",
+    "contributions",
+    "supplyChain",
+    "lifecycle"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.module/v1"
+    },
+    "id": {
+      "$ref": "#/$defs/moduleId"
+    },
+    "class": {
+      "enum": [
+        "core",
+        "hiss",
+        "delivery",
+        "provider",
+        "engine",
+        "runtime",
+        "assembly",
+        "ui",
+        "product"
+      ]
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d{2}\\.\\d{3,4}\\.\\d{4}\\.\\d+$"
+    },
+    "compatibilityVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "plane": {
+      "enum": [
+        "hiss",
+        "fabric-delivery",
+        "fabric-shared",
+        "fabric-engine",
+        "fabric-runtime",
+        "catalog",
+        "shell",
+        "employee-area",
+        "customer-area"
+      ]
+    },
+    "backboneCompat": {
+      "type": "string",
+      "pattern": "^\\^\\d+\\.\\d+\\.\\d+$"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "module",
+          "range",
+          "kind"
+        ],
+        "properties": {
+          "module": {
+            "$ref": "#/$defs/moduleId"
+          },
+          "range": {
+            "type": "string",
+            "pattern": "^\\^\\d+\\.\\d+\\.\\d+$"
+          },
+          "kind": {
+            "enum": [
+              "required",
+              "optional"
+            ]
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "profile": {
+      "type": "string",
+      "pattern": "^[a-z]+\\.[a-z0-9-]+$"
+    },
+    "capabilityRequests": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "runtime": {
+      "type": "object",
+      "required": [
+        "images",
+        "health",
+        "ready",
+        "securityContext"
+      ],
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "digest"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "digest": {
+                "$ref": "#/$defs/digest"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "health": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            }
+          },
+          "additionalProperties": false
+        },
+        "ready": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            }
+          },
+          "additionalProperties": false
+        },
+        "resources": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "minLength": 1
+            },
+            "memory": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "securityContext": {
+          "type": "object",
+          "required": [
+            "runAsNonRoot"
+          ],
+          "properties": {
+            "runAsNonRoot": {
+              "const": true
+            },
+            "readOnlyRootFilesystem": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "storage": {
+      "type": "object",
+      "required": [
+        "profile"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "contributions": {
+      "type": "object",
+      "required": [
+        "manual",
+        "commands",
+        "oci",
+        "knowledge"
+      ],
+      "properties": {
+        "manual": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "artifact": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 500
+            }
+          },
+          "additionalProperties": false
+        },
+        "commands": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "artifact": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 500
+            }
+          },
+          "additionalProperties": false
+        },
+        "oci": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "artifact": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 500
+            }
+          },
+          "additionalProperties": false
+        },
+        "knowledge": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "artifact": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 500
+            }
+          },
+          "additionalProperties": false
+        },
+        "definition": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "artifact": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 500
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "supplyChain": {
+      "type": "object",
+      "required": [
+        "sourceRepository",
+        "sourceRevision",
+        "buildAuthority"
+      ],
+      "properties": {
+        "sourceRepository": {
+          "type": "string",
+          "pattern": "^https://github\\.com/opensphere-platform/"
+        },
+        "sourceRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "buildAuthority": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "lifecycle": {
+      "type": "object",
+      "minProperties": 3,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "class": {
+            "const": "assembly"
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "runtime"
+              ]
+            },
+            {
+              "required": [
+                "storage"
+              ]
+            }
+          ]
+        },
+        "properties": {
+          "lifecycle": {
+            "type": "object",
+            "required": [
+              "register",
+              "update",
+              "retire"
+            ],
+            "properties": {
+              "register": {
+                "const": "osr.assembly.register"
+              },
+              "update": {
+                "const": "osr.assembly.update"
+              },
+              "retire": {
+                "const": "osr.assembly.retire"
+              }
+            },
+            "additionalProperties": false
+          },
+          "contributions": {
+            "required": [
+              "definition"
+            ]
+          }
+        }
+      },
+      "else": {
+        "required": [
+          "profile",
+          "runtime"
+        ],
+        "properties": {
+          "lifecycle": {
+            "type": "object",
+            "required": [
+              "install",
+              "update",
+              "rollback",
+              "retire"
+            ],
+            "properties": {
+              "install": {
+                "type": "string",
+                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+              },
+              "update": {
+                "type": "string",
+                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+              },
+              "rollback": {
+                "type": "string",
+                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+              },
+              "retire": {
+                "type": "string",
+                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)\\.[a-z][a-z0-9-]{1,40}$"
+    }
+  }
+}

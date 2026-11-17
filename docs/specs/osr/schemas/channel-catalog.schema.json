@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/channel-catalog.schema.json",
+  "title": "채널 카탈로그",
+  "description": "signed-envelope payload. catalog 용도 키로 서명한다. sequence는 catalog authority × 채널별 단조 증가이며 마지막 수용값을 영속 저장한다. 낮은 sequence는 CatalogReplay, 같은 sequence의 다른 digest는 CatalogEquivocation.",
+  "type": "object",
+  "required": [
+    "schema",
+    "authority",
+    "channel",
+    "sequence",
+    "issuedAt",
+    "expiresAt",
+    "entries"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.channel-catalog/v1"
+    },
+    "authority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "channel": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,31}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "issuedAt": {
+      "$ref": "#/$defs/time"
+    },
+    "expiresAt": {
+      "$ref": "#/$defs/time"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "module",
+          "version",
+          "bundleDigest"
+        ],
+        "properties": {
+          "module": {
+            "$ref": "#/$defs/moduleId"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d{2}\\.\\d{3,4}\\.\\d{4}\\.\\d+$"
+          },
+          "bundleDigest": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "time": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product)\\.[a-z][a-z0-9-]{1,40}$"
+    }
+  }
+}

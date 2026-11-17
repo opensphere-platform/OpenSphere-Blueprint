@@ -281,7 +281,7 @@ OpenSphere는 **admin 영역**과 **사원 영역**으로 나뉜다. 두 영역�
 | D-1 | Backbone = 구 BBSS. Console·OS Shell·R2D2·모듈 관리를 포함하는 admin 영역 | 유효 |
 | D-2 | Governance는 독립 계층(제품) | 유효 |
 | D-3 | 사원 신원 원천 = 내장 Samba AD DC. 외부 AD 구성 허용 | 유효 |
-| D-4 | Syncope·midPoint는 IGA master 아님. SCIM 방식 프로비저닝 | 유효(§6) |
+| D-4 | Syncope·midPoint는 IGA master 아님. SCIM 방식 프로비저닝 | 유효(§6). Syncope Provider 자체도 D-77로 드롭 |
 | D-5 | 배분 단위: 개인, 부서·팀, 프로젝트, 업무 서비스 | 유효 |
 | D-6 | 외부 AD 쓰기 여부는 설치 시 고객 선택 | 유효(§5.5) |
 | D-7 | Workspace = 사원용 업무 제품 전체 | 유효 |
@@ -326,6 +326,8 @@ OpenSphere는 **admin 영역**과 **사원 영역**으로 나뉜다. 두 영역�
 | D-46 | 자율 실행 = 상시 위임(할당 ∩ 위임자 현재 권한 ∩ 자율 상한), 위임자 권한 상실 시 정지, 만료 필수 | 유효 — 에이전트 신원 문서 |
 | D-47 | 에이전트 간 호출 허용, 사슬 교집합, 최대 깊이 2(설정) | 유효 — 에이전트 신원 문서 |
 | D-48 | 책임자 이탈 시 즉시 정지 → 승계 요청 → 미수락 시 폐기 | 유효 — 에이전트 신원 문서 |
+| D-78 | **Percona MongoDB(`percona-psmdb`, `data.document.mongodb`)는 예비 설치한다.** 현재 소비자는 없다. 엔진은 Middle-earth 공급 면으로 설치해 두고, 소비자 Claim은 Governance 승인으로 연다 | 유효 — 2026-11-17 |
+| D-77 | **Apache Syncope Provider 드롭.** PFSS Foundation 하위 모듈에서 `apache-syncope`(`identity.iga.syncope`)를 뺀다. 계정·그룹 투영은 Governance의 SCIM 형태 프로비저닝 어댑터로 처리한다(§6, D-4) | 유효 — 2026-11-17 |
 | D-76 | **업무 코어(ERP·SCM) 제품 = Odoo Community 선택.** LGPL-3.0, PostgreSQL(PFSS). 대안 ERPNext·OFBiz는 비선정. 실증 조건: Enterprise 전용 기능 의존 금지 목록, Keycloak OIDC·Governance 프로비저닝 어댑터, 한국 현지화(원화·부가세·전자세금계산서 연동), 메이저 업그레이드 절차, 성능 | 유효 — SCM 후보 문서 §11 |
 | D-75 | **교류 계층(Exchange Layer) 채택.** 사원 영역과 고객 영역이 만나는 유일한 통과 지점으로, 자체 신원·정본 없이 교류 객체·신원 연결·규칙 집행·이벤트 연결을 맡는다. B-6을 X-1로 구체화 | 유효 — 교류 계층 문서 |
 | D-74 | **업무 코어(ERP·SCM)를 사원 영역의 별도 계층**으로 둔다. 회사 업무 데이터의 정본이며 Workspace(사원 화면), 고객 영역(경계 API·이벤트), 사원 영역 에이전트가 소비한다. 제품은 **D-76에서 Odoo Community로 선택** | 유효 — SCM 후보 문서 §9, §11 |

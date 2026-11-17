@@ -27,8 +27,9 @@
 │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄ 인도 지점 ┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 │   [사용 면 · 할당받은 쪽]  설정 · 자격 · 데이터 · 배포 대상 · 내 메일함 · 내 VM
 │   기반     HISS(K8s · CNI · ingress · cert-manager · 저장) · PSSS(Argo CD · Crossplane · Velero)
-│   데이터   PostgreSQL(StackGres) · OpenSearch · Valkey · RustFS · Percona MongoDB
-│   신원     Samba AD DC · 외부 디렉터리 연결 · Keycloak · OPA · (Apache Syncope: 정리 대상)
+│   데이터   PostgreSQL(StackGres) · OpenSearch · Valkey · RustFS · Percona MongoDB(예비)
+│   신원     Samba AD DC · 외부 디렉터리 연결 · Keycloak · 권한 판단(OPA 대체 제안: OpenFGA)
+│   정책 집행 Kyverno(OPA 대체 제안)
 │   연산     KubeVirt
 │   보호·관측 PFS Backup · PFS Observability(Grafana · Loki · Tempo · 테넌트 게이트웨이)
 │   업무     Stalwart · Mattermost · Univer · GitLab · Odoo 엔진
@@ -99,14 +100,14 @@
 |  | **OpenSearch** | Provider `opensearch` · OpenSearch operator 배포판 | operator, 클러스터, heap·디스크 | Claim → 인덱스·역할 | 메일·문서 검색 색인(어셈블리 index 연결) | 유지 |
 |  | **Valkey** | Provider `valkey` | 엔진, 메모리 한도 | Claim → 키 공간·ACL 사용자 | 세션·캐시. 어셈블리 연결 유형 추가 필요(cache) | 유지 |
 |  | **RustFS** | Provider `rustfs` | 엔진, 저장 용량 | Claim → 버킷·접근 키 | 객체 저장(blob 연결), 백업 저장소 | 유지 |
-|  | **Percona MongoDB** | Provider `percona-psmdb` · `data.document.mongodb` | operator, 레플리카셋 | Claim → DB·사용자 | 현재 설계에 소비자가 없다. 유지·보류 판단 필요 | 미정 |
+|  | **Percona MongoDB** | Provider `percona-psmdb` · `data.document.mongodb` | operator, 레플리카셋 | Claim → DB·사용자 | 현재 소비자는 없다. 예비 설치(D-78), 소비자 Claim은 Governance 승인으로 연다 | 예비 설치(합의) |
 | 신원·정책 | **Samba AD DC** | Provider `samba-ad` | DC 이미지·버전, 복제 토폴로지 | 설치 → 도메인·첫 관리자 자격(Genesis) | 사원 신원 원천(D-3). identity 핵심 어셈블리 | 유지 |
 |  | **외부 디렉터리 연결** | Provider `external-directory` · `identity.directory.external` | 연결기 엔진 | 연결 → 바인드 자격·동기화 범위 | 외부 AD 모드(D-6). 쓰기 여부는 설치 선택 | 유지 |
 |  | **Keycloak** | Provider `keycloak` · `identity.iam.workspace` | 이미지·버전 | 영역별 인스턴스 → realm·클라이언트 | 사원 SSO(D-56), 고객 CIAM은 별도 인스턴스(D-63) | 유지 |
-|  | **OPA** | Provider `opa` · `identity.policy.opa` | 엔진 | 정책 번들(Governance 정의에서 생성) | 판단 엔진 비교 후보 5종 중 하나(D-26). 선정 결과에 따라 유지·교체 | 미정 |
-|  | **Apache Syncope** | Provider `apache-syncope` · `identity.iga.syncope` | 엔진 | — | 기준선 D-4에서 IGA 정본이 아니라고 결정. 퇴역 또는 비활성 후보 | 충돌 |
+|  | **OPA** | Provider `opa` · `identity.policy.opa` | 엔진 | 정책 번들 | 드롭 제안. 앱 권한 판단은 OpenFGA(SpiceDB와 PoC 비교), K8s admission은 Kyverno로 나눈다(§3.2) | 제안 |
+|  | **~~Apache Syncope~~** | Provider `apache-syncope` · `identity.iga.syncope` | — | — | 드롭(D-77). Governance의 SCIM 형태 프로비저닝 어댑터로 대체 | 드롭(합의) |
 | 연산 | **KubeVirt** | Provider `kubevirt` · `compute.virtualization.vm` | operator, KVM 노드, 공급 한도 | VM 생성 → 디스크·게스트 | 에이전트·개발자 자리 VM(D-51, D-54, D-55) | 유지 |
-| 보호·관측 | **PFS Backup** | `opensphere-backup` operator(BackupPolicy·BackupRun·RestoreRun → Velero). Velero 설치는 Platform Support 소유 | 백업 실행 엔진, 저장 위치 | 영역별 백업 정책, 백업 내용(영역 키로 암호화) | 기준선 §3은 백업을 PSSS로 적었다. 아카이브는 Velero 설치=PSSS, 백업 operator=PFS로 나눈다. 정리 필요 | 정리 필요 |
+| 보호·관측 | **PFS Backup** | `opensphere-backup` operator(BackupPolicy·BackupRun·RestoreRun → Velero). Velero 설치는 Platform Support 소유 | 백업 엔진·실행·저장 위치·최소 보호 기준 | 영역별 백업 정책, 복구 승인, 백업 내용(영역 키로 암호화) | 엔진과 실행은 Backbone, 정책·키·복구 승인은 영역(§3.3) | 제안 |
 |  | **PFS Observability** | Grafana operator 배포판, Loki, Tempo, 관측 테넌트 게이트웨이(`X-Scope-OrgID` 주입) | 수집·저장 엔진, 게이트웨이 | 테넌트별 로그·추적 본문(게이트웨이 grant) | "로그 본문 경로는 영역별"을 이미 게이트웨이로 구현한 사례 | 유지 |
 | PFSS 제어 기능 | **공급 풀·Grant 검증** | SupplyPool, 서명 Grant(D-31), 과할당 비율(D-32) | Backbone이 설정 | — | 엔진이 아니라 공급 면의 제어 기능 | 유지 |
 |  | **Claim 프로비저닝** | FoundationClaim → 엔진 라우팅 → DB·인덱스·역할·Secret 발급 | 컨트롤러 | Binding(자격 인도) | 인도 지점 자체. 어셈블리 명세의 연결 객체가 감싼다 | 유지 |
@@ -124,11 +125,70 @@
 
 **이 목록에서 나온 정리 과제**
 
-1. **Apache Syncope:** 기준선 D-4와 충돌한다. Provider를 퇴역시킬지, 비활성으로 남길지 정한다.
-2. **OPA:** 판단 엔진 비교(D-26) 결과로 유지·교체를 정한다. 그 전까지 새 소비자를 붙이지 않는다.
-3. **Percona MongoDB:** 현재 설계에 소비자가 없다. 유지·보류를 정한다.
-4. **백업 소유:** 기준선 §3(PSSS)과 아카이브(Velero 설치=PSSS, 백업 operator=PFS)를 하나로 맞춘다.
-5. **연결 유형:** Valkey(cache), MongoDB(document)를 테넌트 명세 §6.2 연결 유형에 추가한다.
+| 과제 | 결과 | 상태 |
+|---|---|---|
+| Apache Syncope | 드롭. SCIM 형태 프로비저닝으로 처리(D-77) | 합의 |
+| Percona MongoDB | 예비 설치. 소비자 Claim은 Governance 승인으로 연다(D-78) | 합의 |
+| OPA | 드롭하고 역할을 나눈다: 앱 권한 판단 = OpenFGA(SpiceDB와 PoC 비교), K8s admission = Kyverno(§3.2) | 제안 |
+| 백업 소유 | 엔진·실행 = Backbone, 정책·키·복구 승인 = 영역, Backbone은 최소 보호 기준을 건다(§3.3) | 제안 |
+| 연결 유형 | Valkey(cache), MongoDB(document)를 테넌트 명세 §6.2 연결 유형에 추가 | 할 일 |
+
+### 3.2 권한 판단 엔진: OPA 대신 무엇을 쓰나 (`제안`)
+
+OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 둘 다 하려 하면 어느 한쪽이 약해진다.
+
+| 판단 | 무엇을 묻나 | 적합한 엔진 |
+|---|---|---|
+| **앱 권한 판단(PDP)** | 이 사원·에이전트·앱이 이 자원에 이 행위를 할 수 있나. 누가 이 자원에 접근할 수 있나(역질의). 회사 → 테넌트 → 어셈블리 → 자원, AD 조직·프로젝트 계층 | **관계 기반 엔진**(OpenFGA, SpiceDB) |
+| **K8s admission(집행)** | 이 리소스를 클러스터에 넣어도 되나. 연결 그래프 밖 리소스, 미서명 이미지, 테넌트 경계 위반 거부 | **K8s 정책 엔진**(Kyverno, Gatekeeper) |
+
+**OPA를 빼는 이유**
+- OPA는 범용 정책 엔진이라 어느 쪽에나 쓸 수 있지만, 앱 권한 판단에 필요한 **관계 저장, 역질의, 시점 일관성**이 내장되어 있지 않다. 관계 데이터를 번들로 따로 밀어 넣어야 하고, 역질의(S5)와 재검토는 직접 만들어야 한다.
+- 정책 언어 Rego는 회사 권한 관리자가 화면으로 다루기 어렵다(최소 설계 §9 판정 기준).
+- K8s admission 용도로는 Kyverno가 더 단순하고, **서명 이미지 검증이 내장**되어 있다. "영역 키로 서명된 이미지만 통과"를 정책 하나로 쓸 수 있다.
+
+**추천**
+1. **앱 권한 판단: OpenFGA를 1순위로, SpiceDB와 PoC로 비교한다.**
+   - 둘 다 Zanzibar 계열이고, 관계 계층·역질의·조건(CEL)을 지원하며, PostgreSQL을 저장소로 쓸 수 있다(PFSS PostgreSQL 재사용).
+   - OpenFGA는 CNCF 프로젝트라 특정 회사에 덜 묶이고 모델 문법이 단순하다. SpiceDB는 일관성 토큰(ZedToken) 등 일관성 보장이 더 정교하다.
+   - 비교 시나리오는 최소 설계 §9의 S1~S7과 참고 아키텍처의 S8~S10을 그대로 쓴다. 이 추천은 D-26 비교를 건너뛰자는 것이 아니라, 후보를 둘로 좁히자는 것이다.
+2. **K8s admission: Kyverno.** 연결 그래프 기반 기본 거부, 서명 이미지 검증, 테넌트 경계 위반 거부를 맡는다.
+3. **PDP 어댑터는 AuthZEN 형태로 둔다.** 엔진을 바꿔도 Governance 코드가 바뀌지 않는다.
+4. **Cerbos는 보조 후보로 남긴다.** 관계보다 속성 조건이 많은 판단(시간·위치·위험도)이 몰리면 "관계 엔진 + 조건 엔진" 조합(최소 설계 §9)에 쓴다.
+
+라이선스(모두 Apache-2.0로 알려져 있음)는 원문 확인 후 라이선스 대장(D-73)에 올린다.
+
+### 3.3 백업 소유: Backbone인가 (`제안`)
+
+**답: 실행은 Backbone, 결정과 열쇠는 영역이다.** 백업도 Middle-earth의 다른 구성요소처럼 두 얼굴로 나눈다.
+
+```
+ 엔진 · 실행      Velero 설치, 백업 operator, 스케줄 실행, 저장 위치(RustFS · 외부 사본), 모니터링   → Backbone
+ 최소 보호 기준   핵심 어셈블리(AD · Keycloak · Governance 원장 · KMS 봉인본) 필수 백업, 최소 보존 기간  → Backbone이 바닥으로 건다
+ ──────────────── 인도 지점: BackupPolicy ────────────────
+ 정책             무엇을 · 얼마나 자주 · 얼마나 보존(바닥 위로만)                               → 영역(Governance)
+ 내용 · 열쇠      백업 데이터, 암호화 키(영역 KMS)                                            → 영역
+ 복구 결정        전체 복구는 영역 소유자 승인(D-40) 후 Backbone 실행, 개별 복구는 영역 셀프서비스  → 영역
+```
+
+**왜 전부 Backbone이 아닌가**
+- 백업은 데이터 전체의 사본이다. Backbone이 백업과 그 키를 모두 쥐면, 운영 중인 시스템에는 손대지 않고도 **백업을 다른 곳에 복원해 내용을 읽을 수 있다.** B-3을 우회하는 가장 쉬운 길이다.
+- 그래서 백업 **내용의 암호화 키는 영역 KMS**에 두고, Backbone은 암호화된 덩어리만 다룬다.
+
+**왜 Backbone이 실행을 맡는가**
+- 복구는 Backbone의 책임이다(B-2: 설치·운영·복구). 클러스터 전체 장애에서 복구할 주체는 영역 안에 없을 수 있다.
+- 그래서 핵심 어셈블리에 대해서는 Backbone이 **최소 보호 기준**을 건다. 영역은 그보다 더 강하게만 바꿀 수 있다.
+
+**백업은 두 종류로 나눈다**
+
+| 종류 | 대상 | 소유 |
+|---|---|---|
+| 플랫폼 백업 | Backbone 자신의 상태, etcd, HISS·PSSS 설정 | Backbone이 전부 |
+| 영역 백업 | 사원·고객 영역의 데이터·설정 | 위 두 얼굴 구분을 따른다 |
+
+**기준선·아카이브 정리:** 기준선 §3의 "PSSS: 백업·복구"와 아카이브의 "Velero 설치 = Platform Support, 백업 operator = PFS"는 둘 다 **공급 면**이다. 따라서 둘 다 Backbone 운영으로 묶이고 충돌하지 않는다. 정할 것은 계층 이름표뿐이다. 이 구조에서는 백업 엔진을 Middle-earth "보호·관측" 계열로 둔다.
+
+**확인할 점:** Velero의 파일 시스템 백업 저장소 키와 StackGres 백업 암호화를 영역 KMS 키로 분리할 수 있는지는 PoC에서 확인해야 한다. 분리할 수 없는 엔진은 애플리케이션 단계에서 암호화한 뒤 백업한다.
 
 ## 4. Backbone 경계: 영역의 키가 태어나는 지점까지
 
@@ -225,7 +285,11 @@
 | D-16 | 에이전트 소스 변경 규칙 | 사원 앱 승격 3단계로 확장 | 제안 |
 | 신규 | — | 회사 기본 앱 제공 | 합의 |
 | 신규 | — | 사원 앱 전용 등록 도메인 | 합의 |
-| PFSS Provider | Foundation 하위 모듈 11종 | Middle-earth 구성요소로 편입. Syncope 퇴역 여부, OPA 유지 여부, MongoDB 소비자, 백업 소유를 정리(§3.1) | 제안 |
+| PFSS Provider | Foundation 하위 모듈 11종 | Middle-earth 구성요소로 편입(§3.1) | 제안 |
+| D-77 | Apache Syncope Provider | 드롭, SCIM으로 처리 | 합의 |
+| D-78 | Percona MongoDB | 예비 설치 | 합의 |
+| D-26 후보 | 판단 엔진 5종 | OPA 드롭, OpenFGA·SpiceDB로 좁혀 PoC, admission은 Kyverno(§3.2) | 제안 |
+| 기준선 §3 | 백업 = PSSS | 실행은 Backbone, 정책·키·복구 승인은 영역(§3.3) | 제안 |
 | 신규 | — | 테넌트·어셈블리 구성 절차 | 제안([명세](../specs/TENANT-ASSEMBLY-SPEC-v0.1.md)) |
 | 신규 | — | 테넌트 내부 통신 규칙 | 제안([규칙](../specs/TENANT-COMMUNICATION-RULES-v0.1.md)) |
 | 신규 | — | Middle-earth 공식 명칭. 톨킨 저작물 상표라 제품 용어로는 중립 명칭 권장 | 미정 |

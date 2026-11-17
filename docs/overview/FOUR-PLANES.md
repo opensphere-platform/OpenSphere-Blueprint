@@ -26,8 +26,14 @@
 │   [공급 면 · Backbone]     엔진 · 버전 · CRD · 노드 · 용량 · 인스턴스 수명주기
 │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄ 인도 지점 ┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 │   [사용 면 · 할당받은 쪽]  설정 · 자격 · 데이터 · 배포 대상 · 내 메일함 · 내 VM
-│   구성요소: HISS · PSSS(Argo) · PFSS(PG) · KubeVirt · Keycloak · Stalwart · Mattermost
-│            · Univer · Odoo 엔진 · 모델 게이트웨이 · 영역 KMS
+│   기반     HISS(K8s · CNI · ingress · cert-manager · 저장) · PSSS(Argo CD · Crossplane · Velero)
+│   데이터   PostgreSQL(StackGres) · OpenSearch · Valkey · RustFS · Percona MongoDB
+│   신원     Samba AD DC · 외부 디렉터리 연결 · Keycloak · OPA · (Apache Syncope: 정리 대상)
+│   연산     KubeVirt
+│   보호·관측 PFS Backup · PFS Observability(Grafana · Loki · Tempo · 테넌트 게이트웨이)
+│   업무     Stalwart · Mattermost · Univer · GitLab · Odoo 엔진
+│   런타임   이벤트 채널 · Temporal · 모델 게이트웨이
+│   신뢰     영역 KMS · 내부 CA · SPIRE
 │
 │   ▼ 사용 면을 판단해 쪼갬 · 집행은 Middle-earth
 │
@@ -82,6 +88,47 @@
 | ingress | HISS 컨트롤러 | 공유 가능. 영역 사이 칸막이는 Backbone이 지킨다 | 도메인 노출 조건, 사원 앱 경로 |
 | 관측 | 수집 엔진 | 지표 경로는 공유, 로그 본문 경로는 영역별 | 로그·추적 내용 |
 | KMS | 엔진 | **영역별.** 다른 모든 선을 지켜 주는 장치 | 서명·암호화·복구 키 |
+
+### 3.1 구성요소 전체 목록 (기존 PFSS 계획 반영)
+
+기존 PFSS 계획의 모듈은 아카이브 Foundation 하위 모듈 카탈로그(`OpenSphere-shell-foundation/deploy/catalog/foundation-child-packages.json`)의 **Provider 11종**과, 이를 받치는 operator·백업·관측 저장소에서 가져왔다. 상태는 이 구조에서의 판단이다(`유지` · `미정` · `충돌` · `정리 필요`).
+
+| 계열 | 구성요소 | 기존 PFSS 근거 | 공급 면 · Backbone | 인도 → 사용 면 | 비고 | 상태 |
+|---|---|---|---|---|---|---|
+| 데이터 | **PostgreSQL** | Provider `postgres` · StackGres operator 1.19.0 | operator, PG 버전, 클러스터 수명주기, 용량 | Claim → DB·역할·연결 Secret | Governance 원장(D-57), 업무 코어 Odoo DB(C6)의 기반 | 유지 |
+|  | **OpenSearch** | Provider `opensearch` · OpenSearch operator 배포판 | operator, 클러스터, heap·디스크 | Claim → 인덱스·역할 | 메일·문서 검색 색인(어셈블리 index 연결) | 유지 |
+|  | **Valkey** | Provider `valkey` | 엔진, 메모리 한도 | Claim → 키 공간·ACL 사용자 | 세션·캐시. 어셈블리 연결 유형 추가 필요(cache) | 유지 |
+|  | **RustFS** | Provider `rustfs` | 엔진, 저장 용량 | Claim → 버킷·접근 키 | 객체 저장(blob 연결), 백업 저장소 | 유지 |
+|  | **Percona MongoDB** | Provider `percona-psmdb` · `data.document.mongodb` | operator, 레플리카셋 | Claim → DB·사용자 | 현재 설계에 소비자가 없다. 유지·보류 판단 필요 | 미정 |
+| 신원·정책 | **Samba AD DC** | Provider `samba-ad` | DC 이미지·버전, 복제 토폴로지 | 설치 → 도메인·첫 관리자 자격(Genesis) | 사원 신원 원천(D-3). identity 핵심 어셈블리 | 유지 |
+|  | **외부 디렉터리 연결** | Provider `external-directory` · `identity.directory.external` | 연결기 엔진 | 연결 → 바인드 자격·동기화 범위 | 외부 AD 모드(D-6). 쓰기 여부는 설치 선택 | 유지 |
+|  | **Keycloak** | Provider `keycloak` · `identity.iam.workspace` | 이미지·버전 | 영역별 인스턴스 → realm·클라이언트 | 사원 SSO(D-56), 고객 CIAM은 별도 인스턴스(D-63) | 유지 |
+|  | **OPA** | Provider `opa` · `identity.policy.opa` | 엔진 | 정책 번들(Governance 정의에서 생성) | 판단 엔진 비교 후보 5종 중 하나(D-26). 선정 결과에 따라 유지·교체 | 미정 |
+|  | **Apache Syncope** | Provider `apache-syncope` · `identity.iga.syncope` | 엔진 | — | 기준선 D-4에서 IGA 정본이 아니라고 결정. 퇴역 또는 비활성 후보 | 충돌 |
+| 연산 | **KubeVirt** | Provider `kubevirt` · `compute.virtualization.vm` | operator, KVM 노드, 공급 한도 | VM 생성 → 디스크·게스트 | 에이전트·개발자 자리 VM(D-51, D-54, D-55) | 유지 |
+| 보호·관측 | **PFS Backup** | `opensphere-backup` operator(BackupPolicy·BackupRun·RestoreRun → Velero). Velero 설치는 Platform Support 소유 | 백업 실행 엔진, 저장 위치 | 영역별 백업 정책, 백업 내용(영역 키로 암호화) | 기준선 §3은 백업을 PSSS로 적었다. 아카이브는 Velero 설치=PSSS, 백업 operator=PFS로 나눈다. 정리 필요 | 정리 필요 |
+|  | **PFS Observability** | Grafana operator 배포판, Loki, Tempo, 관측 테넌트 게이트웨이(`X-Scope-OrgID` 주입) | 수집·저장 엔진, 게이트웨이 | 테넌트별 로그·추적 본문(게이트웨이 grant) | "로그 본문 경로는 영역별"을 이미 게이트웨이로 구현한 사례 | 유지 |
+| PFSS 제어 기능 | **공급 풀·Grant 검증** | SupplyPool, 서명 Grant(D-31), 과할당 비율(D-32) | Backbone이 설정 | — | 엔진이 아니라 공급 면의 제어 기능 | 유지 |
+|  | **Claim 프로비저닝** | FoundationClaim → 엔진 라우팅 → DB·인덱스·역할·Secret 발급 | 컨트롤러 | Binding(자격 인도) | 인도 지점 자체. 어셈블리 명세의 연결 객체가 감싼다 | 유지 |
+|  | **Provider 수명주기** | `foundation.provider-modules.*` 13개 명령(adopt·update·approve 등, OS Shell 경유) | Backbone(Console 관리자) | — | 엔진 채택·갱신은 공급 면. 영역 인스턴스 적용은 영역이 끌어간다(제안) | 유지 |
+
+**PFSS 밖의 Middle-earth 구성요소**
+
+| 묶음 | 구성요소 |
+|---|---|
+| HISS | K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진 |
+| PSSS | Argo CD, Crossplane, Velero 설치 |
+| 업무 엔진 | Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어) |
+| 런타임 | 이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이 |
+| 신뢰 | 영역 KMS, 내부 CA, SPIRE(테넌트 명세 trust 어셈블리) |
+
+**이 목록에서 나온 정리 과제**
+
+1. **Apache Syncope:** 기준선 D-4와 충돌한다. Provider를 퇴역시킬지, 비활성으로 남길지 정한다.
+2. **OPA:** 판단 엔진 비교(D-26) 결과로 유지·교체를 정한다. 그 전까지 새 소비자를 붙이지 않는다.
+3. **Percona MongoDB:** 현재 설계에 소비자가 없다. 유지·보류를 정한다.
+4. **백업 소유:** 기준선 §3(PSSS)과 아카이브(Velero 설치=PSSS, 백업 operator=PFS)를 하나로 맞춘다.
+5. **연결 유형:** Valkey(cache), MongoDB(document)를 테넌트 명세 §6.2 연결 유형에 추가한다.
 
 ## 4. Backbone 경계: 영역의 키가 태어나는 지점까지
 
@@ -178,6 +225,7 @@
 | D-16 | 에이전트 소스 변경 규칙 | 사원 앱 승격 3단계로 확장 | 제안 |
 | 신규 | — | 회사 기본 앱 제공 | 합의 |
 | 신규 | — | 사원 앱 전용 등록 도메인 | 합의 |
+| PFSS Provider | Foundation 하위 모듈 11종 | Middle-earth 구성요소로 편입. Syncope 퇴역 여부, OPA 유지 여부, MongoDB 소비자, 백업 소유를 정리(§3.1) | 제안 |
 | 신규 | — | 테넌트·어셈블리 구성 절차 | 제안([명세](../specs/TENANT-ASSEMBLY-SPEC-v0.1.md)) |
 | 신규 | — | 테넌트 내부 통신 규칙 | 제안([규칙](../specs/TENANT-COMMUNICATION-RULES-v0.1.md)) |
 | 신규 | — | Middle-earth 공식 명칭. 톨킨 저작물 상표라 제품 용어로는 중립 명칭 권장 | 미정 |

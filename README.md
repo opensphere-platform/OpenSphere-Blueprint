@@ -2,13 +2,14 @@
 
 OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 저장소다. 2026-11-17부터 OpenSphere 설계 문서의 정본 위치다. 이전 위치는 OpenSphere 저장소 `governance/architecture/`였다.
 
-문서 상태는 문서마다 다르다. **결정 대장(D-1~D-78)에 들어간 것만 결정**이고, 나머지는 초안·방향안이다. 어느 것도 구현 승인으로 읽지 않는다.
+문서 상태는 문서마다 다르다. **결정 대장(D-1~D-79)에 들어간 것만 결정**이고, 나머지는 초안·방향안이다. 어느 것도 구현 승인으로 읽지 않는다.
 
 ## 1. 구조 방향 (최신)
 
 | 문서 | 내용 | 상태 |
 |---|---|---|
 | [네 면 구조](docs/overview/FOUR-PLANES.md) · [페이지](docs/pages/four-planes.html) | Backbone · Middle-earth · Governance · Workspace. Workspace = 리소스 풀, 사원 앱 승격, 전용 도메인 | 방향안(일부 합의) |
+| [용어 대응표](docs/overview/GLOSSARY.md) | 상위 구조어, 쓰지 않는 용어(HISS·PSSS·PFSS 등)와 바꿔 쓸 말, 남겨 두는 구 식별자(D-79) | 결정 |
 | [Backbone 경계 제안](docs/pages/backbone-boundary.html) | 영역의 키가 태어나는 지점까지가 Backbone. 네 면 구조에 흡수됨 | 이전 판 |
 
 ## 2. 명세 초안
@@ -23,10 +24,10 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 
 | 문서 | 내용 |
 |---|---|
-| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-78**, 미결 O-1~O-10 |
+| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-79**, 미결 O-1~O-10 |
 | [계층 지도](docs/architecture/OPENSPHERE-LAYER-MAP.html) | 영역 × 계층 지도, 통신·통제 흐름, 제품 대장, 업무 코어 후보(화면) |
 | [계층 구조 검토 v0.1](docs/architecture/OPENSPHERE-LAYER-STRUCTURE-REVIEW-v0.1.md) | 기준선 이전의 아카이브 구조 검토 |
-| [O-2 PFSS 경계](docs/architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md) | Backbone과 Governance의 PFSS 제어 분리, Claim 확장, 서명 Grant |
+| [O-2 PFSS 경계](docs/architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md) | Backbone과 Governance의 공유 서비스(구 PFSS) 제어 분리, Claim 확장, 서명 Grant |
 | [Governance 최소 설계](docs/architecture/OPENSPHERE-GOVERNANCE-MIN-DESIGN-v0.1.md) | 원장, 결재, 어댑터, 판단 엔진 비교, G0~G4 단계 |
 | [O-6 비상 진입](docs/architecture/OPENSPHERE-BREAKGLASS-O6-v0.1.md) | Backbone의 사원 영역 비상 진입, 보안 동결, 운영 정보 범위 |
 | [O-4·O-7 에이전트 신원](docs/architecture/OPENSPHERE-AGENT-IDENTITY-O4-O7-v0.1.md) | 에이전트 신원 정본, 상시 위임, 호출 사슬 |

@@ -45,7 +45,7 @@
 
 | 기능 | 참고 대상 | 네 면 위치 | OpenSphere에서의 쓰임 |
 |---|---|---|---|
-| 자원 조합·수명주기 | **Crossplane**(XRD, Composition, Usage) | Middle-earth | 어셈블리 = Composite Resource, 삭제 보호 = Usage. 이미 PSSS 보유 |
+| 자원 조합·수명주기 | **Crossplane**(XRD, Composition, Usage) | Middle-earth | 어셈블리 = Composite Resource, 삭제 보호 = Usage. 이미 배포 지원 계열에 보유 |
 | | KubeVela(OAM), Kratix(Promise) | Middle-earth | "플랫폼이 파는 조합 상품" 모델 참고 |
 | K8s 테넌트 경계 | **Capsule**(Tenant CRD), vCluster | Middle-earth | 테넌트 = 네임스페이스 묶음 + 정책, 또는 가상 클러스터(T-Q2) |
 | 권한 판단(PDP) | **OpenFGA**, **SpiceDB**(Zanzibar 방식), Cedar, Cerbos, OPA | Governance가 정의, Middle-earth가 실행 | 기존 비교 후보 그대로(D-26, 최소 설계 §9) |
@@ -129,7 +129,7 @@ role:sales-rep  assignee: unit:sales-hq   (Governance 할당)
 |---|---|---|
 | G0 | 원장, 정의 revision, 신원 수집기, 감사 | 테넌트 기록 수신(Genesis 해시), 첫 소유자 인도 |
 | G1 | 결재, 셀프 신청, 대표 앱 어댑터, 대조기 | 연결 결재(T-6) |
-| G2 | PFSS 배분, 서비스 배분, showback | 어셈블리 Claim 승인, 연결 drift 대조 |
+| G2 | 공유 서비스 배분, 서비스 배분, showback | 어셈블리 Claim 승인, 연결 drift 대조 |
 | G3 | 재검토, 판단 엔진 채택, 에이전트 단위 | S8~S10 포함 비교, AuthZEN 어댑터 |
 | G4 | 외부 AD 모드, 추가 어댑터 | 사원 앱 승격 관문(L1~L3) |
 

@@ -124,7 +124,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
 <body>
 <header>
   <h1>OpenSphere 계층 지도</h1>
-  <div class="sub">기준선 v0.2 · 결정 D-1~D-78 반영 · 업무 코어·SCM 후보 v0.1 · 2026-11-17 · 설계 기준이며 구현·운영 완료를 뜻하지 않음 · 로고: OpenSphere Logos(logos.opl.io.kr, Statically CDN). 로고가 없는 제품은 글자 표식</div>
+  <div class="sub">기준선 v0.2 · 결정 D-1~D-79 반영 · 업무 코어·SCM 후보 v0.1 · 2026-11-17 · 설계 기준이며 구현·운영 완료를 뜻하지 않음 · 로고: OpenSphere Logos(logos.opl.io.kr, Statically CDN). 로고가 없는 제품은 글자 표식</div>
 </header>
 <nav role="tablist" aria-label="보기 선택">
   <button role="tab" aria-selected="true" aria-controls="v-map" id="t-map">① 영역 × 계층 지도</button>
@@ -136,7 +136,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
 
 <!-- ============ 1. MAP ============ -->
 <section id="v-map" role="tabpanel" aria-labelledby="t-map">
-  <p class="hint">위쪽 세 열은 신원·데이터가 분리된 <b>세 영역</b>, 아래 세 줄은 모든 영역이 함께 쓰는 <b>공통 기반 계층</b>입니다. 계층을 누르면 아래에 역할·제품·통신·통제가 나옵니다.</p>
+  <p class="hint">위쪽 세 열은 신원·데이터가 분리된 <b>세 영역</b>, 아래 세 줄은 모든 영역이 함께 쓰는 <b>Middle-earth</b>(가칭)의 세 묶음입니다(기반·배포 지원·공유 서비스, D-79). 계층을 누르면 아래에 역할·제품·통신·통제가 나옵니다.</p>
   <div class="map">
     <div class="area-h a-admin">admin 영역<small>플랫폼 운영자 · admin 신원(Supabase Auth)</small></div>
     <div class="area-h a-user">사원 영역<small>회사 사원 · 사원 신원(Samba AD DC → Keycloak)</small></div>
@@ -160,11 +160,11 @@ svg .t-h{font-weight:700;font-size:13.5px}
     <button class="layer c-exch span23" data-k="exchange" aria-pressed="false"><b>교류 계층 · Exchange</b><span class="role">사원 영역 ↔ 고객 영역의 유일한 통과 지점 — 교류 객체·신원 연결·규칙 집행·이벤트 연결 (자체 신원·정본 없음, D-75)</span>
       <div class="chips" data-chips="exchange"></div></button>
 
-    <button class="layer c-base full" data-k="pfss" aria-pressed="false"><b>PFSS · L5 Foundation</b><span class="role">공유 자원을 만들고 권한을 투영 — 공급(Backbone) · 배분(Governance) · 집행(PFSS)</span>
+    <button class="layer c-base full" data-k="pfss" aria-pressed="false"><b>공유 서비스 (구 PFSS)</b><span class="role">공유 자원을 만들고 권한을 투영 — 공급(Backbone) · 배분(Governance) · 집행(공유 서비스)</span>
       <div class="chips" data-chips="pfss"></div></button>
-    <button class="layer c-base full" data-k="psss" aria-pressed="false"><b>PSSS · L4 Platform Support</b><span class="role">배포·동기화·adapter·백업 — 모든 영역의 안전망</span>
+    <button class="layer c-base full" data-k="psss" aria-pressed="false"><b>배포 지원 (구 PSSS)</b><span class="role">배포·동기화·adapter·백업 — 모든 영역의 안전망</span>
       <div class="chips" data-chips="psss"></div></button>
-    <button class="layer c-base full" data-k="hiss" aria-pressed="false"><b>HISS · L1 Host Infrastructure</b><span class="role">클러스터 공통 실행 기반</span>
+    <button class="layer c-base full" data-k="hiss" aria-pressed="false"><b>기반 (구 HISS)</b><span class="role">클러스터 공통 실행 기반</span>
       <div class="chips" data-chips="hiss"></div></button>
   </div>
 
@@ -174,7 +174,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
 
 <!-- ============ 2. FLOW ============ -->
 <section id="v-flow" role="tabpanel" aria-labelledby="t-flow" hidden>
-  <p class="hint">세 영역은 신원과 채널을 공유하지 않습니다. 영역 안에서는 <b>Shell → 판단 → 소유 모듈</b>로 통제되고, 영역 사이는 <b>등록된 경계 API</b>만 지납니다. 공통 기반은 <b>공급·배분·배포</b> 경로로 연결됩니다.</p>
+  <p class="hint">세 영역은 신원과 채널을 공유하지 않습니다. 영역 안에서는 <b>Shell → 판단 → 소유 모듈</b>로 통제되고, 영역 사이는 <b>등록된 경계 API</b>만 지납니다. Middle-earth는 <b>공급·배분·배포</b> 경로로 연결됩니다.</p>
   <div class="card">
   <svg viewBox="0 0 1000 690" role="img" aria-label="OpenSphere 통신과 통제 흐름도">
     <defs>
@@ -237,7 +237,7 @@ svg .t-h{font-weight:700;font-size:13.5px}
 
     <!-- shared base -->
     <rect x="16" y="370" width="968" height="110" rx="12" fill="var(--base-bg)" stroke="var(--base)"/>
-    <text x="30" y="394" class="t-h">PFSS · L5 Foundation — 공급 · 배분 · 집행</text>
+    <text x="30" y="394" class="t-h">공유 서비스 (구 PFSS) — 공급 · 배분 · 집행</text>
     <rect x="32" y="408" width="280" height="56" rx="7" fill="var(--panel)" stroke="var(--alloc)"/><text x="44" y="430">공급 풀 (Backbone 설정)</text><text x="44" y="450" class="t-muted">vCPU·메모리·저장·연결 한도, 과할당 비율</text>
     <rect x="360" y="408" width="280" height="56" rx="7" fill="var(--panel)" stroke="var(--alloc)"/><text x="372" y="430">Grant 검증 → Claim → 자원</text><text x="372" y="450" class="t-muted">서명 오프라인 검증 · quota 강제</text>
     <rect x="688" y="408" width="280" height="56" rx="7" fill="var(--panel)" stroke="var(--alloc)"/><text x="700" y="430">Binding (엔드포인트 · Secret 참조)</text><text x="700" y="450" class="t-muted">사용량 보고 · drift 대조</text>
@@ -246,16 +246,16 @@ svg .t-h{font-weight:700;font-size:13.5px}
     </g>
 
     <rect x="16" y="500" width="968" height="76" rx="12" fill="var(--base-bg)" stroke="var(--base)"/>
-    <text x="30" y="524" class="t-h">PSSS · L4 — 배포 · 동기화 · 백업</text>
+    <text x="30" y="524" class="t-h">배포 지원 (구 PSSS) — 배포 · 동기화 · 백업</text>
     <text x="30" y="548">Backbone: Gitea Actions(자기 관리)   ·   사원·고객 영역: GitLab CI → Argo CD   ·   Crossplane · 백업·복원</text>
     <text x="30" y="566" class="t-muted">변경은 소스(Gitea/GitLab) → 검토 → 고정 산출물 → 배포. 에이전트는 PR까지만(D-16)</text>
 
     <rect x="16" y="596" width="968" height="76" rx="12" fill="var(--base-bg)" stroke="var(--base)"/>
-    <text x="30" y="620" class="t-h">HISS · L1 — 클러스터 공통 실행 기반</text>
+    <text x="30" y="620" class="t-h">기반 (구 HISS) — 클러스터 실행 기반</text>
     <text x="30" y="644">RKE2 · CNI · DNS · 저장·CSI · ingress · cert-manager · 관측 stack · StackGres operator · KubeVirt operator·KVM 노드</text>
     <text x="30" y="662" class="t-muted">Backbone의 Cluster Manager가 진단·설치·canary로 Ready 판정</text>
 
-    <!-- allocation arrows from areas to PFSS -->
+    <!-- allocation arrows from areas to 공유 서비스 -->
     <path d="M110 298 L110 406" stroke="var(--alloc)" stroke-width="2" fill="none" marker-end="url(#m-alloc)"/>
     <text x="118" y="344" class="t-muted" style="fill:var(--alloc)">공급 설정</text>
     <path d="M440 298 L440 406" stroke="var(--alloc)" stroke-width="2" fill="none" marker-end="url(#m-alloc)"/>
@@ -369,14 +369,14 @@ const C={
 };
 const L = {
   backbone:{name:'Backbone', area:'admin', role:'OpenSphere가 서비스를 구성·운영·복구할 수 있게 지원하는 관리 영역. 사원 권한의 내용에는 관여하지 않음 (D-1, D-23)',
-    does:['관리 신원·관리 데이터(PG19)·감사','모듈 설치·운영·복구, 공급 풀 설정','OS Shell로 모든 관리 기능 제어(AOA)','자체 업데이트·독립 복구','Cluster Manager로 HISS 관리'],
+    does:['관리 신원·관리 데이터(PG19)·감사','모듈 설치·운영·복구, 공급 풀 설정','OS Shell로 모든 관리 기능 제어(AOA)','자체 업데이트·독립 복구','Cluster Manager로 기반 관리'],
     products:[['Console (Angular·Clarity)','ok','angular'],['Rust BFF + 내부 버스','ok','rust'],['Core (PG19) + outbox','ok','pg'],['Temporal','ok','temporal'],['OS Shell','ok',null,'S'],['R2D2 / OpenClaw','ok','openclaw'],['Gitea + Gitea Actions','ok','gitea'],['OpenShell 격리 실행','ok',null,'OS'],['OpenObserve + OTel','ok','oo'],['Magpie 모델 관리','ok',null,'M'],['Supabase Auth (admin 신원)','ok','supabase'],['Cluster Manager','ok',null,'CM'],['Setup CLI','ok',null,'>_']],
-    comm:['영역 안: Rust 버스 · Core outbox · Temporal','사원 영역으로: 등록 경계 API (서비스 배분 요청, 운영 지표·사용량 수신)','기반: 공급 풀 설정 → PFSS, Gitea Actions 배포'],
+    comm:['영역 안: Rust 버스 · Core outbox · Temporal','사원 영역으로: 등록 경계 API (서비스 배분 요청, 운영 지표·사용량 수신)','기반: 공급 풀 설정 → 공유 서비스, Gitea Actions 배포'],
     ctrl:['플랫폼 운영자 (admin 신원)','정책 게이트 + 소유 모듈 + Core SQL 최종 검사','비상 진입은 사원 영역 허락 필요 (C3)']},
-  governance:{name:'Governance', area:'사원', role:'"누가(AD) + 무엇을(정의) + 얼마나·언제까지(할당)"를 원장에 확정하고, 각 앱·PFSS에 투영하고, 계속 대조하는 독립 제품 (D-2, D-19)',
+  governance:{name:'Governance', area:'사원', role:'"누가(AD) + 무엇을(정의) + 얼마나·언제까지(할당)"를 원장에 확정하고, 각 앱·공유 서비스에 투영하고, 계속 대조하는 독립 제품 (D-2, D-19)',
     does:['접근: 역할·할당·신청·결재·재검토·프로비저닝','자원: 개인·부서·프로젝트·서비스 quota와 배분','비용·사용량: showback, quota 초과 차단','준수·감사: drift 대조, 시점별 권한 증거','에이전트 신원·상시 위임 관리'],
     products:[['Governance 엔진 (원장·정의 revision·결재·실행기·대조기)','ok',null,'G'],['원장 = 전용 PostgreSQL','ok','pg'],['판단 엔진 (Cedar·Cerbos·OPA·OpenFGA·SpiceDB 비교)','cand',null,'P'],['Grant 서명기','ok',null,'✎'],['프로비저닝 어댑터 (SCIM 2.0 모양 계약)','ok',null,'↻'],['Governance 관리 콘솔 (별도 주소)','ok',null,'A'],['정의 서명 사본 → GitLab','ok','gitlab']],
-    comm:['입구: 관리 콘솔 · Workspace 셀프서비스 · 사원 영역 Shell → Governance API','원천: AD 변경 수집 (조직도 정본 = AD)','투영: 어댑터 → 앱 / 서명 Grant → PFSS Claim','영역 채널(이벤트)로 앱과 연계'],
+    comm:['입구: 관리 콘솔 · Workspace 셀프서비스 · 사원 영역 Shell → Governance API','원천: AD 변경 수집 (조직도 정본 = AD)','투영: 어댑터 → 앱 / 서명 Grant → 공유 서비스 Claim','영역 채널(이벤트)로 앱과 연계'],
     ctrl:['소유자 = AD 도메인 관리자 그룹 (D-34)','위임 관리 역할 (기능·단위 범위)','본인·에이전트 결재 금지, 정의 활성화는 위험 기반 승인','초과 권한 자동 회수, 부족은 보고 (D-20)']},
   workspace:{name:'Workspace', area:'사원', role:'사원용 업무 제품 전체. 진입점부터 메일·ERP·개발·AI까지 (D-7, D-28, D-55)',
     does:['진입점·서비스 스위처·SSO','내 권한·자원·신청·결재함 (셀프서비스)','메일·일정·파일, 메신저','개발 (GitLab, 개발자 자리 VM)','ERP·업무 앱','사원·부서·프로젝트 에이전트'],
@@ -392,10 +392,10 @@ const L = {
   core:{name:'업무 코어 · ERP·SCM', area:'사원', role:'회사 업무 데이터의 정본(system of record). 판매·구매·재고·물류·생산·정산·회계. 고객 영역에 한정하지 않고 전사 코어로 둔다 (D-74)',
     does:['수주·발주, 재고·창고·물류, 출하·반품','생산(선택), 정산·회계 연결','고객 영역 SCM 대외 면의 정본 제공 (주문·배송·재고 가시성·협력사 ASN)','Workspace 업무 화면과 사원 영역 에이전트의 업무 데이터 원천'],
     products:[['Odoo Community — 선택 (D-76)','ok','odoo',null,'LGPL-3.0, PostgreSQL 전용, 기능 폭·생태계 최대'],
-      ['실증 조건 C1~C9','tbd',null,'✓','Enterprise 의존 금지 목록, Keycloak OIDC·Governance 어댑터, 교류 계층 계약, outbox 이벤트, 한국 현지화, PFSS 배치, 업그레이드, 성능, LGPL 대응. 실증 시작은 별도 지시'],
+      ['실증 조건 C1~C9','tbd',null,'✓','Enterprise 의존 금지 목록, Keycloak OIDC·Governance 어댑터, 교류 계층 계약, outbox 이벤트, 한국 현지화, 공유 서비스 배치, 업그레이드, 성능, LGPL 대응. 실증 시작은 별도 지시'],
       ['ERPNext (Frappe) — 비선정','cand','erpnext',null,'GPL-3.0, MariaDB 중심'],
       ['Apache OFBiz — 비선정','cand','apache',null,'Apache-2.0, Java']],
-    comm:['사원: Keycloak SSO → 업무 화면 (Workspace)','고객 영역: 대외 커머스·포털이 등록 경계 API·이벤트로만 소비 (B-6, D-71)','에이전트: 사원 영역 Shell 경유','이벤트: outbox → CloudEvents → 영역 채널 (D-69)','저장: PFSS PostgreSQL (Governance 서비스 배분, D-30)'],
+    comm:['사원: Keycloak SSO → 업무 화면 (Workspace)','고객 영역: 대외 커머스·포털이 등록 경계 API·이벤트로만 소비 (B-6, D-71)','에이전트: 사원 영역 Shell 경유','이벤트: outbox → CloudEvents → 영역 채널 (D-69)','저장: 공유 서비스 PostgreSQL (Governance 서비스 배분, D-30)'],
     ctrl:['사원의 업무 권한·고객정보 열람 = Governance (B-7)','고객·협력사 자격 = 계약·주문 상태(업무 데이터)','데이터 보존·파기 = Governance 결정 (D-33)']},
   exchange:{name:'교류 계층 · Exchange', area:'사원↔고객', role:'내부 업무(사원 영역)와 외부 고객·협력사(고객 영역)가 만나는 유일한 통과 지점. 자체 신원과 업무 데이터 정본은 없고, 연결 규칙·보여 줄 형태·전달 기록만 가짐 (D-75, X-1~X-5)',
     does:['교류 객체 계약: 견적·주문·주문 확인·ASN·송장/정산 조회·반품·상담 건·공유 문서·고객 요청 결재','신원 연결: 고객 계정·고객 조직 ↔ 업무 코어 거래처, 건 ↔ 담당 사원','표현 변환: 고객에게 보일 필드만 투영(원가·내부 메모 제외)','사원·고객 영역 채널 사이 이벤트 연결(등록된 이벤트만)','교류 감사: 누가 어떤 교류 객체를 보고 바꿨는지'],
@@ -410,17 +410,17 @@ const L = {
       ['고객·협력사 포털 UI (OpenSphere 자체)','tbd',null,'P'],['헤드리스 CMS (웹사이트, 아카이브 계획은 Directus)','tbd','directus'],['고객용 앱·API (GitLab에서 개발)','ok','gitlab'],['고객 AI 에이전트 (경량 격리)','ok',null,'AI'],['영역 채널: Dapr (PoC)','cand','dapr'],['공개 ingress · WAF · 속도 제한','ok','nginx']],
     comm:['외부: 별도 공개 진입점 (B-8)','SCM: 포털 → 커머스 계층(고객 토큰) → 경계 API·이벤트 → 사원 영역 SCM 코어','사원 영역과: 업무 시스템의 고객용 API로만 (B-6)','영역 채널 (Dapr PoC + 브로커)','에이전트 데이터 조회는 고객 토큰으로만'],
     ctrl:['고객 자격 = 업무 시스템(계약·주문·구독)','고객 영역 정책·사원의 고객정보 열람 = Governance','B2B 고객 조직 관리자는 CIAM 안의 고객 측 역할']},
-  pfss:{name:'PFSS · L5 Foundation', area:'공통', role:'공유 자원을 만들고 권한을 투영. Backbone은 공급, Governance는 배분, PFSS는 집행 (O-2)',
+  pfss:{name:'공유 서비스 (구 PFSS)', area:'Middle-earth', role:'공유 자원을 만들고 권한을 투영. Backbone은 공급, Governance는 배분, 공유 서비스는 집행 (O-2)',
     does:['Plan → Claim → Instance → Binding','서명 Grant 오프라인 검증, quota 강제','엔진별 권한 투영 (PG role, S3 IAM, ACL 등)','사용량 보고, drift 대조','VM(compute) 제공'],
     products:[['Foundation control plane','ok',null,'F'],['SupplyPool (신규)','ok',null,'SP'],['PostgreSQL (StackGres)','ok','pg'],['RustFS (S3)','ok','rustfs'],['Valkey','ok','valkey'],['OpenSearch','ok','opensearch'],['Percona MongoDB','ok','percona'],['KubeVirt VM (compute 모델 신설)','ok','kubevirt'],['Samba AD DC Provider','ok','samba'],['Keycloak Provider','ok','keycloak']],
     comm:['Backbone → 공급 풀 설정','Governance → 서명 Grant + Claim','→ 각 영역에 Binding (엔드포인트·Secret 참조)','사용량 → Governance (단위별) → Backbone (보고서)'],
-    ctrl:['Backbone 공급 한도가 배분보다 우선','영구 삭제는 Governance 결정, PFSS 실행 (D-33)','과할당 비율은 풀마다 Backbone 설정 (D-32)']},
-  psss:{name:'PSSS · L4 Platform Support', area:'공통', role:'배포·동기화·adapter·백업·정책 실행 연계. 영역을 가로지르는 안전망',
+    ctrl:['Backbone 공급 한도가 배분보다 우선','영구 삭제는 Governance 결정, 공유 서비스 실행 (D-33)','과할당 비율은 풀마다 Backbone 설정 (D-32)']},
+  psss:{name:'배포 지원 (구 PSSS)', area:'Middle-earth', role:'배포·동기화·adapter·백업·정책 실행 연계. 영역을 가로지르는 안전망',
     does:['선언 배포와 drift 복구','operator·Helm 릴리스 관리','백업·복원 연계','사원·고객 영역 배포 실행'],
     products:[['Argo CD','ok','argocd'],['Crossplane + provider-helm','ok','crossplane'],['Helm','ok','helm'],['백업 (Velero 계열)','cand','velero']],
     comm:['GitLab CI → Argo CD (사원·고객 영역, D-18)','Backbone은 Gitea Actions로 자기 관리'],
     ctrl:['소스 → 검토 → 고정 산출물 → 배포','에이전트는 PR까지만 (D-16)']},
-  hiss:{name:'HISS · L1 Host Infrastructure', area:'공통', role:'모든 영역이 쓰는 클러스터 공통 실행 기반',
+  hiss:{name:'기반 (구 HISS)', area:'Middle-earth', role:'모든 영역이 쓰는 클러스터 공통 실행 기반',
     does:['K8s·네트워크·DNS·저장·인증서','ingress·관측 기반','DB·VM operator 같은 공통 설비','Ready는 canary 증거로 판정'],
     products:[['RKE2 (Rancher)','ok','rancher'],['Kubernetes · CNI · CoreDNS','ok','k8s'],['StorageClass·CSI (Longhorn 등)','ok','longhorn'],['ingress-nginx','ok','nginx'],['cert-manager','ok','certm'],['kube-prometheus-stack (Prometheus·Grafana·Loki·Tempo)','ok','prom'],['OpenTelemetry Collector','ok','otel'],['StackGres operator','ok',null,'SG'],['KubeVirt operator · KVM 노드 (D-54)','ok','kubevirt'],['Kata Containers (경량 격리)','cand',null,'K']],
     comm:['Kubernetes API · 네트워크 정책 · 공유 관측'],
@@ -457,7 +457,7 @@ const SC=[
  ['1','Saleor',null,'S','대외 커머스 계층 (고객 영역)','BSD-3-Clause','Python · GraphQL · PostgreSQL','★23.6k · 3.23.x','헤드리스 주문·채널·창고. 후방 SCM 없음 → 코어와 API·이벤트로 결합'],
  ['1','Medusa (대안)','medusa',null,'대외 커머스 계층 (고객 영역)','MIT (Enterprise Edition 자료 제외)','TypeScript · PostgreSQL','★37.3k · v2.22.x','모듈식, B2B 확장 쉬움. EE 경계 확인'],
  ['비교','Liferay Portal + Commerce',null,'L','고객 영역 플랫폼 후보 (커머스·포털·CMS 일체)','LGPL-2.1-or-later (DXP는 상용 EULA)','Java(OSGi) · PostgreSQL','★2.3k · 2026-11-16 push','B2B 계정·가격표·주문 규칙·창고·출하·헤드리스 API + CMS·사이트·계정. 후방 SCM(구매·생산·회계) 없음 → Odoo의 대체가 아니라 Saleor/Medusa+자체 포털+CMS를 한 번에 대체하는 후보. 운영 무거움, UI 정책 예외'],
- ['2','ERPNext (Frappe)','erpnext',null,'SCM 코어 대안','GPL-3.0','Python · MariaDB 중심','★41.4k · v16 계열','무료 범위 넓고 공급사 포털 있음. GPL 배포 의무, PFSS에 MariaDB 필요'],
+ ['2','ERPNext (Frappe)','erpnext',null,'SCM 코어 대안','GPL-3.0','Python · MariaDB 중심','★41.4k · v16 계열','무료 범위 넓고 공급사 포털 있음. GPL 배포 의무, 공유 서비스에 MariaDB 필요'],
  ['2','Apache OFBiz','apache',null,'SCM 코어 대안 (라이선스 우선 시)','Apache-2.0','Java · PostgreSQL 가능','★1.2k · push 활발','OEM 가장 자유. UX 낡고 개발량 큼'],
  ['보조','InvenTree',null,'IT','재고·부품 특화 보완','MIT','Python · PostgreSQL','★7.9k · 1.7.x','재고 영역만'],
  ['보조','OpenBoxes',null,'OB','재고·물류 특화 보완','EPL-1.0','Groovy · MySQL 중심','★0.9k · v0.9.9','보건 공급망 출신'],

@@ -26,12 +26,14 @@
 │   [공급 면 · Backbone]     엔진 · 버전 · CRD · 노드 · 용량 · 인스턴스 수명주기
 │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄ 인도 지점 ┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 │   [사용 면 · 할당받은 쪽]  설정 · 자격 · 데이터 · 배포 대상 · 내 메일함 · 내 VM
-│   기반     HISS(K8s · CNI · ingress · cert-manager · 저장) · PSSS(Argo CD · Crossplane · Velero)
+│   기반        K8s · CNI · ingress · cert-manager · DNS · 저장 엔진  (구 HISS)
+│   배포 지원   Argo CD · Crossplane · Velero 설치                  (구 PSSS)
+│   공유 서비스 (구 PFSS) ─ 아래 데이터 · 신원 · 정책 집행 · 연산 · 보호·관측 묶음
 │   데이터   PostgreSQL(StackGres) · OpenSearch · Valkey · RustFS · Percona MongoDB(예비)
 │   신원     Samba AD DC · 외부 디렉터리 연결 · Keycloak · 권한 판단(OPA 대체 제안: OpenFGA)
 │   정책 집행 Kyverno(OPA 대체 제안)
 │   연산     KubeVirt
-│   보호·관측 PFS Backup · PFS Observability(Grafana · Loki · Tempo · 테넌트 게이트웨이)
+│   보호·관측 백업 서비스 · 관측 서비스(Grafana · Loki · Tempo · 테넌트 게이트웨이)
 │   업무     Stalwart · Mattermost · Univer · GitLab · Odoo 엔진
 │   런타임   이벤트 채널 · Temporal · 모델 게이트웨이
 │   신뢰     영역 KMS · 내부 CA · SPIRE
@@ -81,12 +83,12 @@
 
 | 구성요소 | 공급 면 · Backbone | 인스턴스 판단 | 사용 면 · 할당받은 쪽 |
 |---|---|---|---|
-| Argo | 엔진(PSSS) | **영역별 인스턴스.** 배포 결정권 자체라서 공유하면 경계가 무너진다 | AppProject, 저장소 자격, 배포 서명 키 |
-| PostgreSQL | PFSS operator | DB는 Claim마다 따로. operator는 공유하되 Secret 읽기는 거부 | DB 자격, 데이터 |
+| Argo | 엔진(배포 지원) | **영역별 인스턴스.** 배포 결정권 자체라서 공유하면 경계가 무너진다 | AppProject, 저장소 자격, 배포 서명 키 |
+| PostgreSQL | 공유 서비스 operator | DB는 Claim마다 따로. operator는 공유하되 Secret 읽기는 거부 | DB 자격, 데이터 |
 | Keycloak | 이미지·버전 | 이미 영역별(D-63) | realm, 클라이언트, 사용자 |
 | KubeVirt | operator·KVM 노드 | operator는 공유, VM은 영역 소유(D-54) | VM 디스크, 게스트 |
 | Stalwart | 엔진·버전·저장 | 사원 영역 인스턴스 | 메일함, JMAP·CalDAV 접근 권한 |
-| ingress | HISS 컨트롤러 | 공유 가능. 영역 사이 칸막이는 Backbone이 지킨다 | 도메인 노출 조건, 사원 앱 경로 |
+| ingress | 기반 계열 컨트롤러 | 공유 가능. 영역 사이 칸막이는 Backbone이 지킨다 | 도메인 노출 조건, 사원 앱 경로 |
 | 관측 | 수집 엔진 | 지표 경로는 공유, 로그 본문 경로는 영역별 | 로그·추적 내용 |
 | KMS | 엔진 | **영역별.** 다른 모든 선을 지켜 주는 장치 | 서명·암호화·복구 키 |
 
@@ -107,18 +109,18 @@
 |  | **OPA** | Provider `opa` · `identity.policy.opa` | 엔진 | 정책 번들 | 드롭 제안. 앱 권한 판단은 OpenFGA(SpiceDB와 PoC 비교), K8s admission은 Kyverno로 나눈다(§3.2) | 제안 |
 |  | **~~Apache Syncope~~** | Provider `apache-syncope` · `identity.iga.syncope` | — | — | 드롭(D-77). Governance의 SCIM 형태 프로비저닝 어댑터로 대체 | 드롭(합의) |
 | 연산 | **KubeVirt** | Provider `kubevirt` · `compute.virtualization.vm` | operator, KVM 노드, 공급 한도 | VM 생성 → 디스크·게스트 | 에이전트·개발자 자리 VM(D-51, D-54, D-55) | 유지 |
-| 보호·관측 | **PFS Backup** | `opensphere-backup` operator(BackupPolicy·BackupRun·RestoreRun → Velero). Velero 설치는 Platform Support 소유 | 백업 엔진·실행·저장 위치·최소 보호 기준 | 영역별 백업 정책, 복구 승인, 백업 내용(영역 키로 암호화) | 엔진과 실행은 Backbone, 정책·키·복구 승인은 영역(§3.3) | 제안 |
-|  | **PFS Observability** | Grafana operator 배포판, Loki, Tempo, 관측 테넌트 게이트웨이(`X-Scope-OrgID` 주입) | 수집·저장 엔진, 게이트웨이 | 테넌트별 로그·추적 본문(게이트웨이 grant) | "로그 본문 경로는 영역별"을 이미 게이트웨이로 구현한 사례 | 유지 |
-| PFSS 제어 기능 | **공급 풀·Grant 검증** | SupplyPool, 서명 Grant(D-31), 과할당 비율(D-32) | Backbone이 설정 | — | 엔진이 아니라 공급 면의 제어 기능 | 유지 |
+| 보호·관측 | **백업 서비스**(구 PFS Backup) | `opensphere-backup` operator(BackupPolicy·BackupRun·RestoreRun → Velero). Velero 설치는 Platform Support 소유 | 백업 엔진·실행·저장 위치·최소 보호 기준 | 영역별 백업 정책, 복구 승인, 백업 내용(영역 키로 암호화) | 엔진과 실행은 Backbone, 정책·키·복구 승인은 영역(§3.3) | 제안 |
+|  | **관측 서비스**(구 PFS Observability) | Grafana operator 배포판, Loki, Tempo, 관측 테넌트 게이트웨이(`X-Scope-OrgID` 주입) | 수집·저장 엔진, 게이트웨이 | 테넌트별 로그·추적 본문(게이트웨이 grant) | "로그 본문 경로는 영역별"을 이미 게이트웨이로 구현한 사례 | 유지 |
+| 공유 서비스 제어 기능 | **공급 풀·Grant 검증** | SupplyPool, 서명 Grant(D-31), 과할당 비율(D-32) | Backbone이 설정 | — | 엔진이 아니라 공급 면의 제어 기능 | 유지 |
 |  | **Claim 프로비저닝** | FoundationClaim → 엔진 라우팅 → DB·인덱스·역할·Secret 발급 | 컨트롤러 | Binding(자격 인도) | 인도 지점 자체. 어셈블리 명세의 연결 객체가 감싼다 | 유지 |
 |  | **Provider 수명주기** | `foundation.provider-modules.*` 13개 명령(adopt·update·approve 등, OS Shell 경유) | Backbone(Console 관리자) | — | 엔진 채택·갱신은 공급 면. 영역 인스턴스 적용은 영역이 끌어간다(제안) | 유지 |
 
-**PFSS 밖의 Middle-earth 구성요소**
+**공유 서비스(구 PFSS) 밖의 Middle-earth 구성요소**
 
 | 묶음 | 구성요소 |
 |---|---|
-| HISS | K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진 |
-| PSSS | Argo CD, Crossplane, Velero 설치 |
+| 기반(구 HISS) | K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진 |
+| 배포 지원(구 PSSS) | Argo CD, Crossplane, Velero 설치 |
 | 업무 엔진 | Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어) |
 | 런타임 | 이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이 |
 | 신뢰 | 영역 KMS, 내부 CA, SPIRE(테넌트 명세 trust 어셈블리) |
@@ -149,7 +151,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 
 **추천**
 1. **앱 권한 판단: OpenFGA를 1순위로, SpiceDB와 PoC로 비교한다.**
-   - 둘 다 Zanzibar 계열이고, 관계 계층·역질의·조건(CEL)을 지원하며, PostgreSQL을 저장소로 쓸 수 있다(PFSS PostgreSQL 재사용).
+   - 둘 다 Zanzibar 계열이고, 관계 계층·역질의·조건(CEL)을 지원하며, PostgreSQL을 저장소로 쓸 수 있다(공유 서비스 PostgreSQL 재사용).
    - OpenFGA는 CNCF 프로젝트라 특정 회사에 덜 묶이고 모델 문법이 단순하다. SpiceDB는 일관성 토큰(ZedToken) 등 일관성 보장이 더 정교하다.
    - 비교 시나리오는 최소 설계 §9의 S1~S7과 참고 아키텍처의 S8~S10을 그대로 쓴다. 이 추천은 D-26 비교를 건너뛰자는 것이 아니라, 후보를 둘로 좁히자는 것이다.
 2. **K8s admission: Kyverno.** 연결 그래프 기반 기본 거부, 서명 이미지 검증, 테넌트 경계 위반 거부를 맡는다.
@@ -183,7 +185,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 
 | 종류 | 대상 | 소유 |
 |---|---|---|
-| 플랫폼 백업 | Backbone 자신의 상태, etcd, HISS·PSSS 설정 | Backbone이 전부 |
+| 플랫폼 백업 | Backbone 자신의 상태, etcd, 기반·배포 지원 설정 | Backbone이 전부 |
 | 영역 백업 | 사원·고객 영역의 데이터·설정 | 위 두 얼굴 구분을 따른다 |
 
 **기준선·아카이브 정리:** 기준선 §3의 "PSSS: 백업·복구"와 아카이브의 "Velero 설치 = Platform Support, 백업 operator = PFS"는 둘 다 **공급 면**이다. 따라서 둘 다 Backbone 운영으로 묶이고 충돌하지 않는다. 정할 것은 계층 이름표뿐이다. 이 구조에서는 백업 엔진을 Middle-earth "보호·관측" 계열로 둔다.
@@ -211,9 +213,9 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 
 | 대상 | Backbone 안 | 인도 지점 | Backbone 밖 (사원·고객 영역) |
 |---|---|---|---|
-| HISS | 노드, K8s 제어면, CNI, 저장 엔진, ingress 컨트롤러, 인증서·DNS 엔진, **영역 사이 차단 정책**(X-1의 바닥) | 영역 네임스페이스 생성 | 네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10) |
-| **PSSS** | Argo 엔진, Crossplane 엔진, 백업 실행 | 엔진 → 영역 인스턴스 | 사원 영역 Argo 인스턴스·AppProject·동기화 대상, 배포 서명 키, 백업 내용(영역 키로 암호화) |
-| **PFSS** | Provider·Operator, Plan, SupplyPool, 과할당 비율(D-32), Instance 생성·확장·이전 | Instance → Binding | Claim·Binding부터: 수혜 단위, quota, 발급된 자격, 데이터 |
+| 기반(구 HISS) | 노드, K8s 제어면, CNI, 저장 엔진, ingress 컨트롤러, 인증서·DNS 엔진, **영역 사이 차단 정책**(X-1의 바닥) | 영역 네임스페이스 생성 | 네임스페이스 안의 내용, 영역 내부 네트워크 정책, 공개 도메인 노출 조건(O-10) |
+| **배포 지원**(구 PSSS) | Argo 엔진, Crossplane 엔진, 백업 실행 | 엔진 → 영역 인스턴스 | 사원 영역 Argo 인스턴스·AppProject·동기화 대상, 배포 서명 키, 백업 내용(영역 키로 암호화) |
+| **공유 서비스**(구 PFSS) | Provider·Operator, Plan, SupplyPool, 과할당 비율(D-32), Instance 생성·확장·이전 | Instance → Binding | Claim·Binding부터: 수혜 단위, quota, 발급된 자격, 데이터 |
 | KubeVirt | 엔진, KVM 노드, 공급 한도 | VM 생성 | VM 디스크, 게스트 내부 |
 | **신원** | Supabase Auth(admin) | 설치 → 첫 관리자 자격 | Samba AD·외부 AD, 사원 Keycloak, 고객 CIAM. 설치는 Backbone이 하되 첫 관리자 자격은 영역에서 태어난다 |
 | 관측 | 상태·건강·용량 지표, 단위별 사용량(D-41) | 지표 ↔ 본문 | 로그·추적 본문. 사원 영역 자체 관측 스택 필요 |
@@ -221,7 +223,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 | 모델 | Magpie | 분리 | 사원 영역 게이트웨이, 고객 AI 게이트웨이 |
 | **키** | Backbone 자신의 키 | 키 생성 | **영역별 KMS.** 이것이 없으면 경계 전체가 성립하지 않는다(R-07) |
 
-굵게 표시한 PSSS, PFSS, 신원, 키가 핵심 행이다.
+굵게 표시한 배포 지원, 공유 서비스, 신원, 키가 핵심 행이다.
 
 **지금 설계에서 바뀌는 곳** (`제안`)
 - **Argo 분리:** 엔진은 공급하고, 영역 인스턴스는 영역이 소유한다. 영역 키로 서명된 이미지만 통과한다.
@@ -285,7 +287,8 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 | D-16 | 에이전트 소스 변경 규칙 | 사원 앱 승격 3단계로 확장 | 제안 |
 | 신규 | — | 회사 기본 앱 제공 | 합의 |
 | 신규 | — | 사원 앱 전용 등록 도메인 | 합의 |
-| PFSS Provider | Foundation 하위 모듈 11종 | Middle-earth 구성요소로 편입(§3.1) | 제안 |
+| D-79 | HISS·PSSS·PFSS, L1~L6, "공통 기반" | 상위 구조어로 쓰지 않음. 기반·배포 지원·공유 서비스로 부르고 코드 식별자는 다음 메이저까지 유지([용어 대응표](GLOSSARY.md)) | 합의 |
+| 공유 서비스 Provider(구 PFSS Provider) | Foundation 하위 모듈 11종 | Middle-earth 구성요소로 편입(§3.1) | 제안 |
 | D-77 | Apache Syncope Provider | 드롭, SCIM으로 처리 | 합의 |
 | D-78 | Percona MongoDB | 예비 설치 | 합의 |
 | D-26 후보 | 판단 엔진 5종 | OPA 드롭, OpenFGA·SpiceDB로 좁혀 PoC, admission은 Kyverno(§3.2) | 제안 |

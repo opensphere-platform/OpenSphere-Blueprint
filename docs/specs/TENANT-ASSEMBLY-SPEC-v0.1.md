@@ -15,7 +15,7 @@
 
 ## 1. 왜 필요한가
 
-PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 생기지는 않는다. 넷은 서로 관계없는 독립 제품이다. 지금 설계에 있는 PFSS 절차(Plan → Claim → Instance → Binding)는 **자원 하나를 받는 방법**만 정한다.
+PostgreSQL, Samba AD DC, OpenSearch, Stalwart를 설치했다고 서비스가 생기지는 않는다. 넷은 서로 관계없는 독립 제품이다. 지금 설계에 있는 공유 서비스(구 PFSS) 절차(Plan → Claim → Instance → Binding)는 **자원 하나를 받는 방법**만 정한다.
 
 이 명세는 빠져 있던 두 가지를 정한다.
 1. **여러 자원을 하나의 목적에 맞게 묶는 절차**
@@ -124,7 +124,7 @@ spec:
       engine: stalwart            # Middle-earth 엔진(D-70)
       claim: { plan: compute.standard, replicas: 2 }
     - name: store
-      engine: postgresql          # PFSS Claim
+      engine: postgresql          # 공유 서비스 Claim
       claim: { plan: pg.ha-small }
     - name: search
       engine: opensearch
@@ -142,7 +142,7 @@ spec:
     - { from: core/governance.adapter, to: stalwart, type: control,   protocol: scim-shape }
   names:
     - { record: MX,    value: "mail.${company.domain}" }
-    - { record: TXT,   value: "spf, dkim, dmarc" }     # 공인 DNS는 HISS·Backbone 운영(O-10)
+    - { record: TXT,   value: "spf, dkim, dmarc" }     # 공인 DNS는 기반 계열·Backbone 운영(O-10)
   init:
     - schema: stalwart.store.migrate
     - directory: bind-readonly-service-account
@@ -288,7 +288,7 @@ Genesis는 Backbone 경계가 그어지는 순간이다(키가 태어나는 지�
 3. **반출:** 데이터 반출 형식과 위치를 확인하고 반출한다. 반출 완료 확인을 기록한다.
 4. **연결 해제:** 바깥 어셈블리부터 연결을 Unbinding → Released로 바꾼다. 자격을 폐기한다.
 5. **공급 회수:** Instance를 반납한다(Backbone 실행).
-6. **영구 삭제:** Governance 결정(D-33)에 따라 PFSS가 실행한다. 암호화 키를 파기하는 것(crypto-shred)으로 삭제 완료를 보장한다.
+6. **영구 삭제:** Governance 결정(D-33)에 따라 공유 서비스가 실행한다. 암호화 키를 파기하는 것(crypto-shred)으로 삭제 완료를 보장한다.
 7. **기록 보존:** 테넌트 기록, 해체 기록, 감사 기록을 보존 기간 동안 남긴다.
 
 ## 11. 적합성 시험
@@ -308,7 +308,7 @@ Genesis는 Backbone 경계가 그어지는 순간이다(키가 태어나는 지�
 
 | 명세 요소 | 후보 | 비고 |
 |---|---|---|
-| 어셈블리 정의·조립 | Crossplane XRD·Composition | 이미 PSSS 보유. 어셈블리 = Composite Resource |
+| 어셈블리 정의·조립 | Crossplane XRD·Composition | 이미 배포 지원 계열에 보유. 어셈블리 = Composite Resource |
 | 삭제 보호 | Crossplane Usage, K8s finalizer | T-4 |
 | 테넌트 경계 | 네임스페이스 집합 + Capsule, 또는 vCluster | T-Q2 |
 | 연결 신원 | SPIFFE/SPIRE | 통신 규칙 문서 §3 |

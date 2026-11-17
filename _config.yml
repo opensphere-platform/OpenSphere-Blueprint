@@ -7,6 +7,7 @@ kramdown:
   input: GFM
   hard_wrap: false
 plugins:
+  - jekyll-seo-tag
   - jekyll-relative-links
   - jekyll-optional-front-matter
   - jekyll-readme-index

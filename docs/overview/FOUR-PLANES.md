@@ -7,6 +7,8 @@
 
 ---
 
+> Backbone 구성요소의 구체 책임·실제 배포·작업 이력은 [Backbone 설계·구현·운영 대장](../backbone/README.md)을 참조한다. 이 연결은 본 문서의 제안을 구현 완료로 승격하지 않는다.
+
 ## 1. 핵심
 
 > **Workspace는 제품 묶음이 아니라, Governance가 Fabric에서 잘라 준 내 몫이다.**

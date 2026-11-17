@@ -1,0 +1,474 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-11-17T22:04:42.377167+09:00",
+  "purpose": "Public sanitized evidence locator; no raw operator logs, identity records, internal endpoints or credentials",
+  "blueprintInputRevision": "9e453054d5707909198640b02011f9f8112a7b2d",
+  "backboneSourceMain": "f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+  "unmergedPGCandidate": "c7c60d6ddf166ef95de7595112dea105f12ea52d",
+  "installedAcceptance": {
+    "setup": "0.6.0-edge.52",
+    "console": "26.1117.1110.21",
+    "source": "b867824b0b96001cc91d853bfc8ecdedb966958a",
+    "reference": "ACC-52"
+  },
+  "pgFirstStage": {
+    "complete": false,
+    "productionMigrationPerformed": false,
+    "candidatePR": 23,
+    "requiredCI": 86,
+    "requiredCIOutcomeAtCheckpoint": "failed RUSTSEC-2026-0543 informational unmaintained",
+    "exceptionApproved": false,
+    "sourceChecksPassed": 229,
+    "modelOrNextStageActivated": false
+  },
+  "liveReadOnlyObservation": {
+    "at": "2026-11-17T22:04:42.377167+09:00",
+    "method": "Kubernetes get deployments; image and ready replica metadata only",
+    "notFunctionalAcceptance": true,
+    "workloads": [
+      {
+        "workload": "backbone-api",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-core@sha256:7b0171681b5d12c5d32f83e18afa3198b009a0a1da16f08441dca14cf38c5a88",
+          "ghcr.io/opensphere-platform/opensphere-backbone-core@sha256:84800fdb6a92e1753070156cbe0386673020e7b8d609a9c8837ce98fbb1e88be",
+          "ghcr.io/opensphere-platform/opensphere-backbone-core@sha256:84800fdb6a92e1753070156cbe0386673020e7b8d609a9c8837ce98fbb1e88be"
+        ]
+      },
+      {
+        "workload": "backbone-auth",
+        "readyReplicas": 1,
+        "images": [
+          "supabase/gotrue:v2.197.0@sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b"
+        ]
+      },
+      {
+        "workload": "backbone-console",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-console@sha256:817470fbf183fd18f382e2a3b209e3c7eeb040171143a67b3b999d1a1150e13c"
+        ]
+      },
+      {
+        "workload": "backbone-dispatcher",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-core@sha256:84800fdb6a92e1753070156cbe0386673020e7b8d609a9c8837ce98fbb1e88be"
+        ]
+      },
+      {
+        "workload": "backbone-edge-functions",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-edge@sha256:2c0d9aff9a0ae718498bb722ffb6f304c78200e302a8f71f651c9cf74f159fe5"
+        ]
+      },
+      {
+        "workload": "backbone-gitea",
+        "readyReplicas": 1,
+        "images": [
+          "docker.io/gitea/gitea:28.3.0-rootless@sha256:40c5a68a0463c0940e1ae32626c8300dd0572f3558e390073ad8379ca67c0e1d"
+        ]
+      },
+      {
+        "workload": "backbone-magpie",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-magpie@sha256:edd98f1cc3cd4773f050d16755e883b4dbc69708676bf3bec0247aa4fc46e7c9"
+        ]
+      },
+      {
+        "workload": "backbone-management-access",
+        "readyReplicas": 1,
+        "images": [
+          "docker.io/nginxinc/nginx-unprivileged@sha256:e2a8fca8aa356d66159aaf8a877a9c126773635adf210503eefaaeaffeed6ad7"
+        ]
+      },
+      {
+        "workload": "backbone-metadata",
+        "readyReplicas": 1,
+        "images": [
+          "supabase/postgres-meta:v0.100.0@sha256:145325b7e39f8ef4931d6e8cfd3f6f4d655de09d72a2ccc96d9513542c2202bd"
+        ]
+      },
+      {
+        "workload": "backbone-postgrest",
+        "readyReplicas": 1,
+        "images": [
+          "postgrest/postgrest:v14.18@sha256:c7cd7e265a85b05248abf53f4473fcec7e327c282d0bd0cf60f1551996d09fcf"
+        ]
+      },
+      {
+        "workload": "backbone-r2d2",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-r2d2@sha256:ad8729cbbad6e5e5c9420c5115c318181f83000aba66fe28bf0b6f6c3b5f9508"
+        ]
+      },
+      {
+        "workload": "backbone-realtime",
+        "readyReplicas": 1,
+        "images": [
+          "supabase/realtime:v2.148.3@sha256:25cf375b9b7cb71d90cdf6e04a1a30996e39a8df866ebd0525bba1d959edc8d6"
+        ]
+      },
+      {
+        "workload": "backbone-storage-api",
+        "readyReplicas": 1,
+        "images": [
+          "supabase/storage-api:v1.89.12@sha256:8526956cb462e9f7d392e9848ec77133b2769982ed614e9753cc687e8e4339a6"
+        ]
+      },
+      {
+        "workload": "backbone-swallow",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-swallow@sha256:17569f921aff7cb2356faf24ac9ac5ac440ad34bbad2ed214c30505eaba66e19",
+          "ghcr.io/opensphere-platform/opensphere-backbone-swallow@sha256:17569f921aff7cb2356faf24ac9ac5ac440ad34bbad2ed214c30505eaba66e19"
+        ]
+      },
+      {
+        "workload": "backbone-temporal",
+        "readyReplicas": 1,
+        "images": [
+          "temporalio/auto-setup:1.29.1@sha256:5b3502a3b685f9eff1b925af90c57c9e3dbeccbef367cc28a2a9712c63379312"
+        ]
+      },
+      {
+        "workload": "backbone-workflow-worker",
+        "readyReplicas": 1,
+        "images": [
+          "ghcr.io/opensphere-platform/opensphere-backbone-core@sha256:84800fdb6a92e1753070156cbe0386673020e7b8d609a9c8837ce98fbb1e88be"
+        ]
+      }
+    ]
+  },
+  "inputs": [
+    {
+      "id": "SRC-01",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "OPENSPHERE-BACKBONE-BLUEPRINT.md",
+      "sha256": "90391754247d5efd0479c92ba769205079c74355c6e5cec2e903f4a0a4de1ac0",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-02",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "CORE-DETAILED-DESIGN-2026-11-11.md",
+      "sha256": "3372f10230de1288ba24c8acf93bb9d143768869ffde92e81f71387732236315",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-03",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/p1/README.md",
+      "sha256": "6a3ac05988e56aceea2ecc3fb98708cc8139f5164823e77866ab981a276de68f",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-04",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/p2/README.md",
+      "sha256": "da7b4b5b79fb7500da94aae695eac20b22f8df4e6b5a39a994137db27796e822",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-05",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/p3-1/README.md",
+      "sha256": "e3d6f0539acf51971a08a37c95b75b80d050603fbfa4f853b8c9eddc811cc589",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-06",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/foundation/README.md",
+      "sha256": "563de4552971a9774c5cc64d311fa6fad9339de895ff25f28838c543c91561d0",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-07",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/foundation/STORAGE-PROFILES.md",
+      "sha256": "aa4430889eb5521efa74fec0d8f96ffee97ebc83788c7eadb9c015b4201ce740",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-08",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/events/README.md",
+      "sha256": "8fe06e54da15fc1f0f4911110d3bc9f1aca49c59505eb96cca13b9c6d9e88810",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-09",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/execution/README.md",
+      "sha256": "ee1c8989cc8e6c6c1d65377e65cfe13a3b34eec98b861d0cb8f67d34f9840104",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-10",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/release/COMPLETION.md",
+      "sha256": "4da89de69aedb5e284b4d6e4dc452856091d5288c71ab4a01e1d1b0e39f1ad93",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-11",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/r2d2/README.md",
+      "sha256": "68715d104ae0e01e872d226b06b596cb2fbc1a3a673efcc83bb9feb2836aa97e",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-12",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/r2d2/knowledge/README.md",
+      "sha256": "cf38f1246115df26d05d336160fc2d3ba068dae140cfaa71952872f5d2dbf00d",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-13",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/setup/README.md",
+      "sha256": "02aeb23d438cdc0fa61456cf0c317e2f0a646f374d59ba3080bca434a96158b1",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-14",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/nexus/ENFORCEMENT-20261116.md",
+      "sha256": "69a40cc54691c1c5493558d407824da54659771015e29ae01ab5eae3ac071dba",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-15",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/bus/NEXUS-MODULE-ADOPTION.md",
+      "sha256": "294f9653993c9816421b800009613ce05bd235e0e063a642d42a2a406856901d",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-16",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "docs/r2d2/PG-STORAGE-FIRST-STAGE.md",
+      "sha256": "5d8e4a16e2b8dcf4e520aa5bd0f76d54ed4c381d2bb301aafe6174b8cd33034e",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-17",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "backend/server/src/bus.rs",
+      "sha256": "dd29744534116021e46cec44bb6c2056e50cc3452d4adb7af6f94dd4c9a62738",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-18",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "backend/server/src/policy.rs",
+      "sha256": "02e055a2edcfac7ab9ddc00ef5905f34518f9b2065829fc5bfb597af8d70e475",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-19",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "backend/server/src/approval.rs",
+      "sha256": "6253d916aa2608322b287301c3e504434917be6c6505a34e9589477fd469fd09",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-20",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "backend/server/src/nexus_routes.rs",
+      "sha256": "f9a0c5086944b33661678742de6972ffdd686c000f1b43321d3cf80576ab7c56",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-21",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "infra/nexus/001-independent-approval.sql",
+      "sha256": "6a66a8677d1ae0e4f01031239c8409b3fede8d35960b0908c444864b0ab727ef",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-22",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "infra/nexus/002-native-approval-enforcement.sql",
+      "sha256": "233d955f95a4733ded3f9b5e10806cbd7c321a00d892da30edf1521ddace3ba7",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-23",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "setup/src/r2d2-storage.mjs",
+      "sha256": "213e6fda1af164410685c73ba9835bf02e7c6bf68196fa3ee94abc5fac328b77",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-24",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "setup/src/r2d2-storage-view.mjs",
+      "sha256": "971137f118694d5f85799a25e12eeb0d6b872086eeaafe1d1d6675723d22e801",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-25",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "setup/src/nexus-adoption.mjs",
+      "sha256": "abadc54932bd004f87f47c97f2b6601e9c8aca4282a520fea81b814bf0745b06",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "SRC-26",
+      "origin": "Backbone source main f04476ebfc932c324ff4fc40db3f55cd17f3ba39",
+      "path": "deny.toml",
+      "sha256": "deb12aac10ccbac08332357a3cfad0e47965490340daea21f558f1991bbe03b8",
+      "scope": "Source exists; historical documents retain their original acceptance scope and date.",
+      "rawCopied": false
+    },
+    {
+      "id": "ACC-49",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "nexus-hardening-20261116/FINAL-ACCEPTANCE.json",
+      "sha256": "d5ef0c555ce2e893f5c2bd06f135d736c19f22cc7e1cc83866064fcc3a01e74b",
+      "scope": "Installed minimum enforcement; not all17 findings or full DR.",
+      "rawCopied": false
+    },
+    {
+      "id": "ACC-51",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "nexus-ui-20261117/FINAL-UI-ACCEPTANCE.json",
+      "sha256": "b6b16239065ce53542c65fbba4506d0712bab10baba07ac8d8fe669e238a7adc",
+      "scope": "Installed Console19/UI; browser/mobile fixtures and real deployed view separately described.",
+      "rawCopied": false
+    },
+    {
+      "id": "ACC-52",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "nexus-module-adoption-20261117/FINAL-ACCEPTANCE.json",
+      "sha256": "50aee093ae5ead1c9976613984ed7e2dc3663d9b4ecd80ef794594020c55cb74",
+      "scope": "Installed Setup52/Console21; exact Auth/PG tests and preservation.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-STATE",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/task-state.json",
+      "sha256": "d4db4e3d5a0885152eec355913ead411fdd9a0552a1116be5fbef1b8b18db23d",
+      "scope": "Checkpoint: PG first stage incomplete, CI86 blocked; some older progress fields are historical.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-RESTORE",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/product-actual-input-matched-recovery.json",
+      "sha256": "7359fe5a44d35697685be72e7532ff7cc76aabdbed7fa8086800e931cca44aa3",
+      "scope": "Actual input native same-memory-limit isolated recovery.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-CROSSROLE",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/cross-db-role-native-recovery-qualified.json",
+      "sha256": "d2f5beb3e0bbf7273e2aca3622cf3828c78abe0b4feaf899661fb170e4b004ac",
+      "scope": "Different restricted PG role/database and workspace bytes recovery.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-SCRAM",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/native-scram-verifier-qualified.json",
+      "sha256": "a24c75609e69825d5b0e362916fc0238641b27a33eae5feb60763893dc972ff8",
+      "scope": "Native positive auth/wrong-password denial; no plaintext role DDL.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-NOFALLBACK",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/own-pg-no-fallback.json",
+      "sha256": "925cd6b1094e8df695d6099cce5aa364eed1512fe1dbbaa16e7d799668d07a4a",
+      "scope": "Own candidate PG failure refuses application SQLite fallback.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-SOURCE",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/source-independent-recovery-blocked-checkpoint.json",
+      "sha256": "c469aba538510260188edf50657c2b32e42f2671fedaadf0db745da1d2a7f464",
+      "scope": "Independent bundle clone/fsck and Windows-readable source archives.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-PRESERVATION",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/github-preservation-verified.json",
+      "sha256": "173a030a91654e6ef03ddd26a03693625f39d0dabf7e1aa8d0dc3971ddf5d360",
+      "scope": "Explicit private GitHub main and candidate branch preservation; not automatic mirror.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-CI",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/setup54-ci86.private.log",
+      "sha256": "7a0221c4eb78df2e27eb246f7fed35c995df62639590141c6f7cdc9b63459657",
+      "scope": "Native required CI86 failure log; raw log not public.",
+      "rawCopied": false
+    },
+    {
+      "id": "PG-ADVISORY",
+      "origin": "Operator-restricted acceptance/evidence archive",
+      "path": "r2d2-storage-workspace-20261117/RUSTSEC-2026-0543.md",
+      "sha256": "18424c6a155f754151a55ce9fb73376bf66f3709d81750d921f5293da91ccc59",
+      "scope": "Advisory body saved at CI investigation; recheck for future decisions.",
+      "rawCopied": false
+    },
+    {
+      "id": "REVIEW-SUPPLEMENT",
+      "origin": "Earlier Jupiter proposal",
+      "path": "blueprint-backbone-20261117/BACKBONE-SUPPLEMENT.md",
+      "sha256": "3fbbee8f3251bb901a8578cf9ad539ee1e7bb347fb7e595eaa52e4b32d520a9f",
+      "scope": "Reconciled into DESIGN.md with D82/D86; not blanket new policy adoption.",
+      "rawCopied": false
+    },
+    {
+      "id": "REVIEW-NEXUS",
+      "origin": "Original external-review package",
+      "path": "nexus-design-20261116/v0.1/RedTeam-Findings-v0.1.csv",
+      "sha256": "1e3d2cc86ca1ab62542e97b58902998a6a2ea0fb576bed2bfce8368d2b30e933",
+      "scope": "Original17 findings retained; followup is Jupiter assessment, not independent auditor closure.",
+      "rawCopied": false
+    }
+  ],
+  "limitations": [
+    "Historical source docs are not automatically current installation runbooks.",
+    "File hashes bind exact inputs, not independently certify their truth.",
+    "These summaries do not prove all functionality, PG19 full conformance, full DR or autonomous R2D2.",
+    "No raw private evidence is copied to this public repository."
+  ]
+}

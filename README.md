@@ -13,6 +13,20 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [Fabric 구조](docs/pages/fabric.html) | Fabric의 네 묶음(기반·배포 지원·공유 서비스·엔진), 공유 서비스와 Fabric의 차이, 공유 서비스·엔진·어셈블리·리소스 유형 네 층 | 제안 |
 | [Backbone 경계 제안](docs/pages/backbone-boundary.html) | 영역의 키가 태어나는 지점까지가 Backbone. 네 면 구조에 흡수됨 | 이전 판 |
 
+## Backbone 상세 설계와 실제 이력
+
+[**Backbone 설계·구현·운영 대장**](docs/backbone/README.md)에서 현재 책임·계약과 실제 배포/검증 상태를 함께 확인한다.
+
+| 문서 | 내용 |
+|---|---|
+| [상세 설계](docs/backbone/DESIGN.md) | Nexus·Core·R2D2·실행·저장·공급 경계·업데이트·독립 복구 계약 |
+| [구현·운영 현황](docs/backbone/IMPLEMENTATION-STATUS.md) | Setup52/Console21 수용, 실제 운영 이미지 관측, PG 첫 단계 보류와 미완료 구분 |
+| [작업·배포·검증 이력](docs/backbone/DELIVERY-HISTORY.md) | 설계·Core 실증·CI·설치·Nexus·PG 후보의 source/PR/CI/산출물/실패·보존 |
+| [Nexus 감사 후속](docs/backbone/AUDIT-FOLLOWUP.md) | 원 Nexus17건의 범위별 조치·잔여 위험. 원 감사와 별도인 팀장 후속 판정 |
+| [근거 대장](docs/backbone/evidence-index.json) | 입력 지문·증거 수준·읽기 전용 운영 관측; 비밀 원본 미공개 |
+
+**이 묶음은 D-대장 변경이나 새 구현·배포·CI 예외 승인이 아니다.** 설계 제안, 소스 병합, 이미지 발행, 운영 반영과 전기능 자가 운영을 구분한다. 현재 R2D2 PG 전환은 미완료다.
+
 ## 2. 명세 초안
 
 | 문서 | 내용 | 상태 |

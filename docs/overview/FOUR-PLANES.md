@@ -27,7 +27,7 @@
 │   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄ 인도 지점 ┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 │   [사용 면 · 할당받은 쪽]  설정 · 자격 · 데이터 · 배포 대상 · 내 메일함 · 내 VM
 │   기반        K8s · CNI · ingress · cert-manager · DNS · 저장 엔진  (구 HISS)
-│   배포 지원   Argo CD · Crossplane · Velero 설치                  (구 PSSS)
+│   배포 지원   Argo CD · Crossplane                                (구 PSSS)
 │   공유 서비스 (구 PFSS) ─ 아래 데이터 · 신원 · 정책 집행 · 연산 · 보호·관측 묶음
 │   데이터   PostgreSQL(StackGres) · OpenSearch · Valkey · RustFS · Percona MongoDB(예비)
 │   신원     Samba AD DC · 외부 디렉터리 연결 · Keycloak · 권한 판단(OPA 대체 제안: OpenFGA)
@@ -109,7 +109,7 @@
 |  | **OPA** | Provider `opa` · `identity.policy.opa` | 엔진 | 정책 번들 | 드롭 제안. 앱 권한 판단은 OpenFGA(SpiceDB와 PoC 비교), K8s admission은 Kyverno로 나눈다(§3.2) | 제안 |
 |  | **~~Apache Syncope~~** | Provider `apache-syncope` · `identity.iga.syncope` | — | — | 드롭(D-77). Governance의 SCIM 형태 프로비저닝 어댑터로 대체 | 드롭(합의) |
 | 연산 | **KubeVirt** | Provider `kubevirt` · `compute.virtualization.vm` | operator, KVM 노드, 공급 한도 | VM 생성 → 디스크·게스트 | 에이전트·개발자 자리 VM(D-51, D-54, D-55) | 유지 |
-| 보호·관측 | **백업 서비스**(구 PFS Backup) | `opensphere-backup` operator(BackupPolicy·BackupRun·RestoreRun → Velero). Velero 설치는 Platform Support 소유 | 백업 엔진·실행·저장 위치·최소 보호 기준 | 영역별 백업 정책, 복구 승인, 백업 내용(영역 키로 암호화) | 엔진과 실행은 Backbone, 정책·키·복구 승인은 영역(§3.3) | 제안 |
+| 보호·관측 | **백업 서비스**(구 PFS Backup) | `opensphere-backup` operator(BackupPolicy·BackupRun·RestoreRun → Velero). 아카이브에서 Platform Support 소유였던 Velero 설치도 이 서비스가 맡는다 | 백업 엔진·실행·저장 위치·최소 보호 기준 | 영역별 백업 정책, 복구 승인, 백업 내용(영역 키로 암호화) | 엔진과 실행은 Backbone, 정책·키·복구 승인은 영역(§3.3) | 제안 |
 |  | **관측 서비스**(구 PFS Observability) | Grafana operator 배포판, Loki, Tempo, 관측 테넌트 게이트웨이(`X-Scope-OrgID` 주입) | 수집·저장 엔진, 게이트웨이 | 테넌트별 로그·추적 본문(게이트웨이 grant) | "로그 본문 경로는 영역별"을 이미 게이트웨이로 구현한 사례 | 유지 |
 | 공유 서비스 제어 기능 | **공급 풀·Grant 검증** | SupplyPool, 서명 Grant(D-31), 과할당 비율(D-32) | Backbone이 설정 | — | 엔진이 아니라 공급 면의 제어 기능 | 유지 |
 |  | **Claim 프로비저닝** | FoundationClaim → 엔진 라우팅 → DB·인덱스·역할·Secret 발급 | 컨트롤러 | Binding(자격 인도) | 인도 지점 자체. 어셈블리 명세의 연결 객체가 감싼다 | 유지 |
@@ -120,7 +120,7 @@
 | 묶음 | 구성요소 |
 |---|---|
 | 기반(구 HISS) | K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진 |
-| 배포 지원(구 PSSS) | Argo CD, Crossplane, Velero 설치 |
+| 배포 지원(구 PSSS) | Argo CD, Crossplane |
 | 업무 엔진 | Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어) |
 | 런타임 | 이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이 |
 | 신뢰 | 영역 KMS, 내부 CA, SPIRE(테넌트 명세 trust 어셈블리) |
@@ -133,6 +133,7 @@
 | Percona MongoDB | 예비 설치. 소비자 Claim은 Governance 승인으로 연다(D-78) | 합의 |
 | OPA | 드롭하고 역할을 나눈다: 앱 권한 판단 = OpenFGA(SpiceDB와 PoC 비교), K8s admission = Kyverno(§3.2) | 제안 |
 | 백업 소유 | 엔진·실행 = Backbone, 정책·키·복구 승인 = 영역, Backbone은 최소 보호 기준을 건다(§3.3) | 제안 |
+| Velero 위치 | 배포 지원에서 빼고 공유 서비스의 백업 서비스로 합친다. Velero는 백업 서비스의 엔진이다. 배포 지원은 부품을 올리는 도구(Argo CD, Crossplane)만 둔다 (2026-11-17) | 합의 |
 | 연결 유형 | Valkey(cache), MongoDB(document)를 테넌트 명세 §6.2 연결 유형에 추가 | 할 일 |
 
 ### 3.2 권한 판단 엔진: OPA 대신 무엇을 쓰나 (`제안`)
@@ -188,7 +189,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 | 플랫폼 백업 | Backbone 자신의 상태, etcd, 기반·배포 지원 설정 | Backbone이 전부 |
 | 영역 백업 | 사원·고객 영역의 데이터·설정 | 위 두 얼굴 구분을 따른다 |
 
-**기준선·아카이브 정리:** 기준선 §3의 "PSSS: 백업·복구"와 아카이브의 "Velero 설치 = Platform Support, 백업 operator = PFS"는 둘 다 **공급 면**이다. 따라서 둘 다 Backbone 운영으로 묶이고 충돌하지 않는다. 정할 것은 계층 이름표뿐이다. 이 구조에서는 백업 엔진을 Fabric "보호·관측" 계열로 둔다.
+**기준선·아카이브 정리:** 기준선 §3의 "PSSS: 백업·복구"와 아카이브의 "Velero 설치 = Platform Support, 백업 operator = PFS"는 둘 다 **공급 면**이다. 따라서 둘 다 Backbone 운영으로 묶이고 충돌하지 않는다. 정할 것은 계층 이름표뿐이다. 이 구조에서는 백업 엔진을 Fabric "보호·관측" 계열로 두고, Velero 설치와 백업 operator를 백업 서비스 하나로 합친다(2026-11-17 합의). Velero는 배포 지원에 두지 않는다.
 
 **확인할 점:** Velero의 파일 시스템 백업 저장소 키와 StackGres 백업 암호화를 영역 KMS 키로 분리할 수 있는지는 PoC에서 확인해야 한다. 분리할 수 없는 엔진은 애플리케이션 단계에서 암호화한 뒤 백업한다.
 

@@ -32,7 +32,7 @@
 | 옛 용어 | 출처 | 바꿔 쓸 말 | 비고 |
 |---|---|---|---|
 | **HISS** (Host Infrastructure Service Stack, L1) | 아카이브 6계층, 기준선 v0.2 §3 | **기반** | Fabric의 묶음. K8s, CNI, ingress 컨트롤러, cert-manager, DNS, 저장 엔진, KVM 노드 |
-| **PSSS** (Platform Support Service Stack, L4) | 아카이브, 기준선 v0.2 §3 | **배포 지원** | Fabric의 묶음. Argo CD, Crossplane, Velero 설치 |
+| **PSSS** (Platform Support Service Stack, L4) | 아카이브, 기준선 v0.2 §3 | **배포 지원** | Fabric의 묶음. Argo CD, Crossplane. Velero 설치는 백업 서비스(공유 서비스)로 옮김 |
 | **PFSS** (Platform Foundation Service Stack, L5) | 아카이브, 기준선 v0.2 §3 | **공유 서비스** | Fabric의 묶음. 데이터·신원·연산·보호·관측 계열 Provider와 공급 제어 기능 |
 | PFS Backup | 아카이브(`opensphere-backup`) | **백업 서비스** | 공유 서비스의 보호 계열 |
 | PFS Observability | 아카이브(Grafana·Loki·Tempo·관측 게이트웨이) | **관측 서비스** | 공유 서비스의 관측 계열 |

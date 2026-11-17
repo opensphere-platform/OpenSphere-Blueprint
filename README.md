@@ -28,7 +28,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 
 | 문서 | 내용 |
 |---|---|
-| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-86**, 미결 O-1~O-11 |
+| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-86**, 미결 O-1~O-12 |
 | [계층 지도](docs/architecture/OPENSPHERE-LAYER-MAP.html) | 영역 × 계층 지도, 통신·통제 흐름, 제품 대장, 업무 코어 후보(화면) |
 | [계층 구조 검토 v0.1](docs/architecture/OPENSPHERE-LAYER-STRUCTURE-REVIEW-v0.1.md) | 기준선 이전의 아카이브 구조 검토 |
 | [O-2 PFSS 경계](docs/architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md) | Backbone과 Governance의 공유 서비스(구 PFSS) 제어 분리, Claim 확장, 서명 Grant |
@@ -40,6 +40,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [교류 계층](docs/architecture/OPENSPHERE-EXCHANGE-LAYER-v0.1.md) | 사원↔고객의 유일한 통과 지점, X-1~X-5 |
 | [업무 코어·SCM 후보](docs/architecture/OPENSPHERE-CUSTOMER-SCM-UPSTREAM-v0.1.md) | Odoo Community 선정 근거, Liferay 비교, 검증 조건 C1~C9 |
 | [Dapr 평가](docs/architecture/OPENSPHERE-DAPR-EVALUATION-v0.1.md) | 영역별 단일 채널, 일관성 기준, Temporal 유지 |
+| [사원 영역 AI 운영](docs/architecture/OPENSPHERE-AI-OPERATIONS-v0.1.md) | 전 사원 토큰 공급(모델 게이트웨이), 개인 · 공용 에이전트의 상태와 킬 스위치, 데이터 세 층, 메뉴 배치, 규제 점검, 결정 후보 A~M |
 
 ## 4. 검토
 

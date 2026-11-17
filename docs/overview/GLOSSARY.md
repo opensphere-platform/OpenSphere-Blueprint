@@ -64,6 +64,9 @@
 | 리소스 유형 | 어셈블리가 내놓고 Governance가 나눠 주는 단위. 예: `mail.mailbox`. 제품명이 아니라 영역 이름으로 짓는다 | 사원은 구성요소가 아니라 리소스 유형을 받는다 |
 | 외부 어셈블리 | Fabric 밖의 리소스를 연결기·연결 객체로 묶어 들인 어셈블리 | [외부 리소스 편입 규칙](../specs/EXTERNAL-RESOURCE-ADMISSION-v0.1.md) |
 | 관리형 · 연동형 · 참조형 | 외부 리소스의 통제 등급. 적합성 시험으로 판정 | managed · federated · referenced |
+| 공용 에이전트 | 부서 · 프로젝트 · 회사 중 한 단위가 소유하는 서비스 신원. 책임자는 그 단위의 Governance 책임자 역할. 호출형 실행은 배정 ∩ 호출자 권한 | `제안` · [사원 영역 AI 운영](../architecture/OPENSPHERE-AI-OPERATIONS-v0.1.md) §5 |
+| 가중 토큰 | `model.usage`의 배분 단위. 모델 등급별 가중치를 곱한 토큰 | `제안` · 같은 문서 §4 |
+| AI 공급 · 에이전트 · AI 배분 · 내 AI | 사원 영역 AI 관리 메뉴. Admin Console은 AI 공급(엔진 · 용량 · 동결)만, 회사 관리 콘솔 구성 구역은 에이전트, 배분 구역은 AI 배분, Workspace는 내 AI | `제안` · 같은 문서 §9. Admin Console의 "AI Agent · OpenClaw"는 Backbone 자신의 운영 에이전트로 다르다 |
 
 **구 식별자: 다음 메이저 버전까지 그대로 유지한다**
 

@@ -254,6 +254,7 @@ OpenSphere는 **admin 영역**과 **사원 영역**으로 나뉜다. 두 영역�
 | O-9 | **[설계 초안 작성, D-62~D-65 결정: [O-9 문서](OPENSPHERE-CUSTOMER-AREA-O9-v0.1.md). 고객 영역 핵심 = SCM(공급망 관리), 업스트림 후보: [SCM 후보 선정](OPENSPHERE-CUSTOMER-SCM-UPSTREAM-v0.1.md) — 1순위 Odoo Community(코어) + Saleor/Medusa(대외 커머스). 남은 것: SCM 후보 확정, CMS·포털 엔진 선정, 개인정보 법률 검토]** **고객 영역 설계(D-60).** 세 번째 영역으로 둘지, 고객 신원 원천(사원 AD와 분리된 Keycloak 별도 realm 등), 고객 포털·공개 웹사이트의 제품 구성, 고객의 접근·자격을 누가 관리하는지(Governance 확장 또는 별도), 사원 영역 데이터와의 경계, 외부 공개 보안 | 기준선 §2 두 영역 구조가 세 영역으로 확장될 수 있다. B-1(신원 분리)을 고객 신원까지 넓혀야 한다 |
 | O-10 | **외부 접속 정책의 소유 경계(D-59).** 누가 어떤 조건(위치, 장치, MFA, VPN)으로 어느 앱에 들어올지는 사원 영역(Governance)이 정한다. 공개 진입점, 인증서, 공인 DNS, VPN 같은 노출 설비는 HISS·Backbone 운영이다. 두 쪽의 계약이 필요하다 | Keycloak 조건부 접근 정책, Workspace origin 노출, O-6 C1·C2 범위 |
 | O-11 | **기본 저장 엔진(D-86).** HISS의 저장 엔진을 외부 Ceph(Rook External · CSI)로 둘지, Longhorn을 함께 둘지, 둘의 관계(기본 · 대체 · 등급별)를 정한다. 아카이브는 둘 다 쓴다: Cluster Manager는 외부 Ceph를 Rook External로 연결하고, PostgreSQL 프로필은 `hiss.storage.replicated-*`(Longhorn)를 쓴다 | 미정 |
+| O-12 | **사원 영역 AI 운영(토큰 공급 · 에이전트 상태 · 제어).** 모델 게이트웨이 확정, 가중 토큰, 부서 풀 집행, 개인 에이전트 재원, 공용 에이전트 정의, D-48 승계 보완, 비활성 · 재인증, 데이터 세 층 보존, 엔진의 콘텐츠 경계(D-29), 깊이 2 위임 구현, 관측 스키마, 고영향 용도 게이트, 개인 단위 지표 공개 범위의 결정 후보 A~M. [사원 영역 AI 운영 설계 초안](OPENSPHERE-AI-OPERATIONS-v0.1.md) | 미정 |
 
 ## 10. 기존 자료와 달라지는 점
 

@@ -34,7 +34,7 @@
 │   연산     KubeVirt
 │   보호·관측 백업 서비스 · 관측 서비스(Grafana · Loki · Tempo · 테넌트 게이트웨이)
 │   업무     Stalwart · Mattermost · Univer · GitLab · Odoo 엔진
-│   런타임   이벤트 채널 · Temporal · 모델 게이트웨이
+│   런타임   이벤트 채널 · Temporal · 모델 게이트웨이(LiteLLM 후보)
 │   신뢰     영역 KMS · SPIRE
 │
 │   ▼ 사용 면을 판단해 쪼갬 · 집행은 Fabric
@@ -151,7 +151,7 @@ HISS는 Fabric의 묶음이 아니다. 네 면이 **모두** 그 위에서 돈�
 |---|---|
 | 배포 지원(구 PSSS) | Argo CD, Crossplane |
 | 업무 엔진 | Stalwart, Mattermost, Univer, GitLab, Odoo(업무 코어) |
-| 런타임 | 이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이 |
+| 런타임 | 이벤트 채널(Dapr PoC 대기, D-67), Temporal(D-68), 모델 게이트웨이(LiteLLM 후보, [사원 영역 AI 운영](../architecture/OPENSPHERE-AI-OPERATIONS-v0.1.md)) |
 | 신뢰 | 영역 KMS, SPIRE(테넌트 명세 trust 어셈블리). 내부 CA는 HISS(D-86) |
 
 **이 목록에서 나온 정리 과제**
@@ -319,6 +319,7 @@ OpenSphere에 필요한 판단은 성격이 둘이다. 하나의 엔진으로 �
 | 신규 | — | 사원 앱 전용 등록 도메인 | 합의 |
 | D-79 | HISS·PSSS·PFSS, L1~L6, "공통 기반" | 상위 구조어로 쓰지 않음. 배포 지원·공유 서비스로 부르고(HISS는 D-86) 코드 식별자는 다음 메이저까지 유지([용어 대응표](GLOSSARY.md)) | 합의 |
 | D-86 | 기반(구 HISS) = Fabric의 묶음 | HISS를 Fabric에서 빼서 네 면 아래 바닥으로 둔다(§2.1). D-79의 HISS 부분 개정. Fabric의 묶음은 배포 지원 · 공유 서비스 둘 | 합의 |
+| 신규 | 모델 게이트웨이 제품 미정, 토큰 배분 규칙 없음, 공용 에이전트 정의 없음 | 원장이 배분 · 신원 · 위임의 정본, 게이트웨이(LiteLLM 후보)는 집행 지점. 가중 토큰, 소유자 할당 하위 배분, 공용 에이전트 = 단위 소유 서비스 신원, 데이터 세 층, 메뉴는 회사 관리 콘솔의 "에이전트" · "AI 배분"과 Workspace "내 AI"(Admin Console은 "AI 공급"만). 결정 후보 A~M([사원 영역 AI 운영](../architecture/OPENSPHERE-AI-OPERATIONS-v0.1.md)) | 제안 |
 | 공유 서비스 Provider(구 PFSS Provider) | Foundation 하위 모듈 11종 | Fabric 구성요소로 편입(§3.1) | 제안 |
 | D-77 | Apache Syncope Provider | 드롭, SCIM으로 처리 | 합의 |
 | D-78 | Percona MongoDB | 예비 설치 | 합의 |

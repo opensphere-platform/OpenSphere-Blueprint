@@ -21,7 +21,7 @@ for (const f of fs.readdirSync(path.join(OSR_DIR, 'profiles')).filter((x) => x.e
   if (e.length || `${p.id}.json` !== f) bad(`${f}: ${e.join('; ') || '파일 이름 ≠ id'}`); else console.log(`  ✓ ${f}  ${digest(p)}`);
 }
 const ids = new Set();
-for (const group of ['canonical', 'release', 'assembly', 'catalog', 'execution', 'recovery', 'permission']) {
+for (const group of ['canonical', 'release', 'ui', 'assembly', 'catalog', 'execution', 'recovery', 'permission']) {
   const file = readJson(`vectors/${group}.json`);
   console.log(`벡터 ${group} (${file.vectors.length})`);
   for (const v of file.vectors) {

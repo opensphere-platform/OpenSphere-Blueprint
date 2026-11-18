@@ -19,10 +19,20 @@ export const CLASSES = ['core', 'hiss', 'delivery', 'provider', 'engine', 'runti
 export const REPO_RE = new RegExp(`^ghcr\\.io/opensphere-platform/opensphere-(${CLASSES.join('|')})-([a-z][a-z0-9-]{1,40})$`);
 const EXEC_LIFECYCLE = ['install', 'update', 'rollback', 'retire'];
 export const ASSEMBLY_LIFECYCLE = { register: 'osr.assembly.register', update: 'osr.assembly.update', retire: 'osr.assembly.retire' };
-export const STANDARD_VERBS = { exec: ['status', 'inspect', 'plan', 'apply', 'verify', 'operation', 'rollback', 'retire'], assembly: ['status', 'inspect', 'verify'] };
-export const MANUAL_TYPES = { exec: ['overview', 'install', 'operations', 'troubleshooting', 'commands'], assembly: ['overview', 'composition', 'operations', 'troubleshooting', 'commands'] };
+// ui: 실행하지 않는 정적 화면 모듈. 생명주기는 OSR 고정 명령이고 Console(osr.ui-host)이 승인된 digest의 파일만 내려준다.
+export const UI_LIFECYCLE = { install: 'osr.ui.install', update: 'osr.ui.update', rollback: 'osr.ui.rollback', retire: 'osr.ui.retire' };
+export const UI_STATIC_MEDIA_TYPE = 'application/vnd.opensphere.ui-static.v1.tar';
+export const UI_STATIC_MAX_BYTES = 64 * 1024 * 1024;
+export const UI_PUBLIC_CAPABILITY = 'console.ui.public';
+export const STANDARD_VERBS = { exec: ['status', 'inspect', 'plan', 'apply', 'verify', 'operation', 'rollback', 'retire'], assembly: ['status', 'inspect', 'verify'], ui: ['status', 'inspect', 'verify'] };
+export const MANUAL_TYPES = { exec: ['overview', 'install', 'operations', 'troubleshooting', 'commands'], assembly: ['overview', 'composition', 'operations', 'troubleshooting', 'commands'], ui: ['overview', 'operations', 'troubleshooting', 'commands'] };
+export const OWNER_BINDING = { exec: 'module-owner', assembly: 'osr.definition-owner', ui: 'osr.ui-host' };
 const MUTATING_KINDS = ['apply', 'cancel', 'compensate'];
 const isAssembly = (cls) => cls === 'assembly';
+const isUi = (cls) => cls === 'ui';
+const shape = (cls) => (isAssembly(cls) ? 'assembly' : isUi(cls) ? 'ui' : 'exec');
+// JSON이 아닌 layer(불투명)는 등록 때 바이트를 보지 않는다. 서명된 인덱스의 digest·크기로만 묶인다.
+const isOpaque = (entry) => !String(entry.mediaType || '').endsWith('+json');
 
 // ---------- 0단계: 검증 맥락 snapshot ----------
 function checkContext(input) {
@@ -59,6 +69,7 @@ export const verifyRelease = guard((input) => {
   // 2. 번들 digest(인덱스 재계산)
   if (!isDigest(r.bundleDigest) || digest(r.index) !== r.bundleDigest) fail('InvalidDigest', 2, '번들 digest 재계산 불일치');
   const entries = Object.fromEntries(r.index.manifests.map((e) => [e.annotations?.['io.opensphere.part'], e.digest]));
+  const opaque = Object.fromEntries(r.index.manifests.filter(isOpaque).map((e) => [e.annotations?.['io.opensphere.part'], e]));
 
   // 3. 서명 — 신뢰 키는 검증 맥락에서만 찾는다. 번들이 가져온 키는 보지 않는다.
   const sig = r.referrers?.signature;
@@ -82,7 +93,16 @@ export const verifyRelease = guard((input) => {
   if (!d) fail('DescriptorInvalid', 5, 'descriptor artifact 없음');
   if (digest(d) !== dDigest) fail('ArtifactDigestMismatch', 5, 'descriptor');
   const lc = Object.keys(d.lifecycle || {}).sort();
-  if (isAssembly(cls)) {
+  // 불투명 layer는 ui 클래스의 정적 화면 묶음(static) 하나만 허용한다.
+  for (const [name, e] of Object.entries(opaque)) {
+    if (!isUi(cls) || name !== 'static' || e.mediaType !== UI_STATIC_MEDIA_TYPE) fail('ClassRuleViolation', 5, `JSON이 아닌 layer는 ui의 static만 허용: ${name}`);
+  }
+  if (isUi(cls)) {
+    if (d.runtime || d.storage) fail('ClassRuleViolation', 5, 'ui는 runtime·storage를 선언하지 않는다');
+    if (!d.profile || !d.ui) fail('ClassRuleViolation', 5, 'ui는 profile과 ui 선언 필수');
+    if (!same(d.lifecycle, UI_LIFECYCLE)) fail('ClassRuleViolation', 5, 'ui lifecycle은 OSR 고정 명령 install·update·rollback·retire');
+    if (!opaque.static || !entries['static-index'] || d.contributions?.static?.artifact !== 'static') fail('ClassRuleViolation', 5, 'ui 정적 화면 묶음(static)과 목록(static-index) 필요');
+  } else if (isAssembly(cls)) {
     if (d.runtime || d.storage) fail('ClassRuleViolation', 5, 'assembly는 runtime·storage를 선언하지 않는다');
     if (!same(d.lifecycle, ASSEMBLY_LIFECYCLE)) fail('ClassRuleViolation', 5, 'assembly lifecycle은 OSR 고정 명령 register·update·retire');
     if (!entries.definition || d.contributions?.definition?.artifact !== 'definition') fail('ClassRuleViolation', 5, 'assembly 정의 artifact 필요');
@@ -98,6 +118,7 @@ export const verifyRelease = guard((input) => {
   // 6. 기여 · 실행 artifact digest, 서명 목록, SBOM·출처(서명 payload에 digest가 있어야만 수용)
   const parts = {};
   for (const [name, dg] of Object.entries(entries)) {
+    if (opaque[name]) { parts[name] = { digest: dg, opaque: true }; continue; }
     const blob = r.blobs[dg];
     if (blob === undefined || digest(blob) !== dg) fail('ArtifactDigestMismatch', 6, name);
     parts[name] = { digest: dg, content: blob };
@@ -119,24 +140,24 @@ export const verifyRelease = guard((input) => {
 
   // 7. 기여 네 가지(클래스별 형식): 매뉴얼
   const manualPart = parts[d.contributions.manual.artifact];
-  if (!manualPart || validateAgainst('manual-bundle', manualPart.content).length) fail('ManualMissing', 7, '매뉴얼 artifact 없음 또는 형식 오류');
+  if (!manualPart || manualPart.opaque || validateAgainst('manual-bundle', manualPart.content).length) fail('ManualMissing', 7, '매뉴얼 artifact 없음 또는 형식 오류');
   const types = new Set(manualPart.content.documents.map((x) => x.documentType));
-  const missingDocs = MANUAL_TYPES[isAssembly(cls) ? 'assembly' : 'exec'].filter((t) => !types.has(t));
+  const missingDocs = MANUAL_TYPES[shape(cls)].filter((t) => !types.has(t));
   if (missingDocs.length) fail('ManualMissing', 7, `필수 문서 없음: ${missingDocs.join(', ')}`);
 
   // 7. 명령 계약과 effect(계속)
   const cmdPart = parts[d.contributions.commands.artifact];
-  const cmdErr = cmdPart ? validateAgainst('owner-commands', cmdPart.content) : ['명령 artifact 없음'];
+  const cmdErr = cmdPart && !cmdPart.opaque ? validateAgainst('owner-commands', cmdPart.content) : ['명령 artifact 없음'];
   if (cmdErr.length) fail('CommandContractInvalid', 7, cmdErr.join('; '));
   const cc = cmdPart.content;
   if (cc.module !== d.id) fail('CommandContractInvalid', 7, '명령 계약 모듈 불일치');
-  if (cc.ownerBinding !== (isAssembly(cls) ? 'osr.definition-owner' : 'module-owner')) fail('CommandContractInvalid', 7, 'ownerBinding이 클래스와 맞지 않음');
+  if (cc.ownerBinding !== OWNER_BINDING[shape(cls)]) fail('CommandContractInvalid', 7, 'ownerBinding이 클래스와 맞지 않음');
   const ids = new Set(cc.commands.map((c) => c.id));
   if (ids.size !== cc.commands.length) fail('CommandContractInvalid', 7, '명령 ID 중복');
   for (const c of cc.commands) if (!c.id.startsWith(d.id + '.')) fail('CommandContractInvalid', 7, `ID 접두어: ${c.id}`);
-  const missingStd = STANDARD_VERBS[isAssembly(cls) ? 'assembly' : 'exec'].filter((v) => !ids.has(`${d.id}.${v}`));
+  const missingStd = STANDARD_VERBS[shape(cls)].filter((v) => !ids.has(`${d.id}.${v}`));
   if (missingStd.length) fail('StandardCommandMissing', 7, missingStd.join(', '));
-  if (!isAssembly(cls)) for (const ref of Object.values(d.lifecycle)) if (!ids.has(ref)) fail('CommandContractInvalid', 7, `lifecycle 명령 없음: ${ref}`);
+  if (shape(cls) === 'exec') for (const ref of Object.values(d.lifecycle)) if (!ids.has(ref)) fail('CommandContractInvalid', 7, `lifecycle 명령 없음: ${ref}`);
   for (const c of cc.commands) if (c.statusCommand && !ids.has(c.statusCommand)) fail('CommandContractInvalid', 7, `statusCommand 없음: ${c.statusCommand}`);
   const policy = ctx.policies[cls];
   if (!policy) fail('CapabilityNotAllowed', 7, `클래스 정책 없음: ${cls}`);
@@ -148,12 +169,27 @@ export const verifyRelease = guard((input) => {
 
   // 7. 지식(계속)
   const kPart = parts[d.contributions.knowledge.artifact];
-  if (!kPart || validateAgainst('knowledge-bundle', kPart.content).length) fail('KnowledgeProvenanceInvalid', 7, '지식 artifact 없음 또는 형식 오류');
+  if (!kPart || kPart.opaque || validateAgainst('knowledge-bundle', kPart.content).length) fail('KnowledgeProvenanceInvalid', 7, '지식 artifact 없음 또는 형식 오류');
   for (const doc of kPart.content.documents) {
     if (doc.module !== d.id || kPart.content.module !== d.id) fail('KnowledgeProvenanceInvalid', 7, `${doc.id}: 다른 모듈 범위`);
     const src = parts[doc.source.part];
     if (!src || src.digest !== doc.source.digest) fail('KnowledgeProvenanceInvalid', 7, `${doc.id}: 출처 artifact digest 불일치`);
     if (doc.sourceRevision !== d.supplyChain.sourceRevision) fail('KnowledgeProvenanceInvalid', 7, `${doc.id}: sourceRevision 불일치`);
+  }
+
+  // 7. 정적 화면 목록(ui만, 계속): 목록이 서명된 layer를 가리키고 진입 파일을 포함해야 한다.
+  if (isUi(cls)) {
+    const idx = parts['static-index'];
+    const sErr = idx && !idx.opaque ? validateAgainst('ui-static-index', idx.content) : ['정적 화면 목록 없음'];
+    if (sErr.length) fail('UiStaticInvalid', 7, sErr.join('; '));
+    const si = idx.content;
+    if (si.module !== d.id || si.entry !== d.ui.entry) fail('UiStaticInvalid', 7, '목록의 모듈·진입 파일이 디스크립터와 다름');
+    if (si.archive.digest !== entries.static || si.archive.size !== opaque.static.size) fail('UiStaticInvalid', 7, '목록의 archive가 서명된 static layer와 다름');
+    const paths = new Set(si.files.map((f) => f.path));
+    if (paths.size !== si.files.length) fail('UiStaticInvalid', 7, '파일 경로 중복');
+    const entryFile = si.files.find((f) => f.path === si.entry);
+    if (!entryFile || entryFile.contentType !== 'text/html; charset=utf-8') fail('UiStaticInvalid', 7, `진입 파일 없음 또는 HTML 아님: ${si.entry}`);
+    if (si.files.reduce((a, f) => a + f.size, 0) > UI_STATIC_MAX_BYTES) fail('UiStaticInvalid', 7, '파일 크기 합이 한도를 넘음');
   }
 
   // 8. profile 존재 · capability 요청이 profile 허용 안
@@ -167,6 +203,8 @@ export const verifyRelease = guard((input) => {
     if (!policy.allowedCapabilities.includes(cap) || !profile.capabilities.includes(cap)) fail('CapabilityNotAllowed', 8, cap);
   }
   for (const c of cc.commands) if (!profile.allowedEffects.includes(c.effect)) fail('EffectPolicyViolation', 8, `${c.id}: profile이 허용하지 않는 effect ${c.effect}`);
+  // 로그인 없이 보이는 화면은 선언만으로 되지 않는다. 정책·profile이 허용한 capability로 요청해야 한다.
+  if (isUi(cls) && d.ui.access === 'public' && !d.capabilityRequests.includes(UI_PUBLIC_CAPABILITY)) fail('CapabilityNotAllowed', 8, `public 화면은 ${UI_PUBLIC_CAPABILITY} 필요`);
 
   // 9. 의존 범위 · Backbone 호환
   if (!caretOk(d.backboneCompat, ctx.backboneContract)) fail('BackboneIncompatible', 9, `Backbone 계약 ${ctx.backboneContract}는 ${d.backboneCompat} 밖`);

@@ -56,7 +56,8 @@
     "mechanism": {
       "enum": [
         "stackgres",
-        "definition-only"
+        "definition-only",
+        "console-static"
       ]
     },
     "capabilities": {

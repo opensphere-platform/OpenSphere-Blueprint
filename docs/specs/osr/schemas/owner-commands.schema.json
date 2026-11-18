@@ -20,7 +20,8 @@
     "ownerBinding": {
       "enum": [
         "module-owner",
-        "osr.definition-owner"
+        "osr.definition-owner",
+        "osr.ui-host"
       ]
     },
     "commands": {

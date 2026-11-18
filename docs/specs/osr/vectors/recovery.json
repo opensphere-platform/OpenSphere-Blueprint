@@ -9,8 +9,8 @@
       "keyId": "osr-anchor-test",
       "publicKeyJwk": {
         "kty": "EC",
-        "x": "n33OVcboYSJ2O7DvjlpwLJi4cuDYweUOz8LQfO1cA6E",
-        "y": "QDmAinyCUWJy0P9c0_nu8bMbXLpD-WVGaQN2oKxMqtY",
+        "x": "9-NJg0vQLa8XCZzX9v2yush68zNXdqeUf-PFGBgNgVY",
+        "y": "Hy4LnQQF1kZmV-L-Nr66WF5znHWD7LgUqEcIzu1gls0",
         "crv": "P-256"
       }
     },
@@ -37,8 +37,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "-HJAZZSUT13F4m2vjF0H7TviWlhkffFC_oJ1gRhCagQ",
-              "y": "O65l4DbxCtKUisSWCNRDnfsSlF8aw7r2jznT52QuQh0",
+              "x": "XfUi51lLabDaKv0mdlCDZ45NGO5Cl45i5TmKlFOpLtI",
+              "y": "lPaGTyXFGp0VIVoj0vhnRnx2SL7sJqVVVuPw6j44pMg",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -53,8 +53,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "ooTKo7dwjT1qgLYKbq6C-BOx1sjczztdMQaZNJRP-z4",
-              "y": "3BOrVBsxwGoyWizBkq0lbQm_Fm1Syo_6taryWlZbUss",
+              "x": "pp__iZli8nzAlc3Ed1NiZlck-OSCQMBsPGAGseV8758",
+              "y": "uz0X_DOTJL0Dq3ekMZ5bOpDIwKMhv3mQcZauH0wx9ts",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -69,8 +69,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "sWXkAEU868IQrrICSg6GksYBEYVeEjkFTUczzg4-C44",
-              "y": "gE50j227nbB-HbOPkSp-_dX-K_TseZ1rzOpOeHGPuYE",
+              "x": "LbyBqW8FLs05E54XYof3LNPtHbrXmi5CUfCciDDK9Kc",
+              "y": "lfssf7_p8zLBAmqxFKTsloXl4NF30Y5DleXO2IuajIM",
               "crv": "P-256"
             },
             "addedAtGeneration": 2,
@@ -87,8 +87,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "FxndOhHGRh2nSE8fwKig2JiEr4JiAxiBKs93Cot1KDA",
-              "y": "ulo4Tm574YAJziOzo5BPU4LbfP5H9Mif2I1H4dzWV5Q",
+              "x": "e-1hmQArJ4zh1LJwr4vCZif-Kfl6nfSsx8neqJHBnlo",
+              "y": "2_UFdwJ5nocYIvHLkWfAEafiORdSIedKrxOR1tAanYQ",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -104,6 +104,11 @@
             "id": "assembly.definition",
             "version": "0.1.0",
             "fingerprint": "sha256:c0982d5295ae876e51b0585ab48ef5171c01e2979eab0232457392ad644d86e7"
+          },
+          {
+            "id": "ui.console-static",
+            "version": "0.1.0",
+            "fingerprint": "sha256:02c7e00c946276e5b1a75dccdab6c4abda447be922eab1f3920faca654e84c12"
           }
         ],
         "policies": {
@@ -124,6 +129,17 @@
           "assembly": {
             "allowedCapabilities": [
               "osr.definition.read"
+            ],
+            "allowedEffects": [
+              "none",
+              "read-cost"
+            ]
+          },
+          "ui": {
+            "allowedCapabilities": [
+              "console.ui.serve",
+              "console.ui.read",
+              "console.ui.public"
             ],
             "allowedEffects": [
               "none",
@@ -172,7 +188,7 @@
       "signature": {
         "alg": "ES256-P1363",
         "keyId": "osr-anchor-test",
-        "value": "cmYDnYvt-YQs4BXmh8WZdP2XWlnALAK5TgO3z0oYjsec_3V6qvqs9s8GGemCo__tF85msFUu0RQX60-yHuu5VQ"
+        "value": "8Ef7Tfh7RuoygScS2hvDw0GLgnK-yJMQG9habE3rwXnV3D4dJ-ShYZVaiVcPpW3e7eVhubv1bVKvrfirzLB1TA"
       }
     },
     "profiles": [
@@ -374,6 +390,77 @@
         "restrictedOperations": [
           "retire"
         ]
+      },
+      {
+        "schema": "opensphere.materializer-profile/v1",
+        "id": "ui.console-static",
+        "version": "0.1.0",
+        "class": "ui",
+        "appliesTo": [
+          "ui.dummy-screens"
+        ],
+        "mechanism": "console-static",
+        "capabilities": [
+          "console.ui.serve",
+          "console.ui.read",
+          "console.ui.public"
+        ],
+        "allowedEffects": [
+          "none",
+          "read-cost"
+        ],
+        "resources": [],
+        "forbiddenResources": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "StatefulSet"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "DaemonSet"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Pod"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Service"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim"
+          },
+          {
+            "apiVersion": "networking.k8s.io/v1",
+            "kind": "Ingress"
+          }
+        ],
+        "rbac": [],
+        "storage": {
+          "mode": "none"
+        },
+        "verification": [
+          {
+            "id": "archive-digest",
+            "description": "내려받은 static layer 바이트의 sha256과 크기가 승인된 번들의 값과 같다."
+          },
+          {
+            "id": "files-match-index",
+            "description": "archive 안의 파일이 목록(static-index)의 경로·sha256·크기와 하나도 빠짐없이 같고 목록에 없는 파일이 없다."
+          },
+          {
+            "id": "entry-served",
+            "description": "Console이 /ui/<module-id>/ 에서 승인된 digest의 진입 파일을 내려준다."
+          }
+        ],
+        "restrictedOperations": [
+          "retire"
+        ]
       }
     ]
   },
@@ -456,7 +543,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "catalog-test",
-              "value": "8XlD1AiqpkYUbOUaVOOJMc53vM-0ZXmnw6lPCYywpmIjXv-4JD6xWeaEkbC0XyAqi4fsseGmzjyMnXI5_fE7Vw"
+              "value": "YNYyLnexRsU0sXyTM9mZfv3rs7PMe4sV63np7M1TYXtaybpKpmeJOsgN81MEkwSSQJ8m6b0Dzw7sPcPUdOrPDA"
             }
           },
           "signature": {
@@ -501,7 +588,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "release-test",
-              "value": "KIK6exHsgzdsV9koJ-hANAv9e1KD6PRi-zhf-f7xDMWVz7CPxl4q-OFdScanQcafjiotZdIYmtIUSjXWAJ-Fvw"
+              "value": "mMpG4-iKM77BpGJ2ffrZM0fbXwgFQkRu1HzOC6pnrbdijaMf2aDNXvbUgxyQF8NGVQOaDsfl0GwUwTsJJbRKtQ"
             }
           }
         }
@@ -534,8 +621,8 @@
             "keyId": "recovery-inst-01-test",
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "BuvXJkduwi11NuPtsL0afiCvkYRSvgZZwcaM2Pe-g1E",
-              "y": "b5_2FwtIuw3MXUYiIbS98bQKepN29qjJl4ZVVxw6H-8",
+              "x": "mdaGjaKVAlkEoqSN2dixRDD1uFWZT598v1JCKfVuT74",
+              "y": "BkLBAZhUVs_F5R1k__FFdNhQG3Hty7yeBQoLSAvLehE",
               "crv": "P-256"
             }
           },
@@ -552,7 +639,7 @@
           "signature": {
             "alg": "ES256-P1363",
             "keyId": "recovery-inst-01-test",
-            "value": "-E8SDT8cS7WrrwumhdSJ7IBfw34x1Xto3Yv9bplzEOpF0le3LRd_Vb2PR_Rbna9_QsyB8JkO1M9hGKnDnEDIBA"
+            "value": "opfQMmavysgEDXQK5_zo93OcotG4a6wOalR523TtTYhVgccBHHp8LjU2u41kaICKqIlnjElxxGgo8dJTVh1C9w"
           }
         },
         "offline": {
@@ -611,7 +698,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "catalog-test",
-              "value": "8XlD1AiqpkYUbOUaVOOJMc53vM-0ZXmnw6lPCYywpmIjXv-4JD6xWeaEkbC0XyAqi4fsseGmzjyMnXI5_fE7Vw"
+              "value": "YNYyLnexRsU0sXyTM9mZfv3rs7PMe4sV63np7M1TYXtaybpKpmeJOsgN81MEkwSSQJ8m6b0Dzw7sPcPUdOrPDA"
             }
           },
           "signature": {
@@ -656,7 +743,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "release-test",
-              "value": "KIK6exHsgzdsV9koJ-hANAv9e1KD6PRi-zhf-f7xDMWVz7CPxl4q-OFdScanQcafjiotZdIYmtIUSjXWAJ-Fvw"
+              "value": "mMpG4-iKM77BpGJ2ffrZM0fbXwgFQkRu1HzOC6pnrbdijaMf2aDNXvbUgxyQF8NGVQOaDsfl0GwUwTsJJbRKtQ"
             }
           }
         },
@@ -688,8 +775,8 @@
             "keyId": "recovery-inst-01-test",
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "BuvXJkduwi11NuPtsL0afiCvkYRSvgZZwcaM2Pe-g1E",
-              "y": "b5_2FwtIuw3MXUYiIbS98bQKepN29qjJl4ZVVxw6H-8",
+              "x": "mdaGjaKVAlkEoqSN2dixRDD1uFWZT598v1JCKfVuT74",
+              "y": "BkLBAZhUVs_F5R1k__FFdNhQG3Hty7yeBQoLSAvLehE",
               "crv": "P-256"
             }
           },
@@ -706,7 +793,7 @@
           "signature": {
             "alg": "ES256-P1363",
             "keyId": "recovery-inst-01-test",
-            "value": "sTCkRkZt0ZnDu557i74qRNn-HaOfRxBwxyhp8-2d-OaCGRmwxVQ3B0HWMKvhApLYJpeX5zjBiEKzwbP9FBPLFg"
+            "value": "14VytPjOO-1sgCwda_pSL8Te98o28TqogxFCDUUKGV9yfMYZH6ZOa9XhOJyLI6Gv0kkaAk5ous2wIni4nNUW0A"
           }
         },
         "offline": {
@@ -765,7 +852,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "catalog-test",
-              "value": "8XlD1AiqpkYUbOUaVOOJMc53vM-0ZXmnw6lPCYywpmIjXv-4JD6xWeaEkbC0XyAqi4fsseGmzjyMnXI5_fE7Vw"
+              "value": "YNYyLnexRsU0sXyTM9mZfv3rs7PMe4sV63np7M1TYXtaybpKpmeJOsgN81MEkwSSQJ8m6b0Dzw7sPcPUdOrPDA"
             }
           },
           "signature": {
@@ -810,7 +897,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "release-test",
-              "value": "KIK6exHsgzdsV9koJ-hANAv9e1KD6PRi-zhf-f7xDMWVz7CPxl4q-OFdScanQcafjiotZdIYmtIUSjXWAJ-Fvw"
+              "value": "mMpG4-iKM77BpGJ2ffrZM0fbXwgFQkRu1HzOC6pnrbdijaMf2aDNXvbUgxyQF8NGVQOaDsfl0GwUwTsJJbRKtQ"
             }
           }
         },
@@ -844,8 +931,8 @@
             "keyId": "recovery-inst-01-test",
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "BuvXJkduwi11NuPtsL0afiCvkYRSvgZZwcaM2Pe-g1E",
-              "y": "b5_2FwtIuw3MXUYiIbS98bQKepN29qjJl4ZVVxw6H-8",
+              "x": "mdaGjaKVAlkEoqSN2dixRDD1uFWZT598v1JCKfVuT74",
+              "y": "BkLBAZhUVs_F5R1k__FFdNhQG3Hty7yeBQoLSAvLehE",
               "crv": "P-256"
             }
           },
@@ -907,7 +994,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "catalog-test",
-              "value": "8XlD1AiqpkYUbOUaVOOJMc53vM-0ZXmnw6lPCYywpmIjXv-4JD6xWeaEkbC0XyAqi4fsseGmzjyMnXI5_fE7Vw"
+              "value": "YNYyLnexRsU0sXyTM9mZfv3rs7PMe4sV63np7M1TYXtaybpKpmeJOsgN81MEkwSSQJ8m6b0Dzw7sPcPUdOrPDA"
             }
           },
           "signature": {
@@ -952,7 +1039,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "release-test",
-              "value": "KIK6exHsgzdsV9koJ-hANAv9e1KD6PRi-zhf-f7xDMWVz7CPxl4q-OFdScanQcafjiotZdIYmtIUSjXWAJ-Fvw"
+              "value": "mMpG4-iKM77BpGJ2ffrZM0fbXwgFQkRu1HzOC6pnrbdijaMf2aDNXvbUgxyQF8NGVQOaDsfl0GwUwTsJJbRKtQ"
             }
           }
         },
@@ -986,8 +1073,8 @@
             "keyId": "recovery-inst-01-test",
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "BuvXJkduwi11NuPtsL0afiCvkYRSvgZZwcaM2Pe-g1E",
-              "y": "b5_2FwtIuw3MXUYiIbS98bQKepN29qjJl4ZVVxw6H-8",
+              "x": "mdaGjaKVAlkEoqSN2dixRDD1uFWZT598v1JCKfVuT74",
+              "y": "BkLBAZhUVs_F5R1k__FFdNhQG3Hty7yeBQoLSAvLehE",
               "crv": "P-256"
             }
           },
@@ -1004,7 +1091,7 @@
           "signature": {
             "alg": "ES256-P1363",
             "keyId": "recovery-inst-01-test",
-            "value": "FZI7GW1cn8m3vQztUaLfiMAi12Vo_dpSP6sVL55-D9ZgcXniMgPBg0icKOJmv3YpCG6tvUgBIXsgZrLI60vSzg"
+            "value": "tJYeEQEqqFNWyI6qTf02z2gtx5Rbne9gFeTfRYt8HL5ATPbxEHc105S3PlHPUgUgdWkodIMLvqzwRpi8OX4yRQ"
           }
         },
         "offline": {
@@ -1063,7 +1150,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "catalog-test",
-              "value": "8XlD1AiqpkYUbOUaVOOJMc53vM-0ZXmnw6lPCYywpmIjXv-4JD6xWeaEkbC0XyAqi4fsseGmzjyMnXI5_fE7Vw"
+              "value": "YNYyLnexRsU0sXyTM9mZfv3rs7PMe4sV63np7M1TYXtaybpKpmeJOsgN81MEkwSSQJ8m6b0Dzw7sPcPUdOrPDA"
             }
           },
           "signature": {
@@ -1108,7 +1195,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "release-test",
-              "value": "KIK6exHsgzdsV9koJ-hANAv9e1KD6PRi-zhf-f7xDMWVz7CPxl4q-OFdScanQcafjiotZdIYmtIUSjXWAJ-Fvw"
+              "value": "mMpG4-iKM77BpGJ2ffrZM0fbXwgFQkRu1HzOC6pnrbdijaMf2aDNXvbUgxyQF8NGVQOaDsfl0GwUwTsJJbRKtQ"
             }
           }
         },
@@ -1144,8 +1231,8 @@
             "keyId": "recovery-inst-01-test",
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "BuvXJkduwi11NuPtsL0afiCvkYRSvgZZwcaM2Pe-g1E",
-              "y": "b5_2FwtIuw3MXUYiIbS98bQKepN29qjJl4ZVVxw6H-8",
+              "x": "mdaGjaKVAlkEoqSN2dixRDD1uFWZT598v1JCKfVuT74",
+              "y": "BkLBAZhUVs_F5R1k__FFdNhQG3Hty7yeBQoLSAvLehE",
               "crv": "P-256"
             }
           },
@@ -1162,7 +1249,7 @@
           "signature": {
             "alg": "ES256-P1363",
             "keyId": "recovery-inst-01-test",
-            "value": "S6EWyOFfNLuPt4C692CdDb6FCEp9gwv7s6BFVbNWFwvksSxUj9kmoOnZKFUjMT_iJ6svLLdhvgd6zbU4gEByNQ"
+            "value": "rkgwPyl_TlkpKOKokNlZOK2WHNrWfTSF-BmCeeGQcO0BTAdTlgWrBqnb1maSN3b4cu5qUzkBeVfT6TzR1opTfg"
           }
         },
         "offline": {
@@ -1221,7 +1308,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "catalog-test",
-              "value": "8XlD1AiqpkYUbOUaVOOJMc53vM-0ZXmnw6lPCYywpmIjXv-4JD6xWeaEkbC0XyAqi4fsseGmzjyMnXI5_fE7Vw"
+              "value": "YNYyLnexRsU0sXyTM9mZfv3rs7PMe4sV63np7M1TYXtaybpKpmeJOsgN81MEkwSSQJ8m6b0Dzw7sPcPUdOrPDA"
             }
           },
           "signature": {
@@ -1266,7 +1353,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "release-test",
-              "value": "KIK6exHsgzdsV9koJ-hANAv9e1KD6PRi-zhf-f7xDMWVz7CPxl4q-OFdScanQcafjiotZdIYmtIUSjXWAJ-Fvw"
+              "value": "mMpG4-iKM77BpGJ2ffrZM0fbXwgFQkRu1HzOC6pnrbdijaMf2aDNXvbUgxyQF8NGVQOaDsfl0GwUwTsJJbRKtQ"
             }
           }
         },
@@ -1300,8 +1387,8 @@
             "keyId": "recovery-inst-01-test",
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "BuvXJkduwi11NuPtsL0afiCvkYRSvgZZwcaM2Pe-g1E",
-              "y": "b5_2FwtIuw3MXUYiIbS98bQKepN29qjJl4ZVVxw6H-8",
+              "x": "mdaGjaKVAlkEoqSN2dixRDD1uFWZT598v1JCKfVuT74",
+              "y": "BkLBAZhUVs_F5R1k__FFdNhQG3Hty7yeBQoLSAvLehE",
               "crv": "P-256"
             }
           },
@@ -1318,7 +1405,7 @@
           "signature": {
             "alg": "ES256-P1363",
             "keyId": "recovery-inst-01-test",
-            "value": "ayyI4wR58xcHMeoZYX7HYCheIsQJOHLVLSN4dE9S99wBpx4mMTs_cnxtPxdwM64ixL4MW9ebenwWdb2fYxA_Pw"
+            "value": "GgcMysgXeK-lwknLp1N_uHUy-9SWz0qdfIxjtZAUj-KUfSwGTffqUCTelIETWYFtWU_7okt5OeuCSZA-CzeRrQ"
           }
         },
         "offline": {
@@ -1377,7 +1464,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "catalog-test",
-              "value": "8XlD1AiqpkYUbOUaVOOJMc53vM-0ZXmnw6lPCYywpmIjXv-4JD6xWeaEkbC0XyAqi4fsseGmzjyMnXI5_fE7Vw"
+              "value": "YNYyLnexRsU0sXyTM9mZfv3rs7PMe4sV63np7M1TYXtaybpKpmeJOsgN81MEkwSSQJ8m6b0Dzw7sPcPUdOrPDA"
             }
           },
           "signature": {
@@ -1422,7 +1509,7 @@
             "signature": {
               "alg": "ES256-P1363",
               "keyId": "release-test",
-              "value": "KIK6exHsgzdsV9koJ-hANAv9e1KD6PRi-zhf-f7xDMWVz7CPxl4q-OFdScanQcafjiotZdIYmtIUSjXWAJ-Fvw"
+              "value": "mMpG4-iKM77BpGJ2ffrZM0fbXwgFQkRu1HzOC6pnrbdijaMf2aDNXvbUgxyQF8NGVQOaDsfl0GwUwTsJJbRKtQ"
             }
           }
         },

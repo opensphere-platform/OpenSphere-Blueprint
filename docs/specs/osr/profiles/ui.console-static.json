@@ -1,0 +1,28 @@
+{
+  "schema": "opensphere.materializer-profile/v1",
+  "id": "ui.console-static",
+  "version": "0.1.0",
+  "class": "ui",
+  "appliesTo": ["ui.dummy-screens"],
+  "mechanism": "console-static",
+  "capabilities": ["console.ui.serve", "console.ui.read", "console.ui.public"],
+  "allowedEffects": ["none", "read-cost"],
+  "resources": [],
+  "forbiddenResources": [
+    { "apiVersion": "apps/v1", "kind": "StatefulSet" },
+    { "apiVersion": "apps/v1", "kind": "Deployment" },
+    { "apiVersion": "apps/v1", "kind": "DaemonSet" },
+    { "apiVersion": "v1", "kind": "Pod" },
+    { "apiVersion": "v1", "kind": "Service" },
+    { "apiVersion": "v1", "kind": "PersistentVolumeClaim" },
+    { "apiVersion": "networking.k8s.io/v1", "kind": "Ingress" }
+  ],
+  "rbac": [],
+  "storage": { "mode": "none" },
+  "verification": [
+    { "id": "archive-digest", "description": "내려받은 static layer 바이트의 sha256과 크기가 승인된 번들의 값과 같다." },
+    { "id": "files-match-index", "description": "archive 안의 파일이 목록(static-index)의 경로·sha256·크기와 하나도 빠짐없이 같고 목록에 없는 파일이 없다." },
+    { "id": "entry-served", "description": "Console이 /ui/<module-id>/ 에서 승인된 digest의 진입 파일을 내려준다." }
+  ],
+  "restrictedOperations": ["retire"]
+}

@@ -9,8 +9,8 @@
       "keyId": "osr-anchor-test",
       "publicKeyJwk": {
         "kty": "EC",
-        "x": "n33OVcboYSJ2O7DvjlpwLJi4cuDYweUOz8LQfO1cA6E",
-        "y": "QDmAinyCUWJy0P9c0_nu8bMbXLpD-WVGaQN2oKxMqtY",
+        "x": "9-NJg0vQLa8XCZzX9v2yush68zNXdqeUf-PFGBgNgVY",
+        "y": "Hy4LnQQF1kZmV-L-Nr66WF5znHWD7LgUqEcIzu1gls0",
         "crv": "P-256"
       }
     },
@@ -37,8 +37,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "-HJAZZSUT13F4m2vjF0H7TviWlhkffFC_oJ1gRhCagQ",
-              "y": "O65l4DbxCtKUisSWCNRDnfsSlF8aw7r2jznT52QuQh0",
+              "x": "XfUi51lLabDaKv0mdlCDZ45NGO5Cl45i5TmKlFOpLtI",
+              "y": "lPaGTyXFGp0VIVoj0vhnRnx2SL7sJqVVVuPw6j44pMg",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -53,8 +53,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "ooTKo7dwjT1qgLYKbq6C-BOx1sjczztdMQaZNJRP-z4",
-              "y": "3BOrVBsxwGoyWizBkq0lbQm_Fm1Syo_6taryWlZbUss",
+              "x": "pp__iZli8nzAlc3Ed1NiZlck-OSCQMBsPGAGseV8758",
+              "y": "uz0X_DOTJL0Dq3ekMZ5bOpDIwKMhv3mQcZauH0wx9ts",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -69,8 +69,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "sWXkAEU868IQrrICSg6GksYBEYVeEjkFTUczzg4-C44",
-              "y": "gE50j227nbB-HbOPkSp-_dX-K_TseZ1rzOpOeHGPuYE",
+              "x": "LbyBqW8FLs05E54XYof3LNPtHbrXmi5CUfCciDDK9Kc",
+              "y": "lfssf7_p8zLBAmqxFKTsloXl4NF30Y5DleXO2IuajIM",
               "crv": "P-256"
             },
             "addedAtGeneration": 2,
@@ -87,8 +87,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "FxndOhHGRh2nSE8fwKig2JiEr4JiAxiBKs93Cot1KDA",
-              "y": "ulo4Tm574YAJziOzo5BPU4LbfP5H9Mif2I1H4dzWV5Q",
+              "x": "e-1hmQArJ4zh1LJwr4vCZif-Kfl6nfSsx8neqJHBnlo",
+              "y": "2_UFdwJ5nocYIvHLkWfAEafiORdSIedKrxOR1tAanYQ",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -104,6 +104,11 @@
             "id": "assembly.definition",
             "version": "0.1.0",
             "fingerprint": "sha256:c0982d5295ae876e51b0585ab48ef5171c01e2979eab0232457392ad644d86e7"
+          },
+          {
+            "id": "ui.console-static",
+            "version": "0.1.0",
+            "fingerprint": "sha256:02c7e00c946276e5b1a75dccdab6c4abda447be922eab1f3920faca654e84c12"
           }
         ],
         "policies": {
@@ -124,6 +129,17 @@
           "assembly": {
             "allowedCapabilities": [
               "osr.definition.read"
+            ],
+            "allowedEffects": [
+              "none",
+              "read-cost"
+            ]
+          },
+          "ui": {
+            "allowedCapabilities": [
+              "console.ui.serve",
+              "console.ui.read",
+              "console.ui.public"
             ],
             "allowedEffects": [
               "none",
@@ -172,7 +188,7 @@
       "signature": {
         "alg": "ES256-P1363",
         "keyId": "osr-anchor-test",
-        "value": "cmYDnYvt-YQs4BXmh8WZdP2XWlnALAK5TgO3z0oYjsec_3V6qvqs9s8GGemCo__tF85msFUu0RQX60-yHuu5VQ"
+        "value": "8Ef7Tfh7RuoygScS2hvDw0GLgnK-yJMQG9habE3rwXnV3D4dJ-ShYZVaiVcPpW3e7eVhubv1bVKvrfirzLB1TA"
       }
     },
     "profiles": [
@@ -369,6 +385,77 @@
           {
             "id": "members-substantive",
             "description": "필수 멤버 모듈이 모두 실질 상태이고 구성 가능하다."
+          }
+        ],
+        "restrictedOperations": [
+          "retire"
+        ]
+      },
+      {
+        "schema": "opensphere.materializer-profile/v1",
+        "id": "ui.console-static",
+        "version": "0.1.0",
+        "class": "ui",
+        "appliesTo": [
+          "ui.dummy-screens"
+        ],
+        "mechanism": "console-static",
+        "capabilities": [
+          "console.ui.serve",
+          "console.ui.read",
+          "console.ui.public"
+        ],
+        "allowedEffects": [
+          "none",
+          "read-cost"
+        ],
+        "resources": [],
+        "forbiddenResources": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "StatefulSet"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "DaemonSet"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Pod"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Service"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim"
+          },
+          {
+            "apiVersion": "networking.k8s.io/v1",
+            "kind": "Ingress"
+          }
+        ],
+        "rbac": [],
+        "storage": {
+          "mode": "none"
+        },
+        "verification": [
+          {
+            "id": "archive-digest",
+            "description": "내려받은 static layer 바이트의 sha256과 크기가 승인된 번들의 값과 같다."
+          },
+          {
+            "id": "files-match-index",
+            "description": "archive 안의 파일이 목록(static-index)의 경로·sha256·크기와 하나도 빠짐없이 같고 목록에 없는 파일이 없다."
+          },
+          {
+            "id": "entry-served",
+            "description": "Console이 /ui/<module-id>/ 에서 승인된 digest의 진입 파일을 내려준다."
           }
         ],
         "restrictedOperations": [
@@ -776,7 +863,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "RF8fG2HC6MvGe8WDDST9wjchNokjqBVkDxQp07Dc1RoiQdFRsjVMEG-LobVZ5orc1q2M_9OvTI4rB30kRJJEDg"
+                "value": "vee2NpAhbEBCECg86tDwvlIq7TEtMIpBZLQCsFrL1aep3QRmQLlYN_2uZ7qKvZ_EB4dl__DDTyfEmd7zz9LE1g"
               }
             },
             "sbom": {
@@ -1249,7 +1336,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "F6jziI-XzmaqOzDImS_QBXbRl0tYjNbuvCSyT0le6NY14CIbJPhaaOD-5nU0Q3_uN2vG39DyStGY3eFZT5Eymw"
+                "value": "zxSeUMUBypBWSInc1zCX2jyc9pPs89l0iJlu0e_e_bJDPSGMzmpPY-m8Ab9iSiEFRxlTrRNbkjttM8sgVdHIMw"
               }
             },
             "sbom": {
@@ -1690,7 +1777,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "rqyGjl3uK3UVs2nVddQGLbuuvQ-guHIJMAphwUWtN1bfHEeRQs2c7VfK9KLojudiAmEVrwBc7OarUvHcWW5zhQ"
+                "value": "rjzkwHdJvaemIJdVpmJln5OQbEL6SPP3KewjjzZ_SQ04pXT1UqwHLuxXcIBxYpmigM7JaoxBUzBMzc0bhLed7w"
               }
             },
             "sbom": {
@@ -1997,7 +2084,7 @@
           "level": "substantive",
           "result": "pass",
           "context": {
-            "snapshotDigest": "sha256:e425d0354ab3445ad133c2b7e170ac09ead06d9fc7a6479e2c97080a63e3718a",
+            "snapshotDigest": "sha256:a1f6da38c2713252d45fc3ddd1399681476b2b259056f71bfb351e2bf3b7dae5",
             "trustGeneration": 7,
             "policyRevision": "pol-2026-11-18.1",
             "definitionDigest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",
@@ -2095,7 +2182,7 @@
           "level": "substantive",
           "result": "pass",
           "context": {
-            "snapshotDigest": "sha256:e425d0354ab3445ad133c2b7e170ac09ead06d9fc7a6479e2c97080a63e3718a",
+            "snapshotDigest": "sha256:a1f6da38c2713252d45fc3ddd1399681476b2b259056f71bfb351e2bf3b7dae5",
             "trustGeneration": 7,
             "policyRevision": "pol-2026-11-18.1",
             "definitionDigest": "sha256:9aca670901c1db4fb39c624397305a08e00fd3dcbf6317b53135faca3b5a9726",

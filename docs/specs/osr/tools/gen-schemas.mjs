@@ -15,6 +15,7 @@ const P = {
   caret: '^\\^\\d+\\.\\d+\\.\\d+$',
   release: '^\\d{2}\\.\\d{3,4}\\.\\d{4}\\.\\d+$',
   keyId: '^[a-z0-9][a-z0-9.-]{2,63}$',
+  uiPath: '^[A-Za-z0-9_][A-Za-z0-9_.-]*(/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$',
   repo: `^ghcr\\.io/opensphere-platform/opensphere-(${CLASSES.join('|')})-[a-z][a-z0-9-]{1,40}$`,
 };
 const s = (pattern) => ({ type: 'string', pattern });
@@ -96,14 +97,24 @@ all['module-descriptor'] = schema('module-descriptor', '모듈 디스크립터 o
         securityContext: obj(['runAsNonRoot'], { runAsNonRoot: { const: true }, readOnlyRootFilesystem: { type: 'boolean' } }),
       }),
       storage: obj(['profile'], { profile: str }),
-      contributions: obj(['manual', 'commands', 'oci', 'knowledge'], { manual: contribution, commands: contribution, oci: contribution, knowledge: contribution, definition: contribution }),
+      ui: obj(['artifact', 'index', 'entry', 'access', 'navigation'], {
+        artifact: { const: 'static' }, index: { const: 'static-index' }, entry: s(P.uiPath),
+        access: { enum: ['admin', 'public'] },
+        navigation: arr(obj(['label', 'path'], { label: { type: 'string', minLength: 1, maxLength: 40 }, path: s('^[A-Za-z0-9#/_.-]{0,120}$') }), { maxItems: 8 }),
+      }),
+      contributions: obj(['manual', 'commands', 'oci', 'knowledge'], { manual: contribution, commands: contribution, oci: contribution, knowledge: contribution, definition: contribution, static: contribution }),
       supplyChain: obj(['sourceRepository', 'sourceRevision', 'buildAuthority'], { sourceRepository: s('^https://github\\.com/opensphere-platform/'), sourceRevision: s('^[0-9a-f]{40}$'), buildAuthority: str }),
       lifecycle: { type: 'object', minProperties: 3, additionalProperties: s(P.commandId) },
     }),
     allOf: [{
       if: { properties: { class: { const: 'assembly' } } },
-      then: { not: { anyOf: [{ required: ['runtime'] }, { required: ['storage'] }] }, properties: { lifecycle: obj(['register', 'update', 'retire'], { register: { const: 'osr.assembly.register' }, update: { const: 'osr.assembly.update' }, retire: { const: 'osr.assembly.retire' } }), contributions: { required: ['definition'] } } },
-      else: { required: ['profile', 'runtime'], properties: { lifecycle: obj(['install', 'update', 'rollback', 'retire'], { install: s(P.commandId), update: s(P.commandId), rollback: s(P.commandId), retire: s(P.commandId) }) } },
+      then: { not: { anyOf: [{ required: ['runtime'] }, { required: ['storage'] }, { required: ['ui'] }] }, properties: { lifecycle: obj(['register', 'update', 'retire'], { register: { const: 'osr.assembly.register' }, update: { const: 'osr.assembly.update' }, retire: { const: 'osr.assembly.retire' } }), contributions: { required: ['definition'] } } },
+      else: {
+        if: { properties: { class: { const: 'ui' } } },
+        // 정적 화면 모듈: 실행하지 않는다. Console(osr.ui-host)이 승인된 digest의 파일만 내려준다.
+        then: { required: ['profile', 'ui'], not: { anyOf: [{ required: ['runtime'] }, { required: ['storage'] }] }, properties: { lifecycle: obj(['install', 'update', 'rollback', 'retire'], { install: { const: 'osr.ui.install' }, update: { const: 'osr.ui.update' }, rollback: { const: 'osr.ui.rollback' }, retire: { const: 'osr.ui.retire' } }), contributions: { required: ['static'] } } },
+        else: { required: ['profile', 'runtime'], not: { required: ['ui'] }, properties: { lifecycle: obj(['install', 'update', 'rollback', 'retire'], { install: s(P.commandId), update: s(P.commandId), rollback: s(P.commandId), retire: s(P.commandId) }) } },
+      },
     }],
   });
 
@@ -169,7 +180,7 @@ all['owner-commands'] = schema('owner-commands', 'OS Shell 명령 계약 opensph
     ...obj(['schema', 'module', 'ownerBinding', 'commands'], {
       schema: { const: 'opensphere.owner-commands/v4' },
       module: R('moduleId'),
-      ownerBinding: { enum: ['module-owner', 'osr.definition-owner'] },
+      ownerBinding: { enum: ['module-owner', 'osr.definition-owner', 'osr.ui-host'] },
       commands: arr(R('command'), { minItems: 1, maxItems: 256 }),
     }),
   }, { command: commandSchema });
@@ -210,13 +221,24 @@ all['assembly-definition'] = schema('assembly-definition', '어셈블리 정의'
     composition: obj(['claims'], { claims: arr(obj(['member', 'claim'], { member: R('moduleId'), claim: str })) }),
   }));
 
+all['ui-static-index'] = schema('ui-static-index', '정적 화면 파일 목록 opensphere.ui-static-index/v1',
+  'ui 클래스의 정적 화면 묶음. archive는 JSON이 아닌 layer(압축하지 않은 tar)이고, 등록 때는 서명된 manifest의 digest로만 묶이며 적용 때 바이트를 확인한다. Console은 파일마다 여기 적힌 sha256과 크기를 확인하고 내려준다. 경로는 상대 경로만 허용한다.',
+  obj(['schema', 'module', 'entry', 'archive', 'files'], {
+    schema: { const: 'opensphere.ui-static-index/v1' },
+    module: s('^ui\\.[a-z][a-z0-9-]{1,40}$'),
+    entry: s(P.uiPath),
+    archive: obj(['part', 'mediaType', 'digest', 'size'], { part: { const: 'static' }, mediaType: { const: 'application/vnd.opensphere.ui-static.v1.tar' }, digest: R('digest'), size: { type: 'integer', minimum: 1, maximum: 67108864 } }),
+    files: arr(obj(['path', 'sha256', 'size', 'contentType'], { path: s(P.uiPath), sha256: s('^[0-9a-f]{64}$'), size: { type: 'integer', minimum: 0, maximum: 16777216 },
+      contentType: { enum: ['text/html; charset=utf-8', 'text/javascript', 'text/css', 'application/json', 'image/svg+xml', 'image/png', 'image/jpeg', 'image/webp', 'font/woff2', 'text/plain; charset=utf-8', 'text/markdown; charset=utf-8'] } }), { minItems: 1, maxItems: 2000 }),
+  }));
+
 all['materializer-profile'] = schema('materializer-profile', 'materializer profile',
   '클래스별 설치 형태. profile 하나는 적용 방식 하나만 갖는다. 지문(fingerprint)은 이 문서의 canonical digest이며 검증 맥락과 설치 계획에 묶인다. RBAC은 profile의 고정 규칙으로 Backbone이 생성하고 모듈이 가져온 RBAC은 쓰지 않는다.',
   obj(['schema', 'id', 'version', 'class', 'appliesTo', 'mechanism', 'capabilities', 'allowedEffects', 'resources', 'forbiddenResources', 'rbac', 'storage', 'verification', 'restrictedOperations'], {
     schema: { const: 'opensphere.materializer-profile/v1' },
     id: s(P.profileId), version: s(P.semver), class: { enum: CLASSES },
     appliesTo: arr(R('moduleId'), { minItems: 1, uniqueItems: true }),
-    mechanism: { enum: ['stackgres', 'definition-only'] },
+    mechanism: { enum: ['stackgres', 'definition-only', 'console-static'] },
     capabilities: arr(str, { uniqueItems: true }),
     allowedEffects: arr({ enum: ['none', 'read-cost', 'mutation', 'destructive'] }, { uniqueItems: true }),
     resources: arr(obj(['apiVersion', 'kind', 'max'], { apiVersion: str, kind: str, max: { type: 'integer', minimum: 1 } })),

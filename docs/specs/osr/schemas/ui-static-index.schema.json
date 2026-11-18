@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opensphere-platform.github.io/OpenSphere-Blueprint/specs/osr/schemas/ui-static-index.schema.json",
+  "title": "정적 화면 파일 목록 opensphere.ui-static-index/v1",
+  "description": "ui 클래스의 정적 화면 묶음. archive는 JSON이 아닌 layer(압축하지 않은 tar)이고, 등록 때는 서명된 manifest의 digest로만 묶이며 적용 때 바이트를 확인한다. Console은 파일마다 여기 적힌 sha256과 크기를 확인하고 내려준다. 경로는 상대 경로만 허용한다.",
+  "type": "object",
+  "required": [
+    "schema",
+    "module",
+    "entry",
+    "archive",
+    "files"
+  ],
+  "properties": {
+    "schema": {
+      "const": "opensphere.ui-static-index/v1"
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^ui\\.[a-z][a-z0-9-]{1,40}$"
+    },
+    "entry": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+    },
+    "archive": {
+      "type": "object",
+      "required": [
+        "part",
+        "mediaType",
+        "digest",
+        "size"
+      ],
+      "properties": {
+        "part": {
+          "const": "static"
+        },
+        "mediaType": {
+          "const": "application/vnd.opensphere.ui-static.v1.tar"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 67108864
+        }
+      },
+      "additionalProperties": false
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "sha256",
+          "size",
+          "contentType"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 16777216
+          },
+          "contentType": {
+            "enum": [
+              "text/html; charset=utf-8",
+              "text/javascript",
+              "text/css",
+              "application/json",
+              "image/svg+xml",
+              "image/png",
+              "image/jpeg",
+              "image/webp",
+              "font/woff2",
+              "text/plain; charset=utf-8",
+              "text/markdown; charset=utf-8"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 2000
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

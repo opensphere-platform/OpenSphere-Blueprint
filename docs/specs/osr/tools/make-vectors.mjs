@@ -4,7 +4,7 @@
 import {
   canonicalize, digest, digestHex, sha256hex, generateKey, signEnvelope, readJson, writeJson,
 } from './lib.mjs';
-import { ASSEMBLY_LIFECYCLE } from './verify.mjs';
+import { ASSEMBLY_LIFECYCLE, UI_LIFECYCLE, UI_STATIC_MEDIA_TYPE } from './verify.mjs';
 
 const NOW = '2026-11-18T00:00:00Z';
 const PAST = '2026-11-17T00:00:00Z';
@@ -21,7 +21,7 @@ const K = Object.fromEntries(['anchor', 'release', 'uiOnly', 'revoked', 'catalog
   .map((n) => [n, generateKey()]));
 const trustAnchor = { keyId: 'osr-anchor-test', publicKeyJwk: K.anchor.publicKeyJwk };
 
-const profiles = [readJson('profiles/provider.stackgres-pg.json'), readJson('profiles/assembly.definition.json')];
+const profiles = [readJson('profiles/provider.stackgres-pg.json'), readJson('profiles/assembly.definition.json'), readJson('profiles/ui.console-static.json')];
 const [pgProfile, asmProfile] = profiles;
 
 // ---------- 검증 맥락 snapshot ----------
@@ -43,6 +43,7 @@ function baseSnapshot() {
     policies: {
       provider: { allowedCapabilities: ['db.instance.manage', 'db.backup.manage', 'db.connection.issue', 'storage.claim.bind'], allowedEffects: ['none', 'read-cost', 'mutation', 'destructive'] },
       assembly: { allowedCapabilities: ['osr.definition.read'], allowedEffects: ['none', 'read-cost'] },
+      ui: { allowedCapabilities: ['console.ui.serve', 'console.ui.read', 'console.ui.public'], allowedEffects: ['none', 'read-cost'] },
     },
     trustedBuilders: [BUILDER],
     dependencyLock: LOCK,
@@ -92,10 +93,11 @@ function knowledge(moduleId, repo) {
     }),
   };
 }
-const contributions = (withDefinition) => ({
+const contributions = (withDefinition, withStatic) => ({
   manual: { enabled: true, artifact: 'manual' }, commands: { enabled: true, artifact: 'commands' },
   oci: { enabled: true }, knowledge: { enabled: true, artifact: 'knowledge' },
   ...(withDefinition ? { definition: { enabled: true, artifact: 'definition' } } : {}),
+  ...(withStatic ? { static: { enabled: true, artifact: 'static' } } : {}),
 });
 
 const PG = 'provider.postgres';
@@ -163,6 +165,43 @@ const mailParts = () => ({
   definition: mailDefinition(),
 });
 
+// ui: 실행하지 않는 정적 화면 모듈. static은 JSON이 아닌 layer라 벡터에는 digest·크기만 싣는다($opaque).
+const UI = 'ui.dummy-screens';
+const UI_REPO_SRC = 'https://github.com/opensphere-platform/opensphere-ui-dummy-screens';
+const UI_FILES = [
+  ['index.html', 'text/html; charset=utf-8', '<!doctype html><title>더미 화면</title>'],
+  ['main.js', 'text/javascript', 'console.log("dummy")'],
+  ['styles.css', 'text/css', 'body{margin:0}'],
+  ['assets/logo.svg', 'image/svg+xml', '<svg xmlns="http://www.w3.org/2000/svg"/>'],
+];
+const UI_ARCHIVE = { mediaType: UI_STATIC_MEDIA_TYPE, digest: fake('ui-static-archive'), size: 4096 };
+const uiCmd = (verb, kind, effect) => command(UI, verb, kind, effect, { requiredPermissions: ['console.ui.read'] });
+const uiParts = () => ({
+  descriptor: {
+    schema: 'opensphere.module/v1', id: UI, class: 'ui', displayName: '더미 화면 · 템플릿', owner: 'opensphere-platform/console',
+    description: '고정 예시 데이터만 보여 주는 템플릿 화면 묶음(백엔드 호출 없음)', version: '26.1118.0900.1', compatibilityVersion: '1.0.0',
+    plane: 'shell', backboneCompat: '^1.0.0', dependencies: [],
+    profile: 'ui.console-static',
+    capabilityRequests: ['console.ui.serve', 'console.ui.read', 'console.ui.public'],
+    ui: { artifact: 'static', index: 'static-index', entry: 'index.html', access: 'public', navigation: [{ label: '더미 화면 · 템플릿', path: '#/' }] },
+    contributions: contributions(false, true),
+    supplyChain: { sourceRepository: UI_REPO_SRC, sourceRevision: REV, buildAuthority: 'opensphere-platform/osr-builder' },
+    lifecycle: { ...UI_LIFECYCLE },
+  },
+  manual: manual(UI, 'shell', ['overview', 'operations', 'troubleshooting', 'commands']),
+  commands: {
+    schema: 'opensphere.owner-commands/v4', module: UI, ownerBinding: 'osr.ui-host',
+    commands: [uiCmd('status', 'read', 'none'), uiCmd('inspect', 'read', 'none'), uiCmd('verify', 'verify', 'read-cost')],
+  },
+  knowledge: knowledge(UI, UI_REPO_SRC),
+  'static-index': {
+    schema: 'opensphere.ui-static-index/v1', module: UI, entry: 'index.html',
+    archive: { part: 'static', mediaType: UI_ARCHIVE.mediaType, digest: UI_ARCHIVE.digest, size: UI_ARCHIVE.size },
+    files: UI_FILES.map(([path, contentType, content]) => ({ path, sha256: sha256hex(content), size: Buffer.byteLength(content), contentType })),
+  },
+  static: { $opaque: { ...UI_ARCHIVE } },
+});
+
 // ---------- 릴리스 조립 ----------
 const SIGNERS = {
   release: ['release-test', K.release], uiOnly: ['release-ui-test', K.uiOnly], revoked: ['release-revoked-test', K.revoked],
@@ -176,11 +215,15 @@ function buildRelease(makeParts, h = {}) {
   const d = parts.descriptor;
   const repository = h.repository ?? `ghcr.io/opensphere-platform/opensphere-${d.class}-${d.id.split('.')[1]}`;
   const names = Object.keys(parts);
+  // $opaque: JSON이 아닌 layer. 인덱스에 digest·크기만 올리고 blob은 싣지 않는다.
+  const partDigest = (n) => parts[n].$opaque?.digest ?? digest(parts[n]);
   const index = {
     schemaVersion: 2, mediaType: 'application/vnd.oci.image.index.v1+json', artifactType: 'application/vnd.opensphere.module.v1+json',
-    manifests: names.map((n) => ({ mediaType: `application/vnd.opensphere.${n}.v1+json`, digest: digest(parts[n]), annotations: { 'io.opensphere.part': n } })),
+    manifests: names.map((n) => (parts[n].$opaque
+      ? { mediaType: parts[n].$opaque.mediaType, digest: parts[n].$opaque.digest, size: parts[n].$opaque.size, annotations: { 'io.opensphere.part': n } }
+      : { mediaType: `application/vnd.opensphere.${n}.v1+json`, digest: digest(parts[n]), annotations: { 'io.opensphere.part': n } })),
   };
-  const blobs = Object.fromEntries(names.map((n) => [digest(parts[n]), parts[n]]));
+  const blobs = Object.fromEntries(names.filter((n) => !parts[n].$opaque).map((n) => [digest(parts[n]), parts[n]]));
   const bundleDigest = digest(index);
   const subject = [{ name: repository, digest: { sha256: digestHex(bundleDigest) } }];
   const sbom = {
@@ -199,7 +242,7 @@ function buildRelease(makeParts, h = {}) {
   const payload = {
     schema: 'opensphere.release-signature/v1', subject: { repository, bundleDigest },
     module: { id: d.id, class: d.class, version: d.version }, descriptorDigest: digest(parts.descriptor),
-    artifacts: names.map((n) => ({ part: n, digest: digest(parts[n]) })),
+    artifacts: names.map((n) => ({ part: n, digest: partDigest(n) })),
     evidence: { sbom: digest(sbom), provenance: digest(provenance) },
     keyId, issuedAt: ISSUED, expiresAt: LATER,
   };
@@ -271,6 +314,44 @@ const release = [
   releaseVector('R28', 'SBOM referrer가 없으면 거절', rej('SupplyChainEvidenceMissing', 6), postgresParts, { after: (r) => { delete r.referrers.sbom; } }),
   releaseVector('R25', '의존 모듈 판이 range 밖이면 거절', rej('DependencyUnresolved', 9), postgresParts, {
     parts: (p) => { p.descriptor.dependencies[0].range = '^2.0.0'; },
+  }),
+];
+
+// ---------- 정적 화면 모듈 벡터(ui.dummy-screens) ----------
+const UIS = { signer: 'uiOnly' };
+const ui = [
+  releaseVector('U01', '실행물 없는 ui.dummy-screens 정적 화면 모듈은 형식 판정을 통과한다', pass, uiParts, UIS),
+  releaseVector('U02', 'ui가 실행 이미지를 요구하면 거절', rej('ClassRuleViolation', 5), uiParts, {
+    ...UIS, parts: (p) => { p.descriptor.runtime = { images: [{ name: 'web', digest: fake('image:web') }], health: { path: '/h' }, ready: { path: '/r' }, securityContext: { runAsNonRoot: true } }; },
+  }),
+  releaseVector('U03', '정적 화면 묶음(static layer)이 없는 ui는 거절', rej('ClassRuleViolation', 5), uiParts, { ...UIS, parts: (p) => { delete p.static; } }),
+  releaseVector('U04', 'ui lifecycle을 모듈 자기 명령으로 바꾸면 거절(OSR 고정 명령만)', rej('ClassRuleViolation', 5), uiParts, {
+    ...UIS, parts: (p) => { p.descriptor.lifecycle.install = `${UI}.apply`; },
+  }),
+  releaseVector('U05', '목록이 서명된 static layer와 다른 archive를 가리키면 거절', rej('UiStaticInvalid', 7), uiParts, {
+    ...UIS, parts: (p) => { p['static-index'].archive.digest = fake('other-archive'); },
+  }),
+  releaseVector('U06', '진입 파일이 목록에 없으면 거절', rej('UiStaticInvalid', 7), uiParts, {
+    ...UIS, parts: (p) => { p['static-index'].files = p['static-index'].files.filter((f) => f.path !== 'index.html'); },
+  }),
+  releaseVector('U07', '상위 경로(../)를 담은 목록은 거절', rej('UiStaticInvalid', 7), uiParts, {
+    ...UIS, parts: (p) => { p['static-index'].files[1].path = '../outside.js'; },
+  }),
+  releaseVector('U08', '같은 경로가 두 번 나오는 목록은 거절', rej('UiStaticInvalid', 7), uiParts, {
+    ...UIS, parts: (p) => { p['static-index'].files.push({ ...p['static-index'].files[1] }); },
+  }),
+  releaseVector('U09', 'public 화면인데 console.ui.public을 요청하지 않으면 거절', rej('CapabilityNotAllowed', 8), uiParts, {
+    ...UIS, parts: (p) => { p.descriptor.capabilityRequests = ['console.ui.serve', 'console.ui.read']; },
+  }),
+  releaseVector('U10', 'ui 명령이 상태를 바꾸는 effect를 선언하면 거절', rej('EffectPolicyViolation', 7), uiParts, {
+    ...UIS, parts: (p) => { p.commands.commands.push(command(UI, 'apply', 'apply', 'mutation', { requiredPermissions: ['console.ui.read'] })); },
+  }),
+  releaseVector('U11', 'ui 범위가 없는 릴리스 키로 서명한 ui는 거절', rej('KeyScopeViolation', 3), uiParts, { signer: 'release' }),
+  releaseVector('U12', 'provider 번들에 JSON이 아닌 layer를 끼우면 거절', rej('ClassRuleViolation', 5), postgresParts, {
+    parts: (p) => { p.payload = { $opaque: { mediaType: 'application/octet-stream', digest: fake('opaque-payload'), size: 10 } }; },
+  }),
+  releaseVector('U13', 'ownerBinding이 osr.ui-host가 아닌 ui 명령 계약은 거절', rej('CommandContractInvalid', 7), uiParts, {
+    ...UIS, parts: (p) => { p.commands.ownerBinding = 'module-owner'; },
   }),
 ];
 
@@ -479,8 +560,9 @@ const header = (group, note) => ({
 writeJson('vectors/canonical.json', { schema: 'opensphere.osr-test-vectors/v1', group: 'canonical', generatedBy: 'tools/make-vectors.mjs', evaluationTime: NOW, note: 'canonical JSON bytes와 digest를 고정한다. 키가 없어 재생성해도 바뀌지 않는다.', vectors: canonical });
 writeJson('vectors/permission.json', { ...header('permission', '유효 권한 = capability ∩ 호출자 ∩ scope ∩ Owner 검사.'), vectors: compact(permission) });
 writeJson('vectors/release.json', { ...header('release', '형식 판정 1~9단계(provider.postgres).'), vectors: compact(release) });
+writeJson('vectors/ui.json', { ...header('ui', '실행하지 않는 정적 화면 모듈의 형식 판정(ui.dummy-screens).'), vectors: compact(ui) });
 writeJson('vectors/assembly.json', { ...header('assembly', '어셈블리 형식 판정과 10단계 대체 판정(assembly.mail).'), vectors: compact(assembly) });
 writeJson('vectors/catalog.json', { ...header('catalog', '채널 카탈로그 sequence·만료·범위.'), vectors: compact(catalog) });
 writeJson('vectors/execution.json', { ...header('execution', '제한 실행부의 승인 바인딩·멱등·fence.'), vectors: compact(execution) });
 writeJson('vectors/recovery.json', { ...header('recovery', '만료 시 새 설치 거절과 원래 설치의 독립 복구.'), vectors: compact(recovery) });
-console.log(`벡터 생성: canonical ${canonical.length}, permission ${permission.length}, release ${release.length}, assembly ${assembly.length}, catalog ${catalog.length}, execution ${execution.length}, recovery ${recovery.length}`);
+console.log(`벡터 생성: canonical ${canonical.length}, permission ${permission.length}, release ${release.length}, ui ${ui.length}, assembly ${assembly.length}, catalog ${catalog.length}, execution ${execution.length}, recovery ${recovery.length}`);

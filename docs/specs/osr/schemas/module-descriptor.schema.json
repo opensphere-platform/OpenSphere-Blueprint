@@ -226,6 +226,58 @@
       },
       "additionalProperties": false
     },
+    "ui": {
+      "type": "object",
+      "required": [
+        "artifact",
+        "index",
+        "entry",
+        "access",
+        "navigation"
+      ],
+      "properties": {
+        "artifact": {
+          "const": "static"
+        },
+        "index": {
+          "const": "static-index"
+        },
+        "entry": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*(/[A-Za-z0-9_][A-Za-z0-9_.-]*)*$"
+        },
+        "access": {
+          "enum": [
+            "admin",
+            "public"
+          ]
+        },
+        "navigation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "path"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "path": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9#/_.-]{0,120}$"
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 8
+        }
+      },
+      "additionalProperties": false
+    },
     "contributions": {
       "type": "object",
       "required": [
@@ -339,6 +391,27 @@
             }
           },
           "additionalProperties": false
+        },
+        "static": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "artifact": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 500
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -397,6 +470,11 @@
               "required": [
                 "storage"
               ]
+            },
+            {
+              "required": [
+                "ui"
+              ]
             }
           ]
         },
@@ -429,38 +507,103 @@
         }
       },
       "else": {
-        "required": [
-          "profile",
-          "runtime"
-        ],
-        "properties": {
-          "lifecycle": {
-            "type": "object",
-            "required": [
-              "install",
-              "update",
-              "rollback",
-              "retire"
-            ],
-            "properties": {
-              "install": {
-                "type": "string",
-                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+        "if": {
+          "properties": {
+            "class": {
+              "const": "ui"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "profile",
+            "ui"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "runtime"
+                ]
               },
-              "update": {
-                "type": "string",
-                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
-              },
-              "rollback": {
-                "type": "string",
-                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
-              },
-              "retire": {
-                "type": "string",
-                "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+              {
+                "required": [
+                  "storage"
+                ]
               }
+            ]
+          },
+          "properties": {
+            "lifecycle": {
+              "type": "object",
+              "required": [
+                "install",
+                "update",
+                "rollback",
+                "retire"
+              ],
+              "properties": {
+                "install": {
+                  "const": "osr.ui.install"
+                },
+                "update": {
+                  "const": "osr.ui.update"
+                },
+                "rollback": {
+                  "const": "osr.ui.rollback"
+                },
+                "retire": {
+                  "const": "osr.ui.retire"
+                }
+              },
+              "additionalProperties": false
             },
-            "additionalProperties": false
+            "contributions": {
+              "required": [
+                "static"
+              ]
+            }
+          }
+        },
+        "else": {
+          "required": [
+            "profile",
+            "runtime"
+          ],
+          "not": {
+            "required": [
+              "ui"
+            ]
+          },
+          "properties": {
+            "lifecycle": {
+              "type": "object",
+              "required": [
+                "install",
+                "update",
+                "rollback",
+                "retire"
+              ],
+              "properties": {
+                "install": {
+                  "type": "string",
+                  "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+                },
+                "update": {
+                  "type": "string",
+                  "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+                },
+                "rollback": {
+                  "type": "string",
+                  "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+                },
+                "retire": {
+                  "type": "string",
+                  "pattern": "^(core|hiss|delivery|provider|engine|runtime|assembly|ui|product|osr)\\.[a-z][a-z0-9-]{1,40}(\\.[a-z][a-z0-9-]*)+$"
+                }
+              },
+              "additionalProperties": false
+            }
           }
         }
       }

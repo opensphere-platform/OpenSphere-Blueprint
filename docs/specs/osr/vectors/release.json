@@ -9,8 +9,8 @@
       "keyId": "osr-anchor-test",
       "publicKeyJwk": {
         "kty": "EC",
-        "x": "n33OVcboYSJ2O7DvjlpwLJi4cuDYweUOz8LQfO1cA6E",
-        "y": "QDmAinyCUWJy0P9c0_nu8bMbXLpD-WVGaQN2oKxMqtY",
+        "x": "9-NJg0vQLa8XCZzX9v2yush68zNXdqeUf-PFGBgNgVY",
+        "y": "Hy4LnQQF1kZmV-L-Nr66WF5znHWD7LgUqEcIzu1gls0",
         "crv": "P-256"
       }
     },
@@ -37,8 +37,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "-HJAZZSUT13F4m2vjF0H7TviWlhkffFC_oJ1gRhCagQ",
-              "y": "O65l4DbxCtKUisSWCNRDnfsSlF8aw7r2jznT52QuQh0",
+              "x": "XfUi51lLabDaKv0mdlCDZ45NGO5Cl45i5TmKlFOpLtI",
+              "y": "lPaGTyXFGp0VIVoj0vhnRnx2SL7sJqVVVuPw6j44pMg",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -53,8 +53,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "ooTKo7dwjT1qgLYKbq6C-BOx1sjczztdMQaZNJRP-z4",
-              "y": "3BOrVBsxwGoyWizBkq0lbQm_Fm1Syo_6taryWlZbUss",
+              "x": "pp__iZli8nzAlc3Ed1NiZlck-OSCQMBsPGAGseV8758",
+              "y": "uz0X_DOTJL0Dq3ekMZ5bOpDIwKMhv3mQcZauH0wx9ts",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -69,8 +69,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "sWXkAEU868IQrrICSg6GksYBEYVeEjkFTUczzg4-C44",
-              "y": "gE50j227nbB-HbOPkSp-_dX-K_TseZ1rzOpOeHGPuYE",
+              "x": "LbyBqW8FLs05E54XYof3LNPtHbrXmi5CUfCciDDK9Kc",
+              "y": "lfssf7_p8zLBAmqxFKTsloXl4NF30Y5DleXO2IuajIM",
               "crv": "P-256"
             },
             "addedAtGeneration": 2,
@@ -87,8 +87,8 @@
             },
             "publicKeyJwk": {
               "kty": "EC",
-              "x": "FxndOhHGRh2nSE8fwKig2JiEr4JiAxiBKs93Cot1KDA",
-              "y": "ulo4Tm574YAJziOzo5BPU4LbfP5H9Mif2I1H4dzWV5Q",
+              "x": "e-1hmQArJ4zh1LJwr4vCZif-Kfl6nfSsx8neqJHBnlo",
+              "y": "2_UFdwJ5nocYIvHLkWfAEafiORdSIedKrxOR1tAanYQ",
               "crv": "P-256"
             },
             "addedAtGeneration": 5
@@ -104,6 +104,11 @@
             "id": "assembly.definition",
             "version": "0.1.0",
             "fingerprint": "sha256:c0982d5295ae876e51b0585ab48ef5171c01e2979eab0232457392ad644d86e7"
+          },
+          {
+            "id": "ui.console-static",
+            "version": "0.1.0",
+            "fingerprint": "sha256:02c7e00c946276e5b1a75dccdab6c4abda447be922eab1f3920faca654e84c12"
           }
         ],
         "policies": {
@@ -124,6 +129,17 @@
           "assembly": {
             "allowedCapabilities": [
               "osr.definition.read"
+            ],
+            "allowedEffects": [
+              "none",
+              "read-cost"
+            ]
+          },
+          "ui": {
+            "allowedCapabilities": [
+              "console.ui.serve",
+              "console.ui.read",
+              "console.ui.public"
             ],
             "allowedEffects": [
               "none",
@@ -172,7 +188,7 @@
       "signature": {
         "alg": "ES256-P1363",
         "keyId": "osr-anchor-test",
-        "value": "cmYDnYvt-YQs4BXmh8WZdP2XWlnALAK5TgO3z0oYjsec_3V6qvqs9s8GGemCo__tF85msFUu0RQX60-yHuu5VQ"
+        "value": "8Ef7Tfh7RuoygScS2hvDw0GLgnK-yJMQG9habE3rwXnV3D4dJ-ShYZVaiVcPpW3e7eVhubv1bVKvrfirzLB1TA"
       }
     },
     "profiles": [
@@ -369,6 +385,77 @@
           {
             "id": "members-substantive",
             "description": "필수 멤버 모듈이 모두 실질 상태이고 구성 가능하다."
+          }
+        ],
+        "restrictedOperations": [
+          "retire"
+        ]
+      },
+      {
+        "schema": "opensphere.materializer-profile/v1",
+        "id": "ui.console-static",
+        "version": "0.1.0",
+        "class": "ui",
+        "appliesTo": [
+          "ui.dummy-screens"
+        ],
+        "mechanism": "console-static",
+        "capabilities": [
+          "console.ui.serve",
+          "console.ui.read",
+          "console.ui.public"
+        ],
+        "allowedEffects": [
+          "none",
+          "read-cost"
+        ],
+        "resources": [],
+        "forbiddenResources": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "StatefulSet"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment"
+          },
+          {
+            "apiVersion": "apps/v1",
+            "kind": "DaemonSet"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Pod"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "Service"
+          },
+          {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim"
+          },
+          {
+            "apiVersion": "networking.k8s.io/v1",
+            "kind": "Ingress"
+          }
+        ],
+        "rbac": [],
+        "storage": {
+          "mode": "none"
+        },
+        "verification": [
+          {
+            "id": "archive-digest",
+            "description": "내려받은 static layer 바이트의 sha256과 크기가 승인된 번들의 값과 같다."
+          },
+          {
+            "id": "files-match-index",
+            "description": "archive 안의 파일이 목록(static-index)의 경로·sha256·크기와 하나도 빠짐없이 같고 목록에 없는 파일이 없다."
+          },
+          {
+            "id": "entry-served",
+            "description": "Console이 /ui/<module-id>/ 에서 승인된 digest의 진입 파일을 내려준다."
           }
         ],
         "restrictedOperations": [
@@ -855,7 +942,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "G3QveQAmKVnmwOMQSGXAzTzE0g7k6JeAPvn40a51IYS4D9bjsxHhedsVJBfV50Ln662dr3hDQat5DJCx20Cnrg"
+                "value": "1RN3IwCrznS2QC-adJN8bEYQKj6BMu5x4kiUkmqQbSeqftntOLiwomySNJ7Kro873NEkjtPy-FZYhzTRFqI9GA"
               }
             },
             "sbom": {
@@ -1390,7 +1477,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "xZYliup7PKDR9L9PiABk3FHRlCzeRPjVQNbqxIqUSfuH-jfvt_NjfXQxxSS90jUaOhesHfdg8xXPIlobcv-V2g"
+                "value": "KQkCAsV2ODfE2EncwuzxPkAmNICo390O-XHcVfYPPixZalVQF9q8oBV5teUhR0tH5YT_X9DCl9-X1PR2kw_6Kg"
               }
             },
             "sbom": {
@@ -1927,7 +2014,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "zMT3PnYpqZJv7SRd0YhboU-g0a2S6PYXZ7Q380R4qs-ksw-UJo60vSGI4RN2E50ZMezpn9v0I5rYCp5NZZiL2A"
+                "value": "1TGkSJq5jiIt0r-Aa4YDHb_VV6w3-1p7Y46auVK5KD3mpDwfVsHn_DMXEW02jbSLKQQPLPuNV3j-xFwe9Lo8lw"
               }
             },
             "sbom": {
@@ -2464,7 +2551,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-stranger-test",
-                "value": "a-a8NL4eSwvk3F3cNTJK3vifMVkihepUgiIxzuCQNGXkTi7mlVza6avfD3CbiVtPhgOzEXzdjexlwGYrTFIvEA"
+                "value": "MVT6WzI1tA_6KTRgOMbUNx_ZDauNqqBXUTkAbpKIPMCzqZ0XQHmTBLsoWrapeFGOsOKN6FFeU7HDJBFLnMb6HA"
               }
             },
             "sbom": {
@@ -3001,7 +3088,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-ui-test",
-                "value": "cWqrvRnPvmsPRdK5vN8mVmffpwV_qa-7a1qxzwFkd_DE-sUWmXyaHCx-qEgjwZ6QVFTzo-ZbO-ISk_4V-4L5Fg"
+                "value": "j4sbBTN8_RRAgKOd4KFMHs0wU9Z5xz-b7CG2ht74drsMxDZ20cK1nMwc6WgIrmIdJ7nrM39LTW_Aq1yuS-ocVA"
               }
             },
             "sbom": {
@@ -3538,7 +3625,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "AtKVw2Gw3VJL0jFmoC8nOaWkplZzPKFq9mAoj2FBAelzlQJL0dPW0EUqVgCgNwZq-VLKLorKGC5rtLwI1CearQ"
+                "value": "AEKalQxKjzCpLu2riFyRcsinnmD0D87cLA9v60QiGpUYkx3EzHxgwwTLxPVKedGkxShXn0R5lmHh_3F7c3QLlQ"
               }
             },
             "sbom": {
@@ -4075,7 +4162,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "SrK52MssbchTOE8m69iLVlOeeoevNIlfDwu6THDZPscy3S6MzxDWwYSD0aWT0ularjjDxISgeUfRz5CqequAFw"
+                "value": "OXev-fiRKxIW7FbtqYNRnYq_QK5BP_1XSd77ZOZr58n5XvAAv6KOLppfjDBVuIhr0iJ1TWdJGRMkXu_FWUq0DA"
               }
             },
             "sbom": {
@@ -4612,7 +4699,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-revoked-test",
-                "value": "2CodUv2B6Kj7GoHgLPVXkyHL4jJ7emgKNp4UPQ0vtW1HJoV7scgJ15sK2E6kqlUMWGtuZrTyqcl_urMBZNq17A"
+                "value": "0OFk6nQwTCMB-EtzzysVl3nUhPofOIAozxC5kIeWetAGP_jo008oQB9m_YRuSVbIY4v7Haf5KAPBA2_DtGrmZQ"
               }
             },
             "sbom": {
@@ -5127,7 +5214,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "YszKchHwKk0T_wAO8DA6AKBO0q7hcqTpCW02zxSxhdY6cYkm0BzBgFn8qKkmQIWxzp2-0x-hWZUwmIbs6e2HCg"
+                "value": "E3I9iJt3ZCwrahI18YoLwu6hHHxH34p6uPyeyf5p7m6sQnDzLdFgvSSuin4EPQxchh5h8ahHwybQlONZztBx-g"
               }
             },
             "sbom": {
@@ -5664,7 +5751,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "kwOmqMzT3ImnuttITDqcFtIcM5k__-s-KmCNk7qevzKBVB43b2BTdHIknZPiAKJTuPhtk7JKD6smzRLkWj-myA"
+                "value": "rQDR3nI1Qo4cMJfrRm9Zhz5fjRRNXQw65l3hUINAoga91DG7-CcARQmHaFLSUGeuHOsrTC_-AR7_jU9FBe2Clg"
               }
             },
             "sbom": {
@@ -6201,7 +6288,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "b4e9gGWMPa6AYRCKt6oJd5UASyCdn-ZRS8MB0G4dyLcrC2LugJBihFw6Htx-wCPaPt4_WN3lARerOGOn1IKOBg"
+                "value": "6HKGXHbE7tB94l42LmN5tIX0AYK8Zf9unhRgymHQWMD_Wzx3j-fn44D9IgTCskR3JUKGtWCRSA1ROiwfOsgejg"
               }
             },
             "sbom": {
@@ -6742,7 +6829,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "r8O24Pk7NLa_0DUscXQkan1KZhb_kqM_eaZyuPuYyQ3Mp9juknOCLQgLgxV3I37yxKhvYUlKpWMSkJhC0KEr1g"
+                "value": "aPHTO4JTy9G4ix_VyTEoeKrEGJ7ge2MmetHHtjg5EUOFSun4OFjc2XapbcqFN_mKUiKYFUhOYoUG6ypu-gW_rg"
               }
             },
             "sbom": {
@@ -7279,7 +7366,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "ezvqL5elCiZBJNh7IhbQ0X-o2DeSkj9GA0WJVh6qnFEH4Ofio9Mn8JegA2eth3RinbJejZIwKpHdaQfBNblaBQ"
+                "value": "34kb4_M2TaLHSNe21PffFbieRDmg4Hf4qsis7FSVW2V5yjjBQtjaa4z2UVec2bFmMmKZwf4G-eib_2op0tNDEw"
               }
             },
             "sbom": {
@@ -7799,7 +7886,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "aVw1kGDtkkHBemthCtOotHZQTgc0qImvwkHywBDYH_GTQUl_i5_GPeTFa4oSyE71wrIUvtw--PmoeYl5hEtMrw"
+                "value": "0Wrmdte2y5NT_a2TGsKOlmVf0OqqRN-xeTC6ktpj921DHXLJ-jRDod1Vp-gUhBKeymFWB1x1urdYUPCg1ky6QQ"
               }
             },
             "sbom": {
@@ -8335,7 +8422,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "SoitSj00oG-3N2p1xuXiXNQlCP4fI_cMTBynZXmKfcZoK1l14SMyYdjbapWqrEqun9bDNacLOAzGY7Op_MEw3Q"
+                "value": "gYWDuuWiPGvx2_yH6SbPct-18BBohXbHBImtg8yb3NKCs1nXJFtzJ-VCWeZ1S4hW0l_pcZV0r_9wi09QQEN3tA"
               }
             },
             "sbom": {
@@ -8852,7 +8939,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "kUrDl8HK_9wilXUGONWf5ZvQMjSUb_kQhZIhFbWpnn25VC6xkijFU1gEsseVC0x8rgDKkVZHO7GHGpiNQt7O4g"
+                "value": "S_H1QjLYHtM1guYDsmxqnDi2rcdGZUXnQGLFIQFHWr9B4edJkeRKPIlRlMNJLHTEzAbw3F79neq5YGfJ_-PicA"
               }
             },
             "sbom": {
@@ -9389,7 +9476,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "r1YxgYQ8w30I4FCxL9OMC77vcboIC-x-VJ8eWSadX7uiBZyYHChvQ4IVbgDsDhvtV8w2RjRmqJwLq1IdLalRHQ"
+                "value": "kaWO-McGWoysQvaGfGVPQVzuxJIMHQD8CS7rzjbhx8MNJJfvejZ5_4ZM6vi4agBAPEaz7PuZSdDj1Zgv8QxTAQ"
               }
             },
             "sbom": {
@@ -9926,7 +10013,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "IbpKB7f2FfQ1hUgUgHkqVVIko4LTrow7Rfoo7qArtEoDDqEG2BuC0zwvtWD3Ckkx_yLIOChRSzzKZDIVRG_VmA"
+                "value": "Qn-ASmi6P4-umJ1upQ-ST2BC1hR5lyEqGqKG8Hz2turnFfIrXef0x7mBAp_rIpMFjjczCS0X487XnUCnYtDIRQ"
               }
             },
             "sbom": {
@@ -10464,7 +10551,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "dRgQPVIoslU_GEX5q9SkxgGT1GClbVHNobOGFQ5XgMAq-5qYpEFzJFVzqL2Bm4Y1henw-_zG_kFs696rSFweJA"
+                "value": "-qoKxPbYhQXtv_wzXf4t0x_oSXu4p-7pSbK9VUQCo0FSwZs8LEo8Ffl5l0vNDdqnb9WimKo_ZDptGlgRp8sG4g"
               }
             },
             "sbom": {
@@ -11001,7 +11088,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "SjSv0SRt5YYB-aCUGu9E9Vt5RfHJyHNUISibiJFllFEtsJqdGK52yt3HWt3qZMXNNCbkUQDwE81qYA2iADWe-A"
+                "value": "8hPuJlCPEF60E0zl6qwKoToEtAPBmaB6-eaE_rE7kX61fj8bREGCQRlKAOJaIxkxVlDfmyCoKaXEQotD8pB7JQ"
               }
             },
             "sbom": {
@@ -11543,7 +11630,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "ALn5nZ6pRA6y2norX5a5DyQxwrFNmb9MFu9IzjoootTHz6Cxi7c4USGvUp-Mpg4Hjagxz_HODKRyu91UOUN3_Q"
+                "value": "woedE2GnzacjyldByvvJUsqOmOTyiPDygZKTAvuKN7A8eCZyCQQZJm9F8wiO-D9paAoosQY9NlhpAa4BR5dVVQ"
               }
             },
             "sbom": {
@@ -11612,7 +11699,7 @@
         "evaluationTime": "2026-11-18T00:00:00Z",
         "release": {
           "repository": "ghcr.io/opensphere-platform/opensphere-provider-postgres",
-          "bundleDigest": "sha256:90a6c30f412eaf7988ec1df7802e81e31bd57bef8084891f8534ada363e38a09",
+          "bundleDigest": "sha256:83fe1adcafb3f0e4b28a44563cfcb7f85dd7e54ea1d1435f4737afec6d68ac7f",
           "index": {
             "schemaVersion": 2,
             "mediaType": "application/vnd.oci.image.index.v1+json",
@@ -11648,7 +11735,7 @@
               },
               {
                 "mediaType": "application/vnd.opensphere.keys.v1+json",
-                "digest": "sha256:a42eb279fd45fe15720e1d6c073de5f82b607d46279254fe0709f33543db483f",
+                "digest": "sha256:e354e56da684b2dc05660cd5423231daca9a503e4fb93b60853fda995fa97352",
                 "annotations": {
                   "io.opensphere.part": "keys"
                 }
@@ -12043,13 +12130,13 @@
                 }
               ]
             },
-            "sha256:a42eb279fd45fe15720e1d6c073de5f82b607d46279254fe0709f33543db483f": {
+            "sha256:e354e56da684b2dc05660cd5423231daca9a503e4fb93b60853fda995fa97352": {
               "keyId": "module-supplied-test",
               "purpose": "release",
               "publicKeyJwk": {
                 "kty": "EC",
-                "x": "vhHffR_UPPLcrZP2aR0nQmoVx0JArZXVJPjRuuoe2ps",
-                "y": "Q22S3CFLQfKe205UAzfzG2zVQGFjdqDFloVRyEpil0o",
+                "x": "z65LbGK86CPXrZib-sqzspF1GICDEiezPWBfgnr5J0Y",
+                "y": "vmhdryArlNA6dZbEqj3Gf-J3z-PBuotjV9GFnebnw5w",
                 "crv": "P-256"
               }
             }
@@ -12060,7 +12147,7 @@
                 "schema": "opensphere.release-signature/v1",
                 "subject": {
                   "repository": "ghcr.io/opensphere-platform/opensphere-provider-postgres",
-                  "bundleDigest": "sha256:90a6c30f412eaf7988ec1df7802e81e31bd57bef8084891f8534ada363e38a09"
+                  "bundleDigest": "sha256:83fe1adcafb3f0e4b28a44563cfcb7f85dd7e54ea1d1435f4737afec6d68ac7f"
                 },
                 "module": {
                   "id": "provider.postgres",
@@ -12087,12 +12174,12 @@
                   },
                   {
                     "part": "keys",
-                    "digest": "sha256:a42eb279fd45fe15720e1d6c073de5f82b607d46279254fe0709f33543db483f"
+                    "digest": "sha256:e354e56da684b2dc05660cd5423231daca9a503e4fb93b60853fda995fa97352"
                   }
                 ],
                 "evidence": {
-                  "sbom": "sha256:c0fc11f441fab7fad0f6a3934f4a9a472235a651697c61ea90728ad38f7baebe",
-                  "provenance": "sha256:e1e573dda702379888575d6b3d826513aaba003bbc245325adb9b37124fa76ff"
+                  "sbom": "sha256:a3399cb1957bb8d5fd89ef3092f62c65dc14b492cfc2216b9f711b6a14dccbdb",
+                  "provenance": "sha256:7d6323de4a26cc575643d197525dececbc16225ce0752ddd5b64096502fd9b36"
                 },
                 "keyId": "module-supplied-test",
                 "issuedAt": "2026-11-10T00:00:00Z",
@@ -12101,7 +12188,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "module-supplied-test",
-                "value": "udmV0vEq9QOZ5IyrRZxQ4dNgNXC1RJlqET-t9ew1BtOx9aFjnIz4afFMBoWFbJmK7VenOfQHSaph_MZL2UeEpA"
+                "value": "s3_QbDYGXfMUWZGROmZAbhd7qoIXTkPB_UJaD2V35Jo_-6Rns33vcmBKcZXxWb9ml0hTgFdRB9tyJLSQjlQ-vg"
               }
             },
             "sbom": {
@@ -12110,7 +12197,7 @@
                 {
                   "name": "ghcr.io/opensphere-platform/opensphere-provider-postgres",
                   "digest": {
-                    "sha256": "90a6c30f412eaf7988ec1df7802e81e31bd57bef8084891f8534ada363e38a09"
+                    "sha256": "83fe1adcafb3f0e4b28a44563cfcb7f85dd7e54ea1d1435f4737afec6d68ac7f"
                   }
                 }
               ],
@@ -12132,7 +12219,7 @@
                 {
                   "name": "ghcr.io/opensphere-platform/opensphere-provider-postgres",
                   "digest": {
-                    "sha256": "90a6c30f412eaf7988ec1df7802e81e31bd57bef8084891f8534ada363e38a09"
+                    "sha256": "83fe1adcafb3f0e4b28a44563cfcb7f85dd7e54ea1d1435f4737afec6d68ac7f"
                   }
                 }
               ],
@@ -12191,8 +12278,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "-HJAZZSUT13F4m2vjF0H7TviWlhkffFC_oJ1gRhCagQ",
-                  "y": "O65l4DbxCtKUisSWCNRDnfsSlF8aw7r2jznT52QuQh0",
+                  "x": "XfUi51lLabDaKv0mdlCDZ45NGO5Cl45i5TmKlFOpLtI",
+                  "y": "lPaGTyXFGp0VIVoj0vhnRnx2SL7sJqVVVuPw6j44pMg",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 5
@@ -12207,8 +12294,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "ooTKo7dwjT1qgLYKbq6C-BOx1sjczztdMQaZNJRP-z4",
-                  "y": "3BOrVBsxwGoyWizBkq0lbQm_Fm1Syo_6taryWlZbUss",
+                  "x": "pp__iZli8nzAlc3Ed1NiZlck-OSCQMBsPGAGseV8758",
+                  "y": "uz0X_DOTJL0Dq3ekMZ5bOpDIwKMhv3mQcZauH0wx9ts",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 5
@@ -12223,8 +12310,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "sWXkAEU868IQrrICSg6GksYBEYVeEjkFTUczzg4-C44",
-                  "y": "gE50j227nbB-HbOPkSp-_dX-K_TseZ1rzOpOeHGPuYE",
+                  "x": "LbyBqW8FLs05E54XYof3LNPtHbrXmi5CUfCciDDK9Kc",
+                  "y": "lfssf7_p8zLBAmqxFKTsloXl4NF30Y5DleXO2IuajIM",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 2,
@@ -12241,8 +12328,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "FxndOhHGRh2nSE8fwKig2JiEr4JiAxiBKs93Cot1KDA",
-                  "y": "ulo4Tm574YAJziOzo5BPU4LbfP5H9Mif2I1H4dzWV5Q",
+                  "x": "e-1hmQArJ4zh1LJwr4vCZif-Kfl6nfSsx8neqJHBnlo",
+                  "y": "2_UFdwJ5nocYIvHLkWfAEafiORdSIedKrxOR1tAanYQ",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 5
@@ -12258,6 +12345,11 @@
                 "id": "assembly.definition",
                 "version": "0.1.0",
                 "fingerprint": "sha256:c0982d5295ae876e51b0585ab48ef5171c01e2979eab0232457392ad644d86e7"
+              },
+              {
+                "id": "ui.console-static",
+                "version": "0.1.0",
+                "fingerprint": "sha256:02c7e00c946276e5b1a75dccdab6c4abda447be922eab1f3920faca654e84c12"
               }
             ],
             "policies": {
@@ -12278,6 +12370,17 @@
               "assembly": {
                 "allowedCapabilities": [
                   "osr.definition.read"
+                ],
+                "allowedEffects": [
+                  "none",
+                  "read-cost"
+                ]
+              },
+              "ui": {
+                "allowedCapabilities": [
+                  "console.ui.serve",
+                  "console.ui.read",
+                  "console.ui.public"
                 ],
                 "allowedEffects": [
                   "none",
@@ -12326,7 +12429,7 @@
           "signature": {
             "alg": "ES256-P1363",
             "keyId": "osr-anchor-test",
-            "value": "5iqS1IcwdnCjQFbyVR4m4IHXpABL5zVIVE2nwEGtkcMH8IL8icwOYF_hCHyP_SWWA9eL7eJuMjnKTLJdKcbdzA"
+            "value": "SzxmoslvyDpauNr-9yuTkBtxNG_GOlt87tBQHaT0G6vrF_SQTuunfRERShs4Xm7P6zNb1IJmXiru1hYlhIuL4Q"
           }
         },
         "release": {
@@ -12799,7 +12902,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "trWSEkbrwdAx_NvfvX1Zl4T1bbfUN7WUanuisjWJ7NN8S7aopm3pfs81RDvmIh4-PsRwNDlL7KTYfL7iOwkcHg"
+                "value": "kPx_4zo7PqOx_OZgkZDDG37t7tWzhCBUgWf-7vZUkPqO2EgJsqjLo9FrQuh4nRVkjo640_mlLAw7Pplz_GpJEA"
               }
             },
             "sbom": {
@@ -12889,8 +12992,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "-HJAZZSUT13F4m2vjF0H7TviWlhkffFC_oJ1gRhCagQ",
-                  "y": "O65l4DbxCtKUisSWCNRDnfsSlF8aw7r2jznT52QuQh0",
+                  "x": "XfUi51lLabDaKv0mdlCDZ45NGO5Cl45i5TmKlFOpLtI",
+                  "y": "lPaGTyXFGp0VIVoj0vhnRnx2SL7sJqVVVuPw6j44pMg",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 5
@@ -12905,8 +13008,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "ooTKo7dwjT1qgLYKbq6C-BOx1sjczztdMQaZNJRP-z4",
-                  "y": "3BOrVBsxwGoyWizBkq0lbQm_Fm1Syo_6taryWlZbUss",
+                  "x": "pp__iZli8nzAlc3Ed1NiZlck-OSCQMBsPGAGseV8758",
+                  "y": "uz0X_DOTJL0Dq3ekMZ5bOpDIwKMhv3mQcZauH0wx9ts",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 5
@@ -12921,8 +13024,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "sWXkAEU868IQrrICSg6GksYBEYVeEjkFTUczzg4-C44",
-                  "y": "gE50j227nbB-HbOPkSp-_dX-K_TseZ1rzOpOeHGPuYE",
+                  "x": "LbyBqW8FLs05E54XYof3LNPtHbrXmi5CUfCciDDK9Kc",
+                  "y": "lfssf7_p8zLBAmqxFKTsloXl4NF30Y5DleXO2IuajIM",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 2,
@@ -12939,8 +13042,8 @@
                 },
                 "publicKeyJwk": {
                   "kty": "EC",
-                  "x": "FxndOhHGRh2nSE8fwKig2JiEr4JiAxiBKs93Cot1KDA",
-                  "y": "ulo4Tm574YAJziOzo5BPU4LbfP5H9Mif2I1H4dzWV5Q",
+                  "x": "e-1hmQArJ4zh1LJwr4vCZif-Kfl6nfSsx8neqJHBnlo",
+                  "y": "2_UFdwJ5nocYIvHLkWfAEafiORdSIedKrxOR1tAanYQ",
                   "crv": "P-256"
                 },
                 "addedAtGeneration": 5
@@ -12956,6 +13059,11 @@
                 "id": "assembly.definition",
                 "version": "0.1.0",
                 "fingerprint": "sha256:c0982d5295ae876e51b0585ab48ef5171c01e2979eab0232457392ad644d86e7"
+              },
+              {
+                "id": "ui.console-static",
+                "version": "0.1.0",
+                "fingerprint": "sha256:02c7e00c946276e5b1a75dccdab6c4abda447be922eab1f3920faca654e84c12"
               }
             ],
             "policies": {
@@ -12976,6 +13084,17 @@
               "assembly": {
                 "allowedCapabilities": [
                   "osr.definition.read"
+                ],
+                "allowedEffects": [
+                  "none",
+                  "read-cost"
+                ]
+              },
+              "ui": {
+                "allowedCapabilities": [
+                  "console.ui.serve",
+                  "console.ui.read",
+                  "console.ui.public"
                 ],
                 "allowedEffects": [
                   "none",
@@ -13024,7 +13143,7 @@
           "signature": {
             "alg": "ES256-P1363",
             "keyId": "osr-anchor-test",
-            "value": "kxS7B_rYkteq-JbmpOA-OjRXPKMyTd2BZtKTVyz8dpx89c9kTMIy8evwoLyeo__Kz4EB3pMdSjZmVN-VFshJWw"
+            "value": "hDzVowgCDZKPXZguHHtBv8PvqwB0edrShWCaLENfof3jZs5RpgN8r4SYGgNdmAHeIF8gHsMwggjI2NMtm4MOhw"
           }
         },
         "release": {
@@ -13497,7 +13616,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "4jd3E2FAHIxKJYgj4xZCPQDIDOaIlATFVo1HamU-7qp6Mj-69lxswrnGmYfediGv-8rm4QfkIa1k05QPohHquA"
+                "value": "Bf7wfKVMWTlHRfJ14le2u8edoC5QyTd3R0nAHD-uay3ySj14gir66rddh37801VpqJ8ZF-Bfs98P1di8r3gYGw"
               }
             },
             "sbom": {
@@ -14034,7 +14153,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "4ctvTBsz7Lzn5d56S4mVsqnge4klwagw0IYWD-AM2JGI1qTRGmi5sAx1uOqzzbdN6jkldelmNIKnq-xedkKl_A"
+                "value": "9QNFz7VxObYMrsfWF-07koVF-o7EqnR37rB7wK6sOIsFMUuyWi5yPFN76kv4xn-zJN2H1l20jnyOwaceqGbk9g"
               }
             },
             "sbom": {
@@ -14571,7 +14690,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "StN-F4CfvLg_Y6AQ260rIDeQLVTKSrdYyjIGz_p1wOh9impOQiSsdebYMgoIdSrrFWdwu8aEaJmEd2WFWlnd1w"
+                "value": "cBmUE4gUAttYI_g2Zy3-Yonz55kfMzsoGSHxXFhUPJNlvllvcRmjFB2s-jswA7eEcLHq8qWfUFRa7_mmJSzTUw"
               }
             },
             "sbom": {
@@ -15108,7 +15227,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "ymE7eVyq1poB_LJcPrXBN8HyG_83fJUuHAMPx0VaIbryoDJvTLE3Dnh62UU7iGHIYs2UzrfDUK09ydy8gOVlzQ"
+                "value": "YZkmIE6XVwrOR-dKB5LP0BDgcjzgWlHxAK967bm6IwxdpD9Mg6C_Ga4N9pfK_xtWKeRUhRDKWFoLX35dB1Pnnw"
               }
             },
             "provenance": {
@@ -15623,7 +15742,7 @@
               "signature": {
                 "alg": "ES256-P1363",
                 "keyId": "release-test",
-                "value": "o6s8V-Rz_zgwpc9H_slbEQzHHqv5huM4_ZkJM3X9Ldmfim03zPiqQM6-FEVtDI8zr3wJwC-Rsm0dhGJCtrH-Ew"
+                "value": "tshV5T6UKshNK9IXuFz0MzhosooxdpDF7KJRYXfbaPavA1kEmoCL89LbwMZU0HVCgsHmFr08KOXFsvRD0tkN1Q"
               }
             },
             "sbom": {

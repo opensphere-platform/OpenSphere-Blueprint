@@ -13,16 +13,17 @@
 | 위치 | 내용 |
 |---|---|
 | [CANONICALIZATION.md](CANONICALIZATION.md) | canonical JSON(RFC 8785, 정수만), digest, ECDSA P-256 IEEE-P1363 서명, 시각 규칙 |
-| [schemas/](schemas/) | JSON Schema(draft 2020-12 부분집합) 16개. 원본은 [tools/gen-schemas.mjs](tools/gen-schemas.mjs) |
-| [profiles/](profiles/) | materializer profile 초안 2개: `provider.stackgres-pg`, `assembly.definition` |
+| [schemas/](schemas/) | JSON Schema(draft 2020-12 부분집합) 17개. 원본은 [tools/gen-schemas.mjs](tools/gen-schemas.mjs) |
+| [profiles/](profiles/) | materializer profile 초안 3개: `provider.stackgres-pg`, `assembly.definition`, `ui.console-static` |
 | [tools/](tools/) | 참조 검증기 · 벡터 생성기 · 자체 검사. 의존 패키지 없이 Node 20+ |
-| [vectors/](vectors/) | 정상 · 거절 시험 벡터 7묶음, 74개 |
+| [vectors/](vectors/) | 정상 · 거절 시험 벡터 8묶음, 87개 |
 
 ### 1.1 스키마
 
 | 스키마 | 내용 | 규격 |
 |---|---|---|
-| [module-descriptor](schemas/module-descriptor.schema.json) | `opensphere.module/v1`. 클래스 규칙(실행 클래스 vs assembly) | §6 |
+| [module-descriptor](schemas/module-descriptor.schema.json) | `opensphere.module/v1`. 클래스 규칙(실행 클래스 · assembly · ui) | §6 |
+| [ui-static-index](schemas/ui-static-index.schema.json) | `ui` 클래스의 정적 화면 파일 목록. 경로 · sha256 · 크기 · 유형 | [구현 반영 기록](../OSR-IMPLEMENTATION-NOTES-20261118.md) |
 | [manual-bundle](schemas/manual-bundle.schema.json) · [owner-commands](schemas/owner-commands.schema.json) · [knowledge-bundle](schemas/knowledge-bundle.schema.json) | 기여 4종 중 매뉴얼 · 명령(v4 + `effect`) · 지식 | §7 |
 | [assembly-definition](schemas/assembly-definition.schema.json) | 실행하지 않는 정의. 멤버 · 리소스 유형 · Claim | §4 · §9 |
 | [signed-envelope](schemas/signed-envelope.schema.json) | 모든 서명 대상의 봉투 | §10 |

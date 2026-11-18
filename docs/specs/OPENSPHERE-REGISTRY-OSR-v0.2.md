@@ -79,7 +79,7 @@
 | `engine` | Stalwart, Mattermost, GitLab, Odoo | 승인된 materializer profile | 의존 Claim 충족 · 실검증 |
 | `runtime` | Temporal, 이벤트 채널, 모델 게이트웨이 | 승인된 materializer profile | 사용 면 경계 확인 |
 | `assembly` | `mail`, `chat` 어셈블리 정의 | **실행하지 않음.** 서명된 정의 · 의존 · 리소스 유형을 OCI artifact로 전달하고 등록만 한다. 실행 Pod나 가짜 실행 이미지를 요구하지 않는다 | 정의 검증 · 의존 모듈의 실질 상태 · 구성 가능성 |
-| `ui` | subShell, 화면 plugin | 셸 profile | 화면 · 탐색 기여 확인 |
+| `ui` | subShell, 화면 plugin | 셸 profile. 정적 화면 모듈은 `ui.console-static`([구현 반영 기록](OSR-IMPLEMENTATION-NOTES-20261118.md)) | 화면 · 탐색 기여 확인 |
 | `product` | Governance, Workspace 구성 제품 | 영역 인도 계약 | 인도 영수증 |
 
 **고권한 profile(HISS 등):** 닫힌 profile 이름만으로 충분하지 않다. profile마다 다음을 고정한다.
@@ -228,7 +228,7 @@ profile에 없는 권한을 요청하면 형식 판정에서 거절한다. 새 p
 | 4 | 오프라인 | 서명 evidence 만료 | `SignatureExpired` |
 | 5 | 오프라인 | 디스크립터 스키마 · ID 예약 · 클래스 규칙 · 저장소/서명/디스크립터 좌표 | `DescriptorInvalid`, `DuplicateID`, `ReservedID`, `ClassRuleViolation`, `ReleaseCoordinatesMismatch` |
 | 6 | 오프라인 | 기여 · 실행 artifact digest가 디스크립터 · 서명과 같음, SBOM · 출처가 서명 payload digest · 이 번들 subject · 신뢰 builder와 맞음 | `ArtifactDigestMismatch`, `SupplyChainEvidenceMissing`, `SupplyChainEvidenceMismatch`, `SupplyChainSubjectMismatch`, `ProvenanceBuilderUntrusted` |
-| 7 | 오프라인 | 기여 네 가지 계약(클래스별 형식), 명령 kind · mutation · effect 정합 | `ManualMissing`, `CommandContractInvalid`, `StandardCommandMissing`, `EffectPolicyViolation`, `KnowledgeProvenanceInvalid` |
+| 7 | 오프라인 | 기여 네 가지 계약(클래스별 형식), 명령 kind · mutation · effect 정합 | `ManualMissing`, `CommandContractInvalid`, `StandardCommandMissing`, `EffectPolicyViolation`, `KnowledgeProvenanceInvalid`, `UiStaticInvalid`(`ui` 클래스) |
 | 8 | 오프라인 | capability 요청이 정책 · profile 허용 안 · profile 존재와 지문 · effect가 profile 허용 안 | `CapabilityNotAllowed`, `ProfileUnknown`, `EffectPolicyViolation` |
 | 9 | 오프라인 | 의존 범위 · Backbone 호환 | `DependencyUnresolved`, `BackboneIncompatible` |
 | 10 | 설치본 | 실행 digest · 건강 · 저장 binding. 어셈블리는 정의 digest · generation과 멤버 실질 상태 | `RuntimeDigestMismatch`, `HealthCheckFailed`; 어셈블리 `DefinitionDigestMismatch`, `DependencyNotSubstantive`, `DependencyBindingMismatch`, `VerdictContextChanged` |

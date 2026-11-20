@@ -36,10 +36,12 @@
 
 ## 2. 주소와 입구 (HISS)
 
-### 2.1 앱 입구
+### 2.1 앱 입구 (2026-11-21 소유자 구성, 확인함)
 
-- 운영 클러스터의 rke2-traefik(v3.7, IngressClass `traefik`)는 **이미 워커 7대의 hostPort 443**에 떠 있다(2026-11-21 확인). 다만 입구 전용 노드 `rke2-ingress-1`(10.10.1.37, taint `node-role.kubernetes.io/ingress`)에는 뜨지 않고, 마스터 10.10.1.31에도 없다.
-- 정공법: Traefik을 **입구 노드에만** 둔다(HelmChartConfig로 nodeSelector `node-role.kubernetes.io/ingress=true` + 그 taint 허용). 워커의 443은 닫힌다. 공개 DNS는 입구 노드를 가리킨다(§12 N2).
+- **MetalLB v0.15.2**(`metallb-system`), 풀 `tnet1-services` = 10.10.1.80~89(자동 배정 없음, 서비스가 주소를 직접 지정). L2 광고는 `ens32`, 라벨 `opensphere.io/edge=true`인 노드(`rke2-ingress-1` · `rke2-worker-1` · `rke2-worker-2`)에서만.
+- **웹 서비스 VIP 10.10.1.80** = `kube-system/rke2-traefik` Service(LoadBalancer, `loadBalancerClass: metallb.io/metallb`, externalTrafficPolicy Cluster). HelmChartConfig `rke2-traefik`가 Traefik을 edge 노드 셋에만 두고(입구 노드 taint 허용) hostPort를 뗐다. 광고 노드는 `rke2-ingress-1`. 남은 10.10.1.81~89는 다른 서비스용.
+- **공인 175.45.161.138:80 · 443 → 10.10.1.80**(망 장비에서 전달). 확인: 클러스터 안(edge 아닌 노드 포함)과 망 밖 한 지점에서 모두 열림, Traefik이 404와 기본 인증서로 답함(아직 라우트 · 인증서 없음). 예전 워커 hostPort 443은 닫힘.
+- externalTrafficPolicy가 Cluster라 앱이 보는 출발지는 노드 주소다(사원 IP가 아님). PoC에서는 그대로 두고, 접근 기록은 게이트웨이의 세션 사용자로 남긴다.
 - Backbone 관리 Console은 지금처럼 NodePort 31443(nginx)에 남는다. 회사 관리 콘솔 · Workspace · 사원 앱은 31443에 섞지 않는다(D-84: 별도 주소 · 세션).
 - 노출은 플랫폼이 한다: Ingress는 어셈블리 계획의 "노출" 단계가 만들고, 엔진 설치 허용 범위는 Ingress를 금지한다(§5).
 
@@ -214,7 +216,7 @@ spec:
 | 단계 | 내용 | 운영에 닿는가 |
 |---|---|---|
 | V1 | kubectl로 띄운 게시판 제거, 발급 회수(해제) 기능, 수동 Claim `cj25mvpabuh6` 회수 | 예(확인 후) |
-| V2 | HISS: Traefik 입구 노드 배치, 공개 DNS(소유자), TLS(§12 N3) | 예(확인 후) |
+| V2 | HISS: 입구(MetalLB VIP 10.10.1.80 · Traefik edge 셋, 소유자 구성 완료) · 공개 DNS(완료) · TLS(lego CronJob, §12.1) | 예(확인 후) |
 | V3 | Samba AD 프로브(격리 namespace: 프로비저닝 · LDAPS · 위임 권한 · Keycloak 연동) → profile · 모듈 · 서비스 켜기 · 인스턴스 · `directory-bind` | 격리 → 운영 |
 | V4 | Keycloak profile · 모듈(26.8.2+, PG Claim, realm 가져오기) · 인스턴스 | 격리 → 운영 |
 | V5 | `engine.web-stateless`, Genesis 계획(G1~G7), `genesis-code` 소유자 명령, Backbone Console 회사 화면, Core 테넌트 발급자 검증 | 격리 → 운영 |
@@ -230,13 +232,13 @@ spec:
 | # | 항목 | 결정 |
 |---|---|---|
 | N1 | 기준 도메인 `<base>` | **`dev.opensphere.co.kr`** → `id.` · `admin.` · `workspace.` · `board.dev.opensphere.co.kr`. AD realm은 `CORP.DEV.OPENSPHERE.CO.KR`(클러스터 안에서만) |
-| N2 | 공개 DNS 대상 | **`*.dev.opensphere.co.kr` → 175.45.161.138**: RKE2 노드가 있는 망의 공인 주소(2026-11-21 확인: 노드의 나가는 주소는 같은 대역 175.45.161.140). 그 망에서 입구 노드 `rke2-ingress-1`(10.10.1.37)의 443 · 80으로 넘어간다. Traefik은 그 노드에만 둔다. 도달 여부는 개발 위치가 아니라 클러스터 망 기준으로 본다 |
+| N2 | 공개 DNS 대상 | **`*.dev.opensphere.co.kr` → 175.45.161.138**(RKE2 망의 공인 주소, 노드의 나가는 주소는 같은 대역 .140) → 망 장비 → **VIP 10.10.1.80**(MetalLB L2, Traefik). §2.1 |
 | N3 | TLS 인증서 | **공인 와일드카드, ACME DNS-01**(Let's Encrypt). `*.dev.opensphere.co.kr` 하나 |
 
 ### 12.1 N3를 하는 방법 (최소판)
 
 - 2026-11-21: `opensphere.co.kr`의 네임서버는 소유자가 운영하는 **Technitium DNS**(`ns1.opl.io.kr`)다. `*.dev.opensphere.co.kr` A 175.45.161.138 등록됨.
-- 새 구성요소(cert-manager)를 들이지 않는다. **Traefik 내장 ACME**(certResolver, DNS-01)를 쓴다. Traefik v3.7은 lego v4.35를 품고, lego는 v4.20부터 `technitium` 제공자를 지원한다(`TECHNITIUM_SERVER_BASE_URL`, `TECHNITIUM_API_TOKEN`). Traefik이 입구 노드 하나에만 뜨므로 ACME 저장 파일 하나(입구 노드의 hostPath)로 충분하다.
-  - HelmChartConfig `rke2-traefik`: nodeSelector · toleration(입구 노드), `certificatesResolvers.le.acme.dnsChallenge.provider=technitium`, `entryPoints.websecure.http.tls.certResolver=le`, `tls.domains[0].main=dev.opensphere.co.kr`, `sans=*.dev.opensphere.co.kr`.
-  - Technitium API 토큰은 **이 영역(`opensphere.co.kr`) 수정 권한만 가진 전용 사용자**로 만들고, **소유자가 터미널에서** `kube-system` Secret으로 적재한다. 나는 값을 보지 않는다.
+- Traefik이 edge 노드 셋에 하나씩 뜨므로 **Traefik 내장 ACME는 쓰지 않는다**(저장 파일이 Pod마다 따로라 같은 인증서를 셋이 따로 주문 · 갱신한다). cert-manager도 들이지 않는다(CRD · 웹훅이 더 생긴다).
+- 최소판: **lego CronJob 하나**(`kube-system`, 공식 이미지 digest 고정, 하루 한 번)가 `technitium` 제공자로 `*.dev.opensphere.co.kr` 와일드카드를 받아 갱신 시점이면 TLS Secret `dev-opensphere-wildcard`를 바꾸고, Traefik 기본 TLSStore가 그 Secret을 쓴다. ACME 계정 키 · 인증서는 그 Secret과 계정 Secret에만 있다. Traefik v3.7이 품은 lego v4.35와 같은 계열이며 `technitium`은 v4.20부터 있다.
+- Technitium API 토큰은 **이 영역(`opensphere.co.kr`) 수정 권한만 가진 전용 사용자**로 만들고, **소유자가 터미널에서** `kube-system` Secret으로 적재한다. 나는 값을 보지 않는다.
 - 소유자가 할 일: ① Technitium에 ACME 전용 사용자 · 영역 권한 · API 토큰 ② 그 API 주소(`TECHNITIUM_SERVER_BASE_URL`) 알려 주기 ③ 토큰 적재.

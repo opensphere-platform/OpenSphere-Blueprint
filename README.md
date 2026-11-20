@@ -37,6 +37,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 
 | 문서 | 내용 | 상태 |
 |---|---|---|
+| [운영 UX · 관리 기능 수용 요구사항 v0.1](docs/specs/OPENSPHERE-OPERATIONS-UX-REQUIREMENTS-v0.1.md) | 자원 관계·실행·증거·의존성·완료 구분 우선 5개, 권한·배포·저장·복구·공통 상세 후속 5개와 수용 시험 | 소유자 요청 반영 요구사항 · 구현 미검증 |
 | [테넌트 구조 페이지](docs/pages/tenant.html) | 테넌트 생성, 유지하는 힘(연결 객체), 테넌트 안 통신, Governance로 잇는 방법을 한 화면에 | 초안 요약 |
 | [테넌트·어셈블리 구성 명세 v0.1](docs/specs/TENANT-ASSEMBLY-SPEC-v0.1.md) | 독립 제품을 하나의 목적으로 묶는 절차, Genesis, 연결 객체, 수명주기, 해체 | 초안 |
 | [테넌트 내부 통신 규칙 v0.1](docs/specs/TENANT-COMMUNICATION-RULES-v0.1.md) | 결속·요청·이벤트·제어 네 종류의 통신 규칙, 워크로드 신원과 위임 토큰 | 초안 |

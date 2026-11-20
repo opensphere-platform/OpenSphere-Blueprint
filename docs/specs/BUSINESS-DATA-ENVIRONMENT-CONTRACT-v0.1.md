@@ -88,3 +88,5 @@ OSR에 등록 가능, 설치 가능, Data 거버넌스 통합 완료를 구별�
 - [Governance 최소 설계](../architecture/OPENSPHERE-GOVERNANCE-MIN-DESIGN-v0.1.md) §6~9·13
 - [어셈블리 카탈로그](ASSEMBLY-CATALOG-v0.1.md) §3·5
 - [테넌트·어셈블리 구성](TENANT-ASSEMBLY-SPEC-v0.1.md) §11
+
+- [운영 UX · 관리 기능 수용 요구사항](OPENSPHERE-OPERATIONS-UX-REQUIREMENTS-v0.1.md): 공급·구성·업무 권한 통합 상태와 증거를 운영 화면에서 구별하는 UX-01~10. 화면 완성과 업무 환경 종단 수용은 별도 검증한다.

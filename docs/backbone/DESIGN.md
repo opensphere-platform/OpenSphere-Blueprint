@@ -165,3 +165,7 @@ Backbone Gitea가 소스·CI 정본이다. GitHub 보존 원격은 **명시 push
 영역 내 키 생성·설치 자격 폐기만으로 공급자의 기술적 비접근이 증명되지 않는다. 노드/cluster-admin, Secret 읽기·exec·mount, operator·이미지 공급망, 백업 복원 권한을 함께 본다. 현재 D-38의 고객 별도 확인(기술 강제 아님)과 새 기술 보장 제안을 구별한다. Backbone 설치가 현재 이 권한을 모두 제거했다고 주장하지 않는다.
 
 Genesis 부분 완료·응답 유실에 “전체 폐기 후 재시작”을 자동 적용하지 않는다. timeout/재시도/DLQ는 결과 불명 해소가 아니며, 소유 엔진의 정확한 상태와 영수증을 먼저 대조한다.
+
+## 11. 운영 Console UX 요구사항 — 2026-11-20 소유자 요청 반영
+
+[운영 UX · 관리 기능 수용 요구사항](../specs/OPENSPHERE-OPERATIONS-UX-REQUIREMENTS-v0.1.md)의 UX-01~10을 적용한다. Backbone 기능 전체는 Configuration 안에 배치하고 상위 테넌트 구성·Governance·Workspace의 책임은 유지한다. 대상 관계·실행 단계·운영 증거·의존성과 완료 수준을 먼저 연결한다. 버튼 노출은 승인이나 권한이 아니며 독립 Setup·복구 경로를 일상 Console에 종속시키지 않는다. 요구사항 반영이며 구현·운영 완료 표시가 아니다.

@@ -53,11 +53,11 @@
 | **Provider** | 공유 서비스의 엔진 단위. 예: PostgreSQL Provider, KubeVirt Provider | "PFSS Provider" 대신 "공유 서비스 Provider" 또는 그냥 "Provider" |
 | Plan · Claim · Instance · Binding | 공유 서비스의 공급·인도 절차 | 인도 지점은 Binding |
 | SupplyPool(공급 풀), Grant | 공급 한도와 서명된 배분 증거(D-31, D-32) | |
-| 설치 허용 범위 | OSR materializer profile. 패키지가 만들 수 있는 객체 종류 · 최대 개수 · 권한(코드 식별자 `profile`). 문서 · 화면의 옛 말 "배치 규칙"을 대신한다 | [어셈블리 · Fabric 협력 공급 v0.5](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.5.md) Q6 |
-| 배치(placement) | Claim의 공급 결과를 **어느 인스턴스에 둘지**만 뜻한다(어셈블리 자기 인스턴스 · 전용 · 공용). 설치 관리자가 고른다 | [공급 명세 v0.5](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.5.md) §6.2 |
-| 공급 결과 | Claim을 충족하려고 인스턴스 안에 만든 것(DB · 역할 · 버킷 · 인덱스 · 키 공간). Governance의 Grant(배분 증명)와 다르다 | [공급 명세 v0.5](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.5.md) §3 |
+| 설치 허용 범위 | OSR materializer profile. 패키지가 만들 수 있는 객체 종류 · 최대 개수 · 권한(코드 식별자 `profile`). 문서 · 화면의 옛 말 "배치 규칙"을 대신한다 | [어셈블리 · Fabric 협력 공급 v0.6](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.6.md) Q6 |
+| 배치(placement) | Claim의 공급 결과를 **어느 인스턴스에 둘지**만 뜻한다(어셈블리 자기 인스턴스 · 전용 · 공용). 설치 관리자가 고른다 | [공급 명세 v0.6](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.6.md) §6.2 |
+| 공급 결과 | Claim을 충족하려고 인스턴스 안에 만든 것(DB · 역할 · 버킷 · 인덱스 · 키 공간). Governance의 Grant(배분 증명)와 다르다 | [공급 명세 v0.6](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.6.md) §3 |
 | 연결 객체(Link) | 구성요소 → 자원의 선언된 의존. Binding을 감싸고 네트워크 허용 · 삭제 보호 · 자격 회전의 근거 | 테넌트 명세 §6 |
-| 대상 fence · 점유 | 대상(설치본 · 인스턴스 · Claim)마다 Core가 갖는 변경 번호와, 지금 그 대상을 바꾸는 계획 ID | [공급 명세 v0.5](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.5.md) §8.3 |
+| 대상 fence · 점유 | 대상(설치본 · 인스턴스 · Claim)마다 Core가 갖는 변경 번호와, 지금 그 대상을 바꾸는 계획 ID | [공급 명세 v0.6](../specs/ASSEMBLY-FABRIC-SUPPLY-v0.6.md) §8.3 |
 | 테넌트 | **회사 하나**의 모든 리소스(사원 영역, 고객 영역, 업무 서비스, 외부 편입 리소스)의 결합. 무엇이 있고 어떻게 엮였고 얼마나 줄 수 있는지를 정한다(D-82, D-83). 한 설치 = 한 회사 = 한 테넌트 | 누구에게 줄지는 Governance. "사원 테넌트·고객 테넌트"는 쓰지 않는다 |
 | 영역 | 테넌트 안의 칸막이(사원 영역, 고객 영역). 신원·채널이 다르고 교류 계층으로만 오간다 | D-83 |
 | 접근 지점 셋 | ① Admin Console(Backbone, 플랫폼 운영자) ② **회사 관리 콘솔**(회사 관리 역할) ③ Workspace(전 사원·팀장)(D-84) | 고객 포털, Shell·CLI·API는 접근 지점 수에 넣지 않는다 |

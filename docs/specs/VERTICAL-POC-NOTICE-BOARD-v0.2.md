@@ -1,6 +1,6 @@
 # 공지 게시판 수직 PoC 명세 v0.2
 
-- 상태: 소유자 결정 반영, 2026-11-21. 남은 결정은 §12(도메인 · DNS 대상 · 인증서 출처).
+- 상태: 소유자 결정 반영, 2026-11-21. §12의 N1~N3도 결정됨(기준 도메인 `dev.opensphere.co.kr`, DNS → 10.10.1.37, 공인 와일드카드 ACME DNS-01).
 - v0.1과 다른 점: 소유자 지시 "정공법으로 간다. 다만 필요한 Fabric은 계획대로 모두 구현하지 않고 간략 버전으로, 필요 최소 기능만". v0.1 §10의 지름길 권고(Backbone Auth에 사원 계정, 단일 입구 경로 나누기, `/workspace/apps/` 경로)를 모두 버린다.
 - 소유자 결정(2026-11-21): 주소 = 소유자 도메인의 하위 주소, 앱 입구 = Traefik 노드 443, 사원 신원 = Samba AD까지, Keycloak = 26.8.2 이상.
 - 규범: [ASSEMBLY-FABRIC-SUPPLY-v0.7](ASSEMBLY-FABRIC-SUPPLY-v0.7.md)(AF7), [TENANT-ASSEMBLY-SPEC-v0.1](TENANT-ASSEMBLY-SPEC-v0.1.md)(TAS), [ASSEMBLY-CATALOG-v0.1](ASSEMBLY-CATALOG-v0.1.md)(CAT), [FOUR-PLANES](../overview/FOUR-PLANES.md)(FP), 결정 대장([OPENSPHERE-LAYER-BASELINE-v0.2](../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) 부록 A).
@@ -225,10 +225,18 @@ spec:
 - 각 단계는 격리 namespace에서 시험용 키 · 시험용 신뢰 상태로 먼저 확인하고(운영 서명 키를 쓰지 않음), 운영 반영 · 서명 · 게시는 매번 소유자 확인을 받는다.
 - 클러스터 범위 객체(ClusterRole · VAP)는 격리용을 다른 이름으로 둔다.
 
-## 12. 소유자 결정 (남은 것)
+## 12. 소유자 결정 (2026-11-21 결정됨)
 
-| # | 항목 | 권고 | 대안 |
-|---|---|---|---|
-| N1 | 기준 도메인 `<base>` | 소유자 도메인 아래 PoC 전용 하위 주소 하나(예: `os.<소유자 도메인>`) | 소유자 도메인 바로 아래 |
-| N2 | 공개 DNS 대상 | `*.<base>` → **10.10.1.37**(입구 전용 노드), Traefik을 그 노드에만 | 10.10.1.31(마스터, Traefik 없음. 쓰려면 마스터에 입구를 둬야 함) · 워커 하나(이미 443 열림) |
-| N3 | TLS 인증서 | 공인 와일드카드(ACME DNS-01). DNS API 토큰은 소유자가 터미널에서 적재 | 테넌트 자체 CA(사원 브라우저마다 CA 설치 필요) · 소유자가 가진 와일드카드 인증서를 터미널에서 적재 |
+| # | 항목 | 결정 |
+|---|---|---|
+| N1 | 기준 도메인 `<base>` | **`dev.opensphere.co.kr`** → `id.` · `admin.` · `workspace.` · `board.dev.opensphere.co.kr`. AD realm은 `CORP.DEV.OPENSPHERE.CO.KR`(클러스터 안에서만) |
+| N2 | 공개 DNS 대상 | **`*.dev.opensphere.co.kr` → 10.10.1.37**(입구 노드 `rke2-ingress-1`). Traefik을 그 노드에만 둔다 |
+| N3 | TLS 인증서 | **공인 와일드카드, ACME DNS-01**(Let's Encrypt). `*.dev.opensphere.co.kr` 하나 |
+
+### 12.1 N3를 하는 방법 (최소판)
+
+- 2026-11-21 확인: `opensphere.co.kr`은 오늘 등록되어 아직 네임서버가 응답하지 않는다(NXDOMAIN). 소유자가 **API가 있는 DNS 호스팅**에 위임해야 DNS-01이 된다(권고: Cloudflare, 무료 · Traefik 내장 ACME가 바로 지원).
+- 새 구성요소(cert-manager)를 들이지 않는다. **Traefik 내장 ACME**(certResolver, DNS-01)를 쓴다. Traefik이 입구 노드 하나에만 뜨므로 ACME 저장 파일 하나(입구 노드의 hostPath 또는 PVC)로 충분하다.
+  - HelmChartConfig `rke2-traefik`: nodeSelector · toleration(입구 노드), `certificatesResolvers.le.acme.dnsChallenge.provider=cloudflare`, `entryPoints.websecure.http.tls.certResolver=le`, `tls.domains[0].main=dev.opensphere.co.kr`, `sans=*.dev.opensphere.co.kr`.
+  - DNS API 토큰(그 영역 DNS 편집 권한만)은 **소유자가 터미널에서** `kube-system` Secret으로 적재한다. 나는 값을 보지 않는다.
+- 소유자가 할 일: ① 네임서버 위임 ② `*.dev.opensphere.co.kr` A 10.10.1.37 (와 `dev.opensphere.co.kr` A 10.10.1.37) ③ 토큰 발급 · 적재.

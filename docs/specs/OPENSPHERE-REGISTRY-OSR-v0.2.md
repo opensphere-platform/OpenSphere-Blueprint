@@ -78,7 +78,7 @@
 | `provider` | PostgreSQL, OpenSearch, Samba AD, Keycloak, KubeVirt | 승인된 materializer profile이 워크로드 · 저장 · 연결 · 실검증을 구성. 상태 저장 엔진을 Deployment 하나로 표현하지 않는다. profile 하나는 적용 방식 하나만 갖는다(예: `provider.stackgres-pg`는 StackGres만) | Provider 선언 · 실검증 · 공급 단위 확인 |
 | `engine` | Stalwart, Mattermost, GitLab, Odoo | 승인된 materializer profile | 의존 Claim 충족 · 실검증 |
 | `runtime` | Temporal, 이벤트 채널, 모델 게이트웨이 | 승인된 materializer profile | 사용 면 경계 확인 |
-| `assembly` | `mail`, `chat` 어셈블리 정의 | **실행하지 않음.** 서명된 정의 · 의존 · 리소스 유형을 OCI artifact로 전달하고 등록만 한다. 실행 Pod나 가짜 실행 이미지를 요구하지 않는다. 정의의 Fabric 요구(`requires`)와 그 실행 절차는 [어셈블리 · Fabric 협력 공급 v0.3](ASSEMBLY-FABRIC-SUPPLY-v0.3.md)가 정한다 | 정의 검증 · 의존 모듈의 실질 상태 · 구성 가능성 |
+| `assembly` | `mail`, `chat` 어셈블리 정의 | **실행하지 않음.** 서명된 정의 · 의존 · 리소스 유형을 OCI artifact로 전달하고 등록만 한다. 실행 Pod나 가짜 실행 이미지를 요구하지 않는다. 정의의 Fabric 요구(`requires`)와 그 실행 절차는 [어셈블리 · Fabric 협력 공급 v0.4](ASSEMBLY-FABRIC-SUPPLY-v0.4.md)가 정한다 | 정의 검증 · 의존 모듈의 실질 상태 · 구성 가능성 |
 | `ui` | subShell, 화면 plugin | 셸 profile. 정적 화면 모듈은 `ui.console-static`([구현 반영 기록](OSR-IMPLEMENTATION-NOTES-20261118.md)) | 화면 · 탐색 기여 확인 |
 | `product` | Governance, Workspace 구성 제품 | 영역 인도 계약 | 인도 영수증 |
 

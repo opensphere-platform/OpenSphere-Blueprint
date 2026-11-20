@@ -215,8 +215,8 @@ spec:
 
 | 단계 | 내용 | 운영에 닿는가 |
 |---|---|---|
-| V1 | kubectl로 띄운 게시판 제거, 발급 회수(해제) 기능, 수동 Claim `cj25mvpabuh6` 회수 | 예(확인 후) |
-| V2 | HISS: 입구(MetalLB VIP 10.10.1.80 · Traefik edge 셋, 소유자 구성 완료) · 공개 DNS(완료) · TLS(lego CronJob · HTTP-01, §12.1) | 예(확인 후) |
+| V1 | kubectl로 띄운 게시판 제거, 발급 회수(해제) 기능, 수동 Claim `cj25mvpabuh6` 회수 — **2026-11-21 운영 완료**(Backbone PR 108) | 예(완료) |
+| V2 | HISS: 입구(MetalLB VIP 10.10.1.80 · Traefik edge 셋, 소유자 구성) · 공개 DNS(소유자) · TLS(lego CronJob · HTTP-01, §12.1) — **2026-11-21 운영 완료**: 네 주소 Let's Encrypt 인증서(2027-02-18까지, 매일 갱신 확인), http→https | 예(완료) |
 | V3 | Samba AD 프로브(격리 namespace: 프로비저닝 · LDAPS · 위임 권한 · Keycloak 연동) → profile · 모듈 · 서비스 켜기 · 인스턴스 · `directory-bind` | 격리 → 운영 |
 | V4 | Keycloak profile · 모듈(26.8.2+, PG Claim, realm 가져오기) · 인스턴스 | 격리 → 운영 |
 | V5 | `engine.web-stateless`, Genesis 계획(G1~G7), `genesis-code` 소유자 명령, Backbone Console 회사 화면, Core 테넌트 발급자 검증 | 격리 → 운영 |

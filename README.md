@@ -35,6 +35,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [테넌트·어셈블리 구성 명세 v0.1](docs/specs/TENANT-ASSEMBLY-SPEC-v0.1.md) | 독립 제품을 하나의 목적으로 묶는 절차, Genesis, 연결 객체, 수명주기, 해체 | 초안 |
 | [테넌트 내부 통신 규칙 v0.1](docs/specs/TENANT-COMMUNICATION-RULES-v0.1.md) | 결속·요청·이벤트·제어 네 종류의 통신 규칙, 워크로드 신원과 위임 토큰 | 초안 |
 | [어셈블리 카탈로그 v0.1](docs/specs/ASSEMBLY-CATALOG-v0.1.md) | 어셈블리 19종이 나눠 주는 Governance 리소스 유형, 리소스 유형 정의 형식, 카탈로그 등재 조건 | 초안 |
+| [어셈블리 · Fabric 협력 공급 명세 v0.1](docs/specs/ASSEMBLY-FABRIC-SUPPLY-v0.1.md) | 어셈블리가 필요를 선언하면 Fabric 서비스 켜기 · 인스턴스 · DB · 접속 자격 인도까지 한 계획으로 실행하는 절차, 구 버전 의도, 예약 · 한도 · 권한 경계 | 초안(소유자 결정 대기) |
 | [외부 리소스 편입 규칙 v0.1](docs/specs/EXTERNAL-RESOURCE-ADMISSION-v0.1.md) | 외부 AD·SaaS·DB·모델 API를 외부 어셈블리로 묶어 Governance 리소스로 올리는 규칙 ER-1~ER-14, 통제 등급 | 초안 |
 | [OpenSphere Registry(OSR) 규격 v0.2](docs/specs/OPENSPHERE-REGISTRY-OSR-v0.2.md) | Backbone 밖 모듈의 등록 · 형식적/실질적 멤버, 필수 기여(매뉴얼 · OS Shell 명령 · OCI · RAG), 유효 권한 교집합, 클래스별 설치 profile, referrer 서명, 회수 · 독립 복구, GHCR 발행과 확장 설치 흐름, Backbone 준비도 점검(부록 A). [v0.1](docs/specs/OPENSPHERE-REGISTRY-OSR-v0.1.md)은 기록 | 초안 |
 | [OSR · 4종 인프라 종합 구현 계획서 v0.2](docs/specs/OSR-IMPLEMENTATION-PLAN-v0.2.md) | 계획 검토 반영. 착수 기준 · 의존성 선행 조건, Core 승인 adapter · 제한 실행부 · 인계 증명, 클래스별 profile, 6단계(계약 → 형식 검증 → 설치본 · 승인 → 수직 실증 → 실패 · 복구 → 외연)와 완료 기준. [v0.1](docs/specs/OSR-IMPLEMENTATION-PLAN-v0.1.md)은 기록 | 초안 |

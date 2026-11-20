@@ -182,6 +182,8 @@ OpenSphere는 **admin 영역**과 **사원 영역**으로 나뉜다. 두 영역�
 
 ## 6. 프로비저닝 계약 (D-4)
 
+> **2026-11-20 재검토 개시:** 소유자가 제시한 [OS Govern 업스트림 기반 개발 방향](../specs/OS-GOVERN-UPSTREAM-STRATEGY-v0.1.md)에 따라 아래 midPoint 도입 배제는 기반 선정 평가에서 재검토한다. AD 정본·영역 분리는 유지한다. midPoint 채택이나 D-4 전체 대체를 확정한 것은 아니다.
+
 - **스키마:** SCIM 2.0을 따른다.
   - User + EnterpriseUser 확장(employeeNumber, department, manager)
   - Group

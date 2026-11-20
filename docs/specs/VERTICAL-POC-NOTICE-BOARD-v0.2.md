@@ -1,6 +1,6 @@
 # 공지 게시판 수직 PoC 명세 v0.2
 
-- 상태: 소유자 결정 반영, 2026-11-21. §12의 N1~N3도 결정됨(기준 도메인 `dev.opensphere.co.kr`, DNS → 클러스터 망 공인 주소 175.45.161.138 → 입구 노드 10.10.1.37, 공인 와일드카드 ACME DNS-01 · Technitium).
+- 상태: 소유자 결정 반영, 2026-11-21. §12의 N1~N3도 결정됨(기준 도메인 `dev.opensphere.co.kr`, DNS → 클러스터 망 공인 주소 175.45.161.138 → 입구 노드 10.10.1.37, 공인 인증서 ACME HTTP-01, DNS는 소유자가 직접 관리).
 - v0.1과 다른 점: 소유자 지시 "정공법으로 간다. 다만 필요한 Fabric은 계획대로 모두 구현하지 않고 간략 버전으로, 필요 최소 기능만". v0.1 §10의 지름길 권고(Backbone Auth에 사원 계정, 단일 입구 경로 나누기, `/workspace/apps/` 경로)를 모두 버린다.
 - 소유자 결정(2026-11-21): 주소 = 소유자 도메인의 하위 주소, 앱 입구 = Traefik 노드 443, 사원 신원 = Samba AD까지, Keycloak = 26.8.2 이상.
 - 규범: [ASSEMBLY-FABRIC-SUPPLY-v0.7](ASSEMBLY-FABRIC-SUPPLY-v0.7.md)(AF7), [TENANT-ASSEMBLY-SPEC-v0.1](TENANT-ASSEMBLY-SPEC-v0.1.md)(TAS), [ASSEMBLY-CATALOG-v0.1](ASSEMBLY-CATALOG-v0.1.md)(CAT), [FOUR-PLANES](../overview/FOUR-PLANES.md)(FP), 결정 대장([OPENSPHERE-LAYER-BASELINE-v0.2](../architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) 부록 A).
@@ -216,7 +216,7 @@ spec:
 | 단계 | 내용 | 운영에 닿는가 |
 |---|---|---|
 | V1 | kubectl로 띄운 게시판 제거, 발급 회수(해제) 기능, 수동 Claim `cj25mvpabuh6` 회수 | 예(확인 후) |
-| V2 | HISS: 입구(MetalLB VIP 10.10.1.80 · Traefik edge 셋, 소유자 구성 완료) · 공개 DNS(완료) · TLS(lego CronJob, §12.1) | 예(확인 후) |
+| V2 | HISS: 입구(MetalLB VIP 10.10.1.80 · Traefik edge 셋, 소유자 구성 완료) · 공개 DNS(완료) · TLS(lego CronJob · HTTP-01, §12.1) | 예(확인 후) |
 | V3 | Samba AD 프로브(격리 namespace: 프로비저닝 · LDAPS · 위임 권한 · Keycloak 연동) → profile · 모듈 · 서비스 켜기 · 인스턴스 · `directory-bind` | 격리 → 운영 |
 | V4 | Keycloak profile · 모듈(26.8.2+, PG Claim, realm 가져오기) · 인스턴스 | 격리 → 운영 |
 | V5 | `engine.web-stateless`, Genesis 계획(G1~G7), `genesis-code` 소유자 명령, Backbone Console 회사 화면, Core 테넌트 발급자 검증 | 격리 → 운영 |
@@ -233,12 +233,13 @@ spec:
 |---|---|---|
 | N1 | 기준 도메인 `<base>` | **`dev.opensphere.co.kr`** → `id.` · `admin.` · `workspace.` · `board.dev.opensphere.co.kr`. AD realm은 `CORP.DEV.OPENSPHERE.CO.KR`(클러스터 안에서만) |
 | N2 | 공개 DNS 대상 | **`*.dev.opensphere.co.kr` → 175.45.161.138**(RKE2 망의 공인 주소, 노드의 나가는 주소는 같은 대역 .140) → 망 장비 → **VIP 10.10.1.80**(MetalLB L2, Traefik). §2.1 |
-| N3 | TLS 인증서 | **공인 와일드카드, ACME DNS-01**(Let's Encrypt). `*.dev.opensphere.co.kr` 하나 |
+| N3 | TLS 인증서 | **공인 인증서(Let's Encrypt), ACME HTTP-01.** DNS는 소유자가 직접 관리한다(2026-11-21 소유자 지시: "dns 제어는 내가 한다. 필요한 dns 구성은 나에게 요구해라"). 그래서 DNS API를 쓰는 DNS-01은 쓰지 않는다 |
 
 ### 12.1 N3를 하는 방법 (최소판)
 
-- 2026-11-21: `opensphere.co.kr`의 네임서버는 소유자가 운영하는 **Technitium DNS**(`ns1.opl.io.kr`)다. `*.dev.opensphere.co.kr` A 175.45.161.138 등록됨.
-- Traefik이 edge 노드 셋에 하나씩 뜨므로 **Traefik 내장 ACME는 쓰지 않는다**(저장 파일이 Pod마다 따로라 같은 인증서를 셋이 따로 주문 · 갱신한다). cert-manager도 들이지 않는다(CRD · 웹훅이 더 생긴다).
-- 최소판: **lego CronJob 하나**(`kube-system`, 공식 이미지 digest 고정, 하루 한 번)가 `technitium` 제공자로 `*.dev.opensphere.co.kr` 와일드카드를 받아 갱신 시점이면 TLS Secret `dev-opensphere-wildcard`를 바꾸고, Traefik 기본 TLSStore가 그 Secret을 쓴다. ACME 계정 키 · 인증서는 그 Secret과 계정 Secret에만 있다. Traefik v3.7이 품은 lego v4.35와 같은 계열이며 `technitium`은 v4.20부터 있다.
-- Technitium API 토큰은 **이 영역(`opensphere.co.kr`) 수정 권한만 가진 전용 사용자**로 만들고, **소유자가 터미널에서** `kube-system` Secret으로 적재한다. 나는 값을 보지 않는다.
-- 소유자가 할 일: ① Technitium에 ACME 전용 사용자 · 영역 권한 · API 토큰 ② 그 API 주소(`TECHNITIUM_SERVER_BASE_URL`) 알려 주기 ③ 토큰 적재.
+- **DNS는 소유자가 관리한다.** 필요한 DNS 구성은 소유자에게 요청한다. 지금 필요한 것은 이미 있다: `*.dev.opensphere.co.kr` A 175.45.161.138(새 앱 주소도 이 와일드카드로 덮인다). DNS API 토큰 · TXT 레코드는 쓰지 않는다.
+- 공인 175.45.161.138:80이 Traefik(VIP 10.10.1.80)까지 열려 있으므로(2026-11-21 망 밖 한 지점에서 확인) **HTTP-01**로 주소마다(`id.` · `admin.` · `workspace.` · `board.`) 인증서를 받는다. 와일드카드는 DNS-01만 되므로 쓰지 않는다.
+- Traefik이 edge 노드 셋에 하나씩 뜨므로 Traefik 내장 ACME는 쓰지 않는다(Pod마다 따로 주문하고, 검증 요청이 다른 Pod로 가면 실패한다). cert-manager도 들이지 않는다.
+- 최소판: **lego CronJob 하나**(`kube-system`, 공식 이미지 digest 고정, 하루 한 번). 실행하는 동안 `lego --http`가 검증 응답을 내고, Traefik 라우트 하나가 모든 `*.dev.opensphere.co.kr`의 `/.well-known/acme-challenge/`만 그 Service로 보낸다. 받은 인증서는 TLS Secret `dev-opensphere-tls`(이름 여럿)에 넣고 Traefik 기본 TLSStore가 쓴다. 갱신은 만료 30일 전. 새 앱 주소가 생기면 이름 목록에 더해 다시 받는다.
+- ACME 계정 키는 계정 Secret에만, 인증서 키는 TLS Secret에만 있다. 받는 쪽 이메일은 넣지 않는다.
+- 공인 80은 검증과 HTTPS로 넘기기에만 쓴다(Traefik `web` → `websecure` 넘김, 검증 경로만 예외).

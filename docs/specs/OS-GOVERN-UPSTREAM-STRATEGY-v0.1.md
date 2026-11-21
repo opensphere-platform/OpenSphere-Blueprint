@@ -150,3 +150,7 @@ OpenSphere는 MES·그룹웨어·메일 등의 업무 데이터 환경을 구성
 - [OpenFGA](https://openfga.dev/docs) · [SpiceDB](https://authzed.com/docs) — 관계 기반 판단 후보
 - [OPA](https://www.openpolicyagent.org/docs) — 정책 판단 후보
 - [SCIM RFC 7644](https://www.rfc-editor.org/rfc/rfc7644.html) — 계정·그룹 프로비저닝 프로토콜
+
+## 11. 어셈블리 계약·프로파일 후속 요구 (2026-11-21)
+
+[어셈블리 계약 기반 동적 프로파일 v0.1](OS-GOVERN-ASSEMBLY-PROFILES-v0.1.md)을 함께 평가한다. 기반의 스키마·역할·할당·승인·커넥터·대조 기능을 먼저 매핑하고, 선언형 UI와 제품별 권한 의미·계약 버전/이전의 부족분만 확장한다. 계약 등록 → 어셈블리별 프로파일 작성·발행 → 배정 → 적용·관측·검증을 표현해야 하며 평면적 CRUD나 midPoint+OPA 연결만으로 완료하지 않는다. 제품 선정·중복 원장 신설·운영 실행 승인을 추가하지 않는다.

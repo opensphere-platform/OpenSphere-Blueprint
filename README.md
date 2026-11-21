@@ -47,7 +47,8 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [OpenSphere Registry(OSR) 규격 v0.2](docs/specs/OPENSPHERE-REGISTRY-OSR-v0.2.md) | Backbone 밖 모듈의 등록 · 형식적/실질적 멤버, 필수 기여(매뉴얼 · OS Shell 명령 · OCI · RAG), 유효 권한 교집합, 클래스별 설치 profile, referrer 서명, 회수 · 독립 복구, GHCR 발행과 확장 설치 흐름, Backbone 준비도 점검(부록 A). [v0.1](docs/specs/OPENSPHERE-REGISTRY-OSR-v0.1.md)은 기록 | 초안 |
 | [OSR · 4종 인프라 종합 구현 계획서 v0.2](docs/specs/OSR-IMPLEMENTATION-PLAN-v0.2.md) | 계획 검토 반영. 착수 기준 · 의존성 선행 조건, Core 승인 adapter · 제한 실행부 · 인계 증명, 클래스별 profile, 6단계(계약 → 형식 검증 → 설치본 · 승인 → 수직 실증 → 실패 · 복구 → 외연)와 완료 기준. [v0.1](docs/specs/OSR-IMPLEMENTATION-PLAN-v0.1.md)은 기록 | 초안 |
 | [OSR 계약 · 시험 벡터(단계 1)](docs/specs/osr/README.md) | 스키마 16개, canonical JSON · 서명 규칙, materializer profile 초안 2개, 참조 검증기와 정상 · 거절 시험 벡터 74개(`node docs/specs/osr/tools/check-vectors.mjs`) | 초안 |
-| [OS Govern 어셈블리 계약·동적 프로파일 v0.1](docs/specs/OS-GOVERN-ASSEMBLY-PROFILES-v0.1.md) | 어셈블리 초기화·공급 인계, 선언형 데이터/UI/권한 계약, 다단계 프로파일·배정 엔진, 버전·저장·회수와 수용 시험 | 소유자 요구 반영 · 상세 설계 제안 · 구현 미검증 |
+| [OS Govern 공급 주체 계약·동적 프로파일 v0.1](docs/specs/OS-GOVERN-ASSEMBLY-PROFILES-v0.1.md) | 어셈블리 초기화·공급 인계, 선언형 데이터/UI/권한 계약, 다단계 프로파일·배정 엔진, 버전·저장·회수와 수용 시험 | 소유자 요구 반영 · 상세 설계 제안 · 구현 미검증 |
+| [OS Govern 역할·권한 모델 v0.1](docs/specs/OS-GOVERN-ROLE-PERMISSION-MODEL-v0.1.md) | 세 역할 유형·네 자원 범위·불변 발행본·문맥별 배정·허용 합산·금지·판정·검증 | 명시적 설계 모델 · 운영 집행 미연결 |
 | [OS Govern 업스트림 기반 개발 전략 v0.1](docs/specs/OS-GOVERN-UPSTREAM-STRATEGY-v0.1.md) | 기반 제품 재사용·확장, midPoint 우선 평가, D-4 배제 재검토, 정본·책임 경계와 선정·실증 기준 | 소유자 제시 방향 문서화 · 제품 선정 미확정 |
 | [Governance 참고 아키텍처 v0.1](docs/specs/GOVERNANCE-REFERENCE-ARCHITECTURE-v0.1.md) | 랜딩존 대응표, 부품 지도, 판단 엔진 비교 시나리오 추가 | 초안 |
 

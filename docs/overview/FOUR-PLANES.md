@@ -88,9 +88,10 @@ HISS는 Fabric의 묶음이 아니다. 네 면이 **모두** 그 위에서 돈�
 | 저장 엔진 · 외부 Ceph 연결(Rook External · CSI) | 공유 서비스의 데이터 볼륨과 그 내용 |
 | ingress 컨트롤러 · cert-manager · DNS 엔진 | 공개 도메인 노출 조건(O-10) |
 | 내부 CA · 클러스터 건강 관측 바닥 | 영역 KMS · SPIRE · 관측 서비스(Grafana · Loki · Tempo) |
+| 엔진 설비: CRD를 가진 엔진 operator(StackGres 등, D-87) | 그 엔진으로 만든 공유 서비스 인스턴스 |
 | 호스트 전제조건 진단 · 실검증(저장 · 네트워크 · DNS) | — |
 
-**인도 지점:** HISS가 위로 넘기는 것은 넷이다. **네임스페이스 · StorageClass · IngressClass · ClusterIssuer.** 위의 면은 이 넷만 받아 쓰고, 노드·저장 엔진·CNI를 직접 만지지 않는다.
+**인도 지점:** HISS가 위로 넘기는 것은 다섯이다. **네임스페이스 · StorageClass · IngressClass · ClusterIssuer · 관측 바인딩**(D-87로 더함). 관측 바인딩은 위의 면이 지표 포트를 선언하면 HISS 관측 바닥만 그 포트에서 수집하는 계약이다. 위의 면은 이 다섯만 받아 쓰고, 노드·저장 엔진·CNI를 직접 만지지 않는다. 구성 · 메뉴 · 단계는 [HISS 구성 계획](../specs/HISS-COMPOSITION-PLAN-v0.1.md)을 따른다.
 
 **운영 규칙** (아카이브 HISS 규칙을 그대로 옮긴다)
 - 진단 항목과 관리 항목을 구분한다.

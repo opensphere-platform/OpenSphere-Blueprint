@@ -165,12 +165,13 @@
     - 세션 · CSRF 미들웨어와 분리한 경로
   - `script-src 'self'`는 같은 출처의 다른 경로를 허용하므로(Chrome 확인) 번들 경로로 좁힌다.
   - 데이터 · 명령은 상위 Console이 다리 메시지를 판정해서 부른다.
-- **실행부 권한(E2b, 2026-11-23 보충):**
-  - 원형마다 고정된 ClusterRole(OS의 일부)을 둔다. 실행부는 그 ClusterRole에 대한 `bind`만 갖는다(`escalate` 금지).
-  - 설치 때 패키지 namespace에 RoleBinding을 만든다. 프로필 `rbac`은 원형 ClusterRole의 부분집합이어야 한다.
-  - 망은 패키지 namespace 쪽 설치 때 NetworkPolicy와 실행부의 라벨 기반 일반 egress로 표현한다.
-  - CEL은 namespace 라벨 기준으로 바꾼다.
-  - 새 원형만 ClusterRole을 늘린다(OS 갱신).
+- **실행부 권한(E2b, 2026-11-23 확정 — Codex 지적으로 바로잡음):**
+  - 고정 ClusterRole을 묶으면 Role 전체가 부여된다. 그래서 패키지 Job에는 원형 Role을 주지 않는다.
+  - 패키지 Job · 워크로드는 Kubernetes API 권한이 없다. RoleBinding이 없고 `automountServiceAccountToken: false`다. 쓰는 것은 선언한 Secret 마운트와 망 대상뿐이다.
+  - 원형별 고정 ClusterRole(OS)은 **실행부 자신의 상한**이다. 설치 때 실행부가 자기 SA에 RoleBinding을 만든다. 실행부에게는 그 이름들에 대한 `bind`만 있다(`escalate` 금지).
+  - 세밀한 제한은 프로필 `rbac`(원형 Role의 부분집합) + Core 웹훅의 정확 일치가 한다.
+  - API 권한이 필요한 컨트롤러는 provider 패키지에 허용하지 않고 `hiss` 클래스(별도 고권한 실행부 · 승인)로만 낸다.
+  - 망은 패키지 namespace 쪽 설치 때 NetworkPolicy와 실행부의 라벨 기반 일반 egress로 표현한다. CEL은 namespace 라벨 기준이다.
 - **시험:** 악성 모듈 사례를 둔다(쿠키 접근, 상위 창 접근, 외부 요청, 선언 밖 원천 · 명령, 큰 메시지). 모두 막혀야 한다.
 
 ### 3.6 실행 — 원형 + 패키지 Job(E2a-2 · E2b · E3 · E4 · E5 · E7)

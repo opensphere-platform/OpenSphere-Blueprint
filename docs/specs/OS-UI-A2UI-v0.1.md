@@ -23,11 +23,25 @@
 - **문서:** A2UI v1.0의 surface 문서다. `createSurface` · `updateComponents` · `updateDataModel` 메시지를 정적인 하나의 묶음으로 담는다(REST 방식, 스트리밍 없음).
   - 패키지는 확장 선언의 화면 항목에 `kind: "a2ui"`, `catalog: "opensphere.carbon/v1"`, `surface`(문서)를 적는다.
 - **사양 판:** v1.0으로 고정한다. 사양 판을 올리는 것은 OS 갱신이다.
-- **카탈로그 `opensphere.carbon/v1`**
-  - JSON Schema로 정의한 닫힌 목록이다. Carbon 컴포넌트를 감싼다.
-  - 처음 목록: 기본 카탈로그 중 쓰는 것(Text · Icon · Row · Column · List · Card · Tabs · Modal · Divider · Button · TextField · CheckBox · ChoicePicker · DateTimeInput) + OpenSphere 추가(DataTable · FactTable · TrendChart · EventList · StatusTag · Tile · Breadcrumb · Notification · CommandButton · Markdown)
-  - Image · Video · AudioPlayer · `openUrl`은 처음 판에 넣지 않는다.
-  - 카탈로그는 Console 코드(OS)다. 컴포넌트를 늘리면 카탈로그 판이 올라가고 Backbone도 갱신한다.
+- **카탈로그 `opensphere.carbon/v1`:** 우리가 **직접 만든다**(§6 조사 — 공개된 Carbon용 A2UI 카탈로그는 없다).
+  - JSON Schema로 정의한 닫힌 목록이다. 렌더러는 모든 컴포넌트를 Carbon Angular 컴포넌트로 그린다.
+  - **기본 카탈로그는 가져온다:** A2UI 카탈로그 연결(기본 카탈로그를 통째로 또는 골라서 가져오기)로 기본 컴포넌트의 스키마를 그대로 쓴다. 새로 쓰지 않는다.
+    - 가져올 것: Text · Icon · Row · Column · List · Card · Tabs · Modal · Divider · Button · TextField · CheckBox · ChoicePicker · DateTimeInput
+    - 가져온 컴포넌트도 그리는 것은 Carbon 컴포넌트다. 예: Button → `cds-button`, Tabs → `cds-tabs`, Modal → `cds-modal`
+  - **Carbon 고유 컴포넌트만 더한다:**
+    - DataTable(정렬 · 페이지 · 빈 상태 · 읽지 못함 상태)
+    - FactTable(사실 표), TrendChart(`@carbon/charts`), EventList, StatusTag, Tile, Breadcrumb, Notification
+    - CommandButton(선언한 Shell 명령 + OS 확인 · MFA)
+    - Markdown(I3와 같은 안전 처리)
+  - **Carbon 사용 규칙은 컴포넌트 안에 고정한다.** 패키지가 바꿀 수 없다.
+    - 색 · 간격 · 글꼴 토큰, 상태 색의 뜻, 접근성(키보드 · 레이블)
+    - AI가 만든 내용 표시(Carbon AI label 지침)
+    - 패키지가 넣을 수 있는 것은 정해진 속성 값뿐이고, 스타일 값은 넣을 수 없다.
+  - **넣지 않는 것:** Image · Video · AudioPlayer · `openUrl`은 처음 판에 넣지 않는다.
+  - **원천과 판:** 카탈로그 스키마 JSON은 OS 계약 원천 `infra/contracts/osr/catalogs/opensphere.carbon-v1.json`에 둔다.
+    - 두 판정기 · Setup 봉인 사본 · 렌더러 · (나중에) 에이전트가 같은 파일을 쓴다. E0의 생성 방식을 따른다.
+    - 카탈로그는 OS 자산이다. 컴포넌트를 늘리면 카탈로그 판이 올라가고 Backbone도 갱신한다.
+    - 외부 공개는 이번 범위가 아니다(나중에 공개할 만한 부산물로 기록만 한다).
 - **데이터 바인딩:** `@path`는 호스트가 채운 데이터 모델만 가리킨다.
   - 데이터 모델은 호스트가 S1의 닫힌 원천(`instance.*`, `instance.metrics`, `command:<읽기 명령>`)과 패키지 섹션 문맥으로 만든다.
   - 패키지가 데이터 모델 값을 직접 넣을 수 있는 것은 정적 글자뿐이다.
@@ -65,3 +79,47 @@
 
 - **순서:** I1 · I2 병합 뒤(동작이 Shell 명령에 기대므로). E3과는 함께 진행해도 된다.
 - **P1:** Valkey · Gitea 화면을 A2UI로 만든다.
+
+## 6. 조사 기록(2026-11-23)
+
+**A2UI**
+- **사양:** v1.0(2026-06), Apache-2.0, `a2ui-project/a2ui`(Google 주도로 보임)
+- **방식:** surface · 컴포넌트 트리(인접 목록, `root` 하나) · 데이터 모델(JSON Pointer 바인딩) · `action` 메시지
+- **전송:** 정해져 있지 않다. AG-UI · A2A · MCP · SSE · WebSocket · REST를 쓸 수 있고, 일반 REST JSON으로도 된다(LLM 없이).
+- **카탈로그:** JSON Schema. 공식 문서는 운영 앱이면 **자기 디자인 시스템을 비추는 카탈로그를 직접 정의하라**고 권한다.
+- **기본 카탈로그:** 18개다. 표 · 차트는 없다.
+- **보안:** 선언만 있고 코드 실행이 없다. HTML · CSS · 스크립트를 보내지 않는다. 함수는 `allowedCallers`로 묶는다.
+- **렌더러(npm):** `@a2ui/angular` 0.14.0(peer `@angular/core ^21.2.5`). `@a2ui/react` · `@a2ui/lit` · `@a2ui/web_core`는 0.15.0이다. 0.10 → 0.14가 몇 달 만에 나왔다.
+- **우리 Console:** `@angular/core` 22.2.5, `@carbon/charts` 1.27.27
+
+**Carbon용 A2UI 카탈로그 — 없음**
+- npm(`a2ui carbon`, `a2ui catalog carbon`, `a2ui ibm`, `a2ui catalog`)에서 찾았다. 다른 디자인 시스템용 카탈로그(shadcn · Radix · Stage · Spectrum Charts · ECharts 등)는 있고, Carbon용은 없다.
+- 웹(A2UI 문서 · Carbon 문서), Carbon MCP(Carbon 문서 · Carbon Labs)에도 A2UI 관련 항목이 없다.
+
+**A2UI와 MCP**
+- 따로 정한 전송 규격은 없다. 공식 가이드의 네 방식:
+  - ① A2UI 버튼으로 MCP 도구 호출(`@a2ui/catalog-mcp` 0.0.3)
+  - ② MCP 서버가 `a2ui://` 자원(`application/a2ui+json`)으로 화면 제공
+  - ③ MCP Apps `ui://` 위젯을 A2UI 화면에 넣기
+  - ④ 외부 MCP App 안에서 A2UI 그리기
+- **개발용 공식 MCP 서버(생성 · 검증 · 카탈로그 탐색) — 없다.** Angular 전용 MCP도 없다.
+- 비슷한 것은 공식 에이전트 스킬(`npx skills add a2ui-project/a2ui`), 저장소의 샘플 MCP 서버, 커뮤니티 `@maxhealth.tech/prefab`이다.
+- 스토어 · 섹션 화면 렌더링에는 MCP가 필요 없다(Console이 원장의 서명된 선언을 그린다). MCP는 나중의 R2D2 · 에이전트 쪽 일이고, 이번 범위 밖이다. 외부 스킬을 개발에 쓸지는 따로 정한다.
+
+**출처**
+- https://a2ui.org
+- https://a2ui.org/concepts/overview/
+- https://a2ui.org/specification/v1.0-a2ui/
+- https://a2ui.org/concepts/catalogs/
+- https://a2ui.org/catalogs
+- https://a2ui.org/reference/components/
+- https://a2ui.org/specification/v0_10/catalogs/basic/catalog.json
+- https://a2ui.org/ecosystem/renderers/
+- https://a2ui.org/concepts/sdks/
+- https://a2ui.org/guides/mcp-overview/
+- https://a2ui.org/guides/a2ui-over-mcp/
+- https://a2ui.org/guides/mcp-catalog/
+- https://github.com/a2ui-project/a2ui
+- https://docs.cloud.google.com/gemini/enterprise/docs/a2ui-agents/a2ui-component-gallery-reference
+- https://carbondesignsystem.com/community/component-index/
+- https://carbondesignsystem.com/building-blocks/core/components/ai-label/guidelines/

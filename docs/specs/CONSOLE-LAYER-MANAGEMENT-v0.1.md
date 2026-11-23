@@ -60,6 +60,8 @@ D-89로 레이어(HISS · Fabric · Governance · Workspace)는 고정된 자리
 - **최근 변경:** 이 레이어 패키지의 계획 · 승인 · 적용 이력(원장)
 - 원천을 읽지 못한 칸은 "읽지 못함"이다. 값을 지어내지 않는다.
 
+> **D-91 개정(2026-11-23):** 상태는 모듈마다 가장 최근의 것으로 판정한다. 해소된 실패와 대체된 승인은 이력에만 보인다([섹션 홈 · 묶음 개요 기준 v0.1](CONSOLE-SECTION-HOME-v0.1.md) §3).
+
 ### 4.3 서버
 
 - `GET /console-api/osr/layers`, `GET /console-api/osr/layers/<layer>`. 관리자 세션 · `OsrRead`이다.

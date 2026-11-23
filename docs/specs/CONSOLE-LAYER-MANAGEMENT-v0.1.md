@@ -100,6 +100,8 @@ D-89로 레이어(HISS · Fabric · Governance · Workspace)는 고정된 자리
 
 ## 6. Carbon 아이콘 선택
 
+> **D-93 개정(2026-11-23):** 아이콘 선택은 Carbon 공식 아이콘 라이브러리 페이지와 같은 방식으로 바꾼다. 옵션 편집은 오른쪽 서랍으로 옮기고, 표시 이름 · 레이어 순서(드래그)를 더한다([레이어 구성 화면 v0.1](CONSOLE-LAYER-OPTIONS-UX-v0.1.md)).
+
 - **참고할 구 버전:** 보관본 OpenSphere Console(Angular, `@carbon/icons` 11.82.0)의 확장 관리 화면에 있는 "메뉴 아이콘" 선택. 로컬 `/Volumes/DevOps/Projects/OpenSphere-Archive/OpenSphere-console`이다.
   - 선택 화면: `apps/console-web/src/app/pages/admin-plugins.ts`(검색 · 최대 300개 표시 · "∅" 기본값)
   - 아이콘 목록: `apps/console-web/src/app/os/icon-library.service.ts`. `@carbon/icons/metadata.json`을 지연 로딩하고, 빌드가 실제로 만든 목록과 대조한다.

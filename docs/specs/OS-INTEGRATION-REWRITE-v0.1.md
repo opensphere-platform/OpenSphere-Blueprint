@@ -283,6 +283,7 @@
 | 12 | **TLS** | 인증서 용도 형식화 + 기존 PVC 재기동 시험(D-94 Q6) | 8 |
 | 13 | **G1** | Gitea 패키지 + Backbone 내장 Gitea · 어댑터 제거 | 10 · 9 |
 | 14 | **H3 · H3b** | HISS 스토어 경로 · Setup 부트스트랩 | 4 · 6 |
+| 14a | **S4** | A2UI 화면 표준(D-97, [A2UI v0.1](OS-UI-A2UI-v0.1.md) §5): 카탈로그 · 렌더러 · 판정기, 고정 틀의 A2UI 템플릿화, 패키지 A2UI 화면 | 7 |
 | 15 | **S3** | 호환 표 · 내장 화면(`fabric-*-page`) · `nativeInstanceSlugs` · `actionProfiles` 고정값 제거 | 8 · 10 · 11 · 13 |
 | 16 | **P1** | 기준 실증(Valkey · Gitea) | 전부 |
 | 17 | **P2** | 운영 전환 순서서 · 격리 리허설 | 16 |

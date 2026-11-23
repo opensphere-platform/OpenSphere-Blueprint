@@ -1,0 +1,67 @@
+# OS 화면 구성 표준 — A2UI(v0.1)
+
+**상태:** 소유자 결정(2026-11-23, D-97, "권고대로 D-97")
+**작성:** 2026-11-23 · Claude
+**잇는 문서:** [OS 통합 재작성 v0.1](OS-INTEGRATION-REWRITE-v0.1.md)(D-95 · D-96) §3.5 · §6
+**기준:** A2UI 사양 v1.0(https://a2ui.org/specification/v1.0-a2ui/, 2026-06), Apache-2.0
+**역할:** 정의 · 검수 · 반영은 Claude, 구현은 Codex, 결정은 소유자다.
+
+## 1. 결정
+
+**A2UI를 OS 화면 구성의 중추 기술로 삼는다.**
+- 범위는 페이지의 **내용**까지다. 화면 껍데기와 보안이 걸린 상호작용은 OS가 직접 그린다.
+- 윈도우 비유로 말하면 **OpenSphere 카탈로그가 OS의 공용 컨트롤**이다. 패키지와 OS 페이지는 그 컨트롤을 조합한 **문서(데이터)**다.
+
+| 단계 | 대상 | 방식 | 시기 |
+|---|---|---|---|
+| ① 패키지 화면 전부 | 스토어 패키지의 메뉴 화면 · 세부 탭 · 섹션 공지 | A2UI만 쓴다. 지금 고정 틀(`fabric.service` · `section.notice` · `fabric.instance-detail`)은 A2UI 템플릿으로 다시 구현하되 기존 선언은 그대로 받는다. UI 모듈(S2)은 A2UI로 표현할 수 없을 때만 쓴다 | **D-95 안(S4)** |
+| ② OS 자체의 내용 페이지 | 섹션 홈 · 개요 · 상태 대시보드 · 스토어 상세 · 도움말 · 단순 설정 폼 | 고칠 일이 생길 때 하나씩 A2UI 문서로 옮긴다. 같은 카탈로그를 쓰고, 문서는 Backbone이나 ui 패키지가 낸다. 일부러 전부 다시 쓰지 않는다 | D-95 뒤, 기회가 생길 때 |
+| ③ OS 껍데기와 보안 상호작용 | 레일 · 탐색 · 로그인 · MFA · 승인 · 계획 확인 창 · 레이어 드래그 순서 · 아이콘 라이브러리 · Setup | Angular로 직접 그린다. A2UI 화면에서는 카탈로그 컴포넌트로 불러 쓴다(예: 승인 단추). MFA · 확인 창은 언제나 OS가 띄운다 | 바꾸지 않음 |
+
+## 2. 형식
+
+- **문서:** A2UI v1.0의 surface 문서다. `createSurface` · `updateComponents` · `updateDataModel` 메시지를 정적인 하나의 묶음으로 담는다(REST 방식, 스트리밍 없음).
+  - 패키지는 확장 선언의 화면 항목에 `kind: "a2ui"`, `catalog: "opensphere.carbon/v1"`, `surface`(문서)를 적는다.
+- **사양 판:** v1.0으로 고정한다. 사양 판을 올리는 것은 OS 갱신이다.
+- **카탈로그 `opensphere.carbon/v1`**
+  - JSON Schema로 정의한 닫힌 목록이다. Carbon 컴포넌트를 감싼다.
+  - 처음 목록: 기본 카탈로그 중 쓰는 것(Text · Icon · Row · Column · List · Card · Tabs · Modal · Divider · Button · TextField · CheckBox · ChoicePicker · DateTimeInput) + OpenSphere 추가(DataTable · FactTable · TrendChart · EventList · StatusTag · Tile · Breadcrumb · Notification · CommandButton · Markdown)
+  - Image · Video · AudioPlayer · `openUrl`은 처음 판에 넣지 않는다.
+  - 카탈로그는 Console 코드(OS)다. 컴포넌트를 늘리면 카탈로그 판이 올라가고 Backbone도 갱신한다.
+- **데이터 바인딩:** `@path`는 호스트가 채운 데이터 모델만 가리킨다.
+  - 데이터 모델은 호스트가 S1의 닫힌 원천(`instance.*`, `instance.metrics`, `command:<읽기 명령>`)과 패키지 섹션 문맥으로 만든다.
+  - 패키지가 데이터 모델 값을 직접 넣을 수 있는 것은 정적 글자뿐이다.
+- **동작:** A2UI `action` 이름은 그 화면에 선언한 Shell 명령 id만 가리킨다.
+  - 읽기 명령은 정책 · 감사를 거친다. 변경 · 파괴 명령은 OS의 확인 · MFA 창을 띄운다(I1 경로).
+  - 화면 이동(`navigate`)은 같은 섹션 안의 정확한 주소만 허용한다.
+- **금지:** HTML · CSS · 스크립트, 외부 URL 불러오기, 함수 정의는 없다.
+  - 카탈로그 함수는 렌더러가 정한 것만 쓴다(A2UI `allowedCallers` = `rendererOnly`).
+  - 문서 크기는 화면마다 256KiB, 컴포넌트는 2,000개까지다.
+
+## 3. 렌더러
+
+- **자체 구현:** 렌더러는 **Console(Angular 22)에 직접 둔다.**
+  - 공식 `@a2ui/angular`(0.14.0, 2026-11)는 peer가 Angular `^21.2.5`라 지금 Console(22.2.5)에 들일 수 없다. 0.x라서 판도 자주 바뀐다.
+  - 사양 v1.0의 문서 · 바인딩 · 동작 규칙을 따르고, 카탈로그 컴포넌트는 Carbon Angular 컴포넌트로 그린다.
+- **적합성 시험:** 사양의 메시지 예제와 우리 카탈로그 예제를 렌더러 시험으로 둔다.
+  - 공식 라이브러리가 Angular 22를 지원하고 1.x가 되면 바꿀지 다시 판단한다.
+- **에이전트(R2D2 · MCP):** 이번 범위가 아니다. 같은 카탈로그를 쓰면 나중에 붙일 수 있게 카탈로그 스키마를 따로 낼 수 있는 형태로 둔다.
+
+## 4. 판정
+
+- **판정기:** Node · Rust 두 판정기와 Setup 봉인 사본이 카탈로그 스키마로 판정한다.
+  - 판정 항목: 컴포넌트 종류 · 속성, 자식 참조(`root` 하나, 순환 없음, 고아 없음), `@path`가 데이터 모델 스키마 안인지, 동작이 선언된 명령인지, 크기 한도
+- **공유 사례 · 계약 벡터:** 함께 낸다.
+- **판 혼재:** 기존 계약 1.0 · 1.1 · 1.2 화면은 그대로 받는다. 새 판(1.3)에서 `kind: "a2ui"`를 연다.
+
+## 5. 단위 S4
+
+| 범위 | 합격 기준 |
+|---|---|
+| 카탈로그 `opensphere.carbon/v1` 스키마 · 렌더러 · 두 판정기 · 공유 사례 · Setup 봉인 사본 · 계약 1.3 | 두 판정기가 같은 사례를 같게 판정한다. 렌더러 적합성 시험을 통과한다 |
+| 고정 틀 셋을 A2UI 템플릿으로 다시 구현 | 기존 OpenSearch · RustFS · PostgreSQL 화면과 북마크가 같은 Console에서 그대로 보인다(캡처 비교) |
+| 패키지 A2UI 화면 | 같은 Console 빌드에서 시험 패키지 A → B 갱신만으로 화면 배치 · 표 · 차트 · 동작 단추가 바뀐다. 변경 단추는 OS의 확인 · MFA를 거친다 |
+| 악성 사례 | 선언 밖 명령 · 다른 인스턴스 데이터 · 외부 URL · 과대 문서 · 순환 참조를 거절한다 |
+
+- **순서:** I1 · I2 병합 뒤(동작이 Shell 명령에 기대므로). E3과는 함께 진행해도 된다.
+- **P1:** Valkey · Gitea 화면을 A2UI로 만든다.

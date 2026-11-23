@@ -269,6 +269,15 @@
 - **A2UI 1.3 화면:** 13탭 id는 그대로 둔다(overview · connection · storage · monitoring · topology · events · composition · databases · roles · sessions · backups · lifecycle · documentation). `?instance=`도 그대로다.
   - 개요 화면에는 **원형의 호스트 동작 `instance.create`만** 연다. 패키지 명령이 아니고, 기존 계획 · MFA 경로를 탄다.
   - 패키지 변경 명령을 개요에서 허용하는 일반 규칙은 두지 않는다. 삭제 · 발급 · 회수는 세부 화면의 선언된 명령이다.
+- **단위 나눔(2026-11-24 E5a 검수):**
+  - **E5a**는 계약 + 렌더러 + 시험 골격이다. 원형은 닫혀 있다.
+  - **E5a-2**는 생명주기를 켠다.
+    - 실행부가 실제로 생성 · Ready · CA · 삭제를 한다.
+    - TLS Secret `{name}-osr-tls`를 실행부 경계 정책과 Core 정확 일치 규칙(형식만 대조)에 넣는다.
+    - 호스트 TLS 확인은 클러스터 망의 Service IP:5432로 한다.
+    - Service · Endpoints의 SGCluster 소유 확인은 Rust로 한다.
+  - **E5b**는 DB Claim · 13탭 · Keycloak이다.
+  - 렌더러는 호스트 계약의 operator API id에 묶고, 모르는 id는 닫힌 쪽으로 실패한다.
 - **제거 순서:** 새 경로 격리 합격 + Keycloak 연결 확인 → 옛 Rust StackGres 분기 · CLI `cluster.create` 판정 제거. 이미 적용된 SQL 원본은 남긴다.
 
 ## 5. 마지막 실증(P1) · 운영 전환 준비(P2)

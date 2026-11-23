@@ -244,6 +244,33 @@
 | Samba AD · Keycloak(E7) | Samba: `stateful-engine` + 패키지 Job(samba-tool). Keycloak: `operator-cr` 또는 `stateful-engine`(Codex가 PR 설계 메모로 제안). 그룹 연동은 패키지 Job + 호스트 효과 확인 | 격리 설치본에서 기존 디렉터리 · 사용자 · 그룹 · Keycloak 영역 · 연동을 보존한다. 중단된 작업을 복구한다. 내장 모듈 · 화면을 지운다 |
 | HISS 구성요소(H3) | `hiss` 패키지 | 한 항목의 갱신이 스토어 → MFA → HISS 실행부 → 실검증 → 원장으로 끝난다 |
 
+### 4.1 E5(PostgreSQL) 결정(2026-11-24, Codex 설계 메모 검토)
+
+- **원형:** `operator-cr/1`
+  - 호스트 계약에 등록한 StackGres v1 API 묶음(SGCluster 루트 · SGInstanceProfile · SGPostgresConfig · 고정 부트스트랩 SGScript · 승인된 TLS 객체)만 받는다.
+  - 임의 GVK · YAML · JSONPath · SQL 본문 · 외부 Secret 참조는 받지 않는다.
+  - SGCluster · SGScript 권한은 원형 ClusterRole(실행부 상한)에만 있다.
+  - StackGres operator는 HISS 책임이다.
+- **DB 발급 · 회수(SGScript 효과 단계)**
+  - 발급 Job은 SCRAM 검증값과 봉인 자격만 낸다. 출력은 `SCRAM-SHA-256$<iter>:<salt>$<stored>:<server>` 형식의 닫힌 정규식으로 판정한다.
+  - **SQL 문안은 원형(OS)이 가진 고정 · 검토된 틀**이다. 실행부가 검증된 식별자(DB 이름 · 역할 이름 패턴, 연결 수)와 검증값만 넣어 SGScript를 만든다.
+  - 패키지 출력에는 SQL · 경로 · 역할 이름이 들어갈 수 없다. 발급 Job은 인스턴스 관리자 자격을 받지 않는다.
+  - 실행부는 봉투를 푼 자격과 SCRAM 검증값이 같은 비밀번호인지 메모리에서 대조한다.
+  - 판정 근거는 `status.managedSql`(참조 · 항목 id · 적용 판 · 실패 유무)이다.
+  - 성공 조건
+    - 발급: verify Job(소비자 자격만)이 TLS 로그인과 읽기 · 쓰기에 성공한다.
+    - 회수: 같은 자격의 인증 거절과 기존 세션 종료. TLS 오류 · 타임아웃은 회수 성공이 아니다.
+- **TLS: 호스트 발급 인스턴스 CA**(D-94 Q6의 원형별 실현)
+  - 생성 때 실행부가 인스턴스마다 CA를 메모리에서 만든다. 승인된 Service DNS SAN을 가진 서버 인증서 · 키를 서명해 인스턴스 TLS Secret으로 만들고(생성만, 읽기 없음), 공개 CA를 `<name>-ca`에 둔다.
+  - **CA 개인키는 쓰고 버린다**(저장하지 않음). 재발급은 새 CA다(D-96).
+  - 확인은 Service IP:5432에 SSLRequest를 보낸 뒤 체인 · DNS · CA fingerprint로 한다.
+  - 소비자 연결은 **`verify-full`이 끝까지 되어야 합격**이다. PgBouncer 등 중간 경로에서 깨지면 고치기 전에 보고하고, 승인 endpoint를 다시 정한다.
+  - Keycloak의 DB 연결도 `sslmode=require`에서 `verify-full`로 올린다(E7과 함께).
+- **A2UI 1.3 화면:** 13탭 id는 그대로 둔다(overview · connection · storage · monitoring · topology · events · composition · databases · roles · sessions · backups · lifecycle · documentation). `?instance=`도 그대로다.
+  - 개요 화면에는 **원형의 호스트 동작 `instance.create`만** 연다. 패키지 명령이 아니고, 기존 계획 · MFA 경로를 탄다.
+  - 패키지 변경 명령을 개요에서 허용하는 일반 규칙은 두지 않는다. 삭제 · 발급 · 회수는 세부 화면의 선언된 명령이다.
+- **제거 순서:** 새 경로 격리 합격 + Keycloak 연결 확인 → 옛 Rust StackGres 분기 · CLI `cluster.create` 판정 제거. 이미 적용된 SQL 원본은 남긴다.
+
 ## 5. 마지막 실증(P1) · 운영 전환 준비(P2)
 
 **P1 — 기준 실증(격리 설치본)**

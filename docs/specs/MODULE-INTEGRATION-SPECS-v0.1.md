@@ -27,6 +27,7 @@
 | x.9 합격 시험 | 격리에서 무엇을 보이면 합격인가 |
 | x.10 지금과 차이 | 운영 판과 목표의 차이, 그 차이를 메울 단위 |
 | x.11 결정 | 소유자 결정(D-98) |
+| x.12 알림 · 로그(v1.1 초안) | 선언 이벤트(id · 심각도 · 조건), 로그 형식(`json` · `text`와 필드 이름). 계약 v1 §10 · §11 |
 
 **`status` · `inspect`:** 모든 모듈에 공통인 archetype 읽기다. 출력은 원장 사실의 투영(설치본 · 번들 digest · 판 · 활성 상태 · 인스턴스 이름, inspect는 namespace)이고, 엔진 상태는 화면 원천 `instance.*`로 본다(계약 v1 §5).
 
@@ -375,6 +376,10 @@
 - C-4 승인. 용량은 공통 한도 10(C-6 안 함)
 
 
+### 8.12 알림 · 로그(v1.1 초안)
+- 선언 이벤트: `delivery.gitea.not-ready`(critical, `instance.notReady` 300초), `delivery.gitea.disk-pressure`(warning, `k8s.event` reason과 대상 kind는 구현 때 확정)
+- 로그: `json`, 필드 이름은 고른 Gitea 판의 로그 형식으로 확정
+
 ## 9. Valkey(새 설계)
 
 ### 9.1 정체
@@ -438,3 +443,6 @@
 2. 퇴출 정책 `noeviction`
 - C-1 승인. 용량은 공통 한도 10(C-6 안 함)
 
+### 9.12 알림 · 로그(v1.1 초안)
+- 선언 이벤트: `provider.valkey.not-ready`(critical, `instance.notReady` 120초), `provider.valkey.memory-full`(warning, `k8s.event` 또는 `startup.problem` 중 구현 때 확정)
+- 로그: `text`(Valkey 기본 로그 형식), 수준 거름 없음

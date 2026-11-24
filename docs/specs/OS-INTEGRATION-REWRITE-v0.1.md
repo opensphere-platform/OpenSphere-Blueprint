@@ -336,7 +336,9 @@
 | d | **V1** | Valkey 패키지(명세 §9) | b |
 | e | **G1** | Gitea 패키지(명세 §8) + Backbone 내장 Gitea · 어댑터 제거 | c |
 | f | TLS · H3 · S3 | 위 표 그대로 | — |
-| g | **P1** | 기준 실증(Valkey · Gitea). 이름 목록에 없는 상태로 시험(계약 v1 부록 B) | d · e · f |
+| f2 | **C9** (v1.1 초안) | 패키지 이벤트 선언 · Swallow 전달(계약 v1 §10) | — |
+| f3 | **C10** (v1.1 초안) | 노드 로그 수집 · `instance.logs` · `os logs`(계약 v1 §11) | H3 |
+| g | **P1** | 기준 실증(Valkey · Gitea). 이름 목록에 없는 상태로 시험(계약 v1 부록 B). 알림 · 로그도 재빌드 0회로 확인 | d · e · f · f2 · f3 |
 | h | **P2** | 운영 전환 순서서 · 격리 리허설 | g |
 | i | **E7b** | Samba AD · Keycloak 원형 이행(C-1 · C-2 · C-3, non-root 실패 시 C-8). **P1 뒤** | g |
 

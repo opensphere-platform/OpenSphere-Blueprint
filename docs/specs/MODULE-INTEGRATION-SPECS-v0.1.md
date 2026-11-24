@@ -1,6 +1,6 @@
 # 모듈 통합 명세 v0.1
 
-**상태:** 초안 2판(2026-11-24, Codex 검토 #82 반영). 모듈마다 **제공 기능(§x.2)은 소유자 승인 대상**이다. 나머지는 [OS 통합 패키지 계약 v1](OS-INTEGRATION-CONTRACT-v1.md)을 이 모듈에 적용한 결과다.
+**상태:** 승인(2026-11-24, D-98). 모듈마다 제공 기능(§x.2)과 결정(§x.11)은 소유자가 권장안대로 승인했다. Codex 검토(#82)를 반영했다. 나머지는 [OS 통합 패키지 계약 v1](OS-INTEGRATION-CONTRACT-v1.md)을 이 모듈에 적용한 결과다.
 **작성:** Claude. 구현 관점 검토는 Codex.
 **기준 코드:** Backbone main `5ea0c0a`(운영 반영), PR 194(검수 중)는 밝혀 적는다.
 
@@ -17,7 +17,7 @@
 | 절 | 내용 |
 |---|---|
 | x.1 정체 | id · class · 레이어 · 섹션 · 원형 · 의존 패키지 |
-| **x.2 제공 기능** | 사용자에게 주는 능력. **소유자 승인 대상** |
+| **x.2 제공 기능** | 사용자에게 주는 능력. 소유자 승인 |
 | x.3 스토어 설명 | 요지, "권한과 자원"에 보일 사실 |
 | x.4 매뉴얼 · 지식 | 문서 목록, 지식에 넣을 범위 |
 | x.5 Shell 명령 | id · effect · 실행 경로(archetype / package-job) · 인수 · 권한 |
@@ -26,7 +26,7 @@
 | x.8 Claim | 종류 · scheme · 소비자 키 · 발급 효과 · 회수 효과 · 용량 |
 | x.9 합격 시험 | 격리에서 무엇을 보이면 합격인가 |
 | x.10 지금과 차이 | 운영 판과 목표의 차이, 그 차이를 메울 단위 |
-| x.11 결정 필요 | 소유자에게 묻는 것 |
+| x.11 결정 | 소유자 결정(D-98) |
 
 **`status` · `inspect`:** 모든 모듈에 공통인 archetype 읽기다. 출력은 원장 사실의 투영(설치본 · 번들 digest · 판 · 활성 상태 · 인스턴스 이름, inspect는 namespace)이고, 엔진 상태는 화면 원천 `instance.*`로 본다(계약 v1 §5).
 
@@ -41,9 +41,9 @@
 | 3 | PostgreSQL | Fabric | `operator-cr/1`(`stackgres-v1`) | 운영 레거시 판 · 새 판 PR 194 |
 | 4 | OpenSearch | Fabric | `stateful-engine/1` | A단계에서 내림 · 새 판 PR 195 |
 | 5 | RustFS | Fabric | `stateful-engine/1` | A단계에서 내림 · 새 판 PR 195 |
-| 6 | Samba AD | 지금 fabric-shared · 목표 결정 필요 | 결정 필요 | 운영 레거시 판 |
-| 7 | Keycloak | 지금 fabric-shared · 목표 결정 필요 | 결정 필요 | 운영 레거시 판 |
-| 8 | Gitea | (결정 필요) | `stateful-engine/1` | **새 설계** |
+| 6 | Samba AD | Governance(지금 fabric-shared) | `stateful-engine/1`(C-1 · C-2, P1 뒤) | 운영 레거시 판 |
+| 7 | Keycloak | Governance(지금 fabric-shared) | `stateful-engine/1`(C-3 · C-4) | 운영 레거시 판 |
+| 8 | Gitea | Fabric › 배포 묶음 | `stateful-engine/1`(C-4) | **새 설계** · P1 증명 대상 |
 | 9 | Valkey | Fabric | `stateful-engine/1` | **새 설계** · P1 증명 대상 |
 
 
@@ -59,7 +59,7 @@
 - id `provider.postgres`, class provider, 레이어 Fabric(섹션 shared, slug `postgres`), 원형 `operator-cr/1`(`stackgres-v1`)
 - 의존: HISS의 StackGres operator 1.19.5(패키지 의존이 아니라 원형 전제), 저장 프로필 `foundation.block-rwo`
 
-### 3.2 제공 기능(승인 대상)
+### 3.2 제공 기능(승인됨)
 1. PostgreSQL 17 인스턴스 만들기 · 지우기. 인스턴스 1개 구성, 프리셋 small(cpu 1 · 메모리 2Gi)
 2. **DB Claim:** 앱마다 데이터베이스 + 소유 역할을 발급 · 회수한다. 연결은 `verify-full`만
 3. 13탭 세부 보기(아래), cpu · 메모리 추이
@@ -109,16 +109,17 @@
   - 격리 RKE2(번들 `sha256:003648d2…`): TLS Secret 응답 유실 복구 뒤 Ready, `verify-full` 읽기 · 쓰기, 실행부 재시작 뒤 같은 Job UID, 일반 · 복구 뒤 회수 `auth_rejected`, 기존 세션 종료, 삭제 · 정리 통과
 - E5b-2 나머지: Keycloak의 그룹 의존을 새 DB Claim(`verify-full`)으로 옮긴 뒤 Rust · CLI `cluster.create` 영수증 분기를 지운다.
 
-### 3.11 결정 필요
-1. 프리셋 medium(cpu 2 · 4Gi)을 첫 판에 넣을지
-2. 복제본(인스턴스 2~3) · 백업을 다음 판 범위로 둘지, 범위 밖으로 둘지
+### 3.11 결정(D-98)
+1. 첫 판은 small 하나
+2. 복제본 · 백업은 범위 밖
+
 
 ## 4. OpenSearch
 
 ### 4.1 정체
 - id `provider.opensearch`, 레이어 Fabric(slug `opensearch`), 원형 `stateful-engine/1`, OpenSearch 3.10.0
 
-### 4.2 제공 기능(승인 대상)
+### 4.2 제공 기능(승인됨)
 1. 검색 인스턴스 만들기 · 지우기(단일 노드, 프리셋 small · medium)
 2. **색인 Claim:** 앱마다 색인 접두사에 한정된 사용자 · 역할을 발급 · 회수한다
 3. 세부 보기: 개요 · 저장 · 이벤트 · 색인 · 생명주기(+ 목표: 추이)
@@ -156,15 +157,16 @@
 ### 4.10 지금과 차이
 - 운영 설치는 A단계에서 내렸다. B단계에서 0.3.0 프로필(실행 제약 · `jobImages`) + 운영용 Job 이미지(PR 195)로 새로 설치한다.
 
-### 4.11 결정 필요
-1. 화면을 지금 A2UI로 옮길지, 고정 틀로 두고 다음 판에 옮길지(권장: B단계는 고정 틀 그대로, 옮기기는 다음 판)
+### 4.11 결정(D-98)
+- B단계는 지금 고정 틀 화면 그대로, A2UI 전환은 다음 판
+
 
 ## 5. RustFS
 
 ### 5.1 정체
 - id `provider.rustfs`, 레이어 Fabric(slug `rustfs`), 원형 `stateful-engine/1`, RustFS 1.0.6(S3 호환)
 
-### 5.2 제공 기능(승인 대상)
+### 5.2 제공 기능(승인됨)
 1. 객체 저장 인스턴스 만들기 · 지우기(단일 노드, 프리셋 small · medium)
 2. **버킷 Claim:** 앱마다 버킷 하나와 그 버킷만 쓰는 접근 키를 발급 · 회수한다
 3. 세부 보기: OpenSearch와 같은 탭("버킷")
@@ -200,8 +202,9 @@
 ### 5.10 지금과 차이
 - §4.10과 같다
 
-### 5.11 결정 필요
+### 5.11 결정(D-98)
 - §4.11과 같다
+
 
 ## 6. Samba AD
 
@@ -209,11 +212,11 @@
 - id `provider.samba-ad`, 지금 plane `fabric-shared`, 프로필 `provider.samba-ad-dc` 0.2.0
 - 지금은 root로 돈다(`rootReason: samba-ad-dc`, capabilities 전부 버리고 7개를 다시 더함). 원형 `stateful-engine/1`은 non-root · capabilities 없음이라 **그대로는 들어가지 않는다**
 
-### 6.2 제공 기능(승인 대상)
+### 6.2 제공 기능(승인됨)
 1. 도메인 컨트롤러 인스턴스 만들기 · 지우기(단일 DC)
 2. **디렉터리 바인드 Claim:** 소비자(지금은 Keycloak)에게 LDAPS 읽기 전용 바인드 계정을 발급 · 회수한다
 3. 상태 · 도메인 정보 보기
-4. **포함하지 않는 것(결정 필요 §6.11):** 직원 계정 · 그룹 관리 화면, 다중 DC 복제, GPO, DNS 서버 역할 노출
+4. **포함하지 않는 것:** 직원 계정 · 그룹 관리 화면(거버넌스 제품, §6.11), 다중 DC 복제, GPO, DNS 서버 역할 노출
 
 ### 6.3 스토어 설명
 - 요지: "직원 신원의 원천이 되는 도메인 컨트롤러. 소비자에게 LDAPS 읽기 계정을 발급한다."
@@ -246,11 +249,13 @@
 ### 6.10 지금과 차이
 - 실행 문서 · 화면이 없다. 원형으로 옮기려면 C-1 · C-2가 먼저이고, non-root가 안 되면 C-8도 필요하다. Claim Job을 새로 설계한다.
 
-### 6.11 결정 필요
-1. 실행: non-root 시험 결과를 보고 정한다(Codex가 격리에서 먼저 확인)
-2. 레이어: Governance(신원) 또는 Fabric
-3. 직원 계정 · 그룹 관리를 이 패키지 화면에 둘지, 거버넌스 제품에 둘지
-4. 인스턴스 삭제 때 PVC를 남길지(D-96 기준이면 지운다)
+### 6.11 결정(D-98)
+1. 실행: non-root 시험 결과를 보고 정한다. C-8은 non-root가 안 될 때만, P1 뒤
+2. 레이어 Governance
+3. 직원 계정 · 그룹 관리는 거버넌스 제품에 둔다(이 패키지 화면 아님)
+4. 인스턴스 삭제 때 PVC도 지운다
+- C-1 · C-2는 P1 뒤
+
 
 ## 7. Keycloak
 
@@ -258,7 +263,7 @@
 - id `provider.keycloak`, 지금 plane `fabric-shared`, 프로필 `provider.keycloak` 0.1.0, Operator 없이 인스턴스당 Keycloak 하나
 - 의존: PostgreSQL `database` Claim(상태 저장), Samba AD `directory-bind` Claim(직원, LDAPS)
 
-### 7.2 제공 기능(승인 대상)
+### 7.2 제공 기능(승인됨)
 1. 신원 인스턴스 만들기 · 지우기(realm 하나, 첫 기동 때 가져오기)
 2. **OIDC 클라이언트 Claim(안):** 워크스페이스 앱마다 클라이언트 id · secret · 발급자 주소를 발급 · 회수한다
 3. 상태 · realm 정보 · 연결된 디렉터리 보기
@@ -297,19 +302,22 @@
 - 실행 문서 · 화면 · OIDC Claim이 없다. E5b-2에서 DB 의존을 새 Claim으로 옮기는 것이 먼저다(§3.10).
 - 원형으로 옮기려면 C-4가 필요하고, PVC 없이 돌리려면 C-3이 필요하다.
 
-### 7.11 결정 필요
-1. OIDC 클라이언트를 Claim으로 낼지(권장: 그렇다. 앱마다 회수가 된다)
-2. 레이어: Governance 또는 Fabric(§6.11-2와 함께)
+### 7.11 결정(D-98)
+1. 앱별 OIDC 클라이언트를 Claim으로 낸다
+2. 레이어 Governance
+- C-4는 승인(P1), C-3은 P1 뒤
+
 
 ## 8. Gitea(새 설계)
 
 ### 8.1 정체
 - id `delivery.gitea`(안), class `provider`, 원형 `stateful-engine/1`
-  - id의 `delivery` 접두사와 class는 별개 필드다. class를 `delivery`로 정하면 지금 스토어 설치가 거절된다(접수 클래스는 ui · provider).
+  - id의 `delivery` 접두사와 class는 별개 필드다. D95-8 안의 class `delivery`는 지금 스토어 접수 클래스(ui · provider)에 없어 설치가 거절된다 → class `provider`, plane `fabric-delivery`(Fabric › 배포 묶음)로 한다.
 - 의존: PostgreSQL Claim(종류 `database`) 하나
-- **Backbone 자신의 Gitea(개발 원천 · CI)와 다른 것이다.** Backbone Gitea는 OS 구성요소이고 스토어로 설치하지 않는다. 이 패키지는 사용자 · 작업 공간이 쓰는 Git 저장소를 낸다.
+- **Backbone 내장 Gitea(`os-backbone-system/backbone-gitea`)를 대신한다(D95-8).** G1에서 내장 Gitea와 Console의 고정 Gitea 어댑터를 걷어 내고 이 패키지로 바꾼다. 옛 사본은 보존하지 않는다(D-96).
+- 개발 저장소(`os-backbone-development/development-source`, 개발 Mac 60103 포워딩 · CI)는 제품 범위 밖이고 그대로 둔다.
 
-### 8.2 제공 기능(승인 대상)
+### 8.2 제공 기능(승인됨)
 1. Git 서버 인스턴스 만들기 · 지우기(프리셋 small · medium)
 2. 조직(organization) 단위 접근을 Claim으로 발급 · 회수: 소비자는 그 조직에 한정된 토큰을 받는다
 3. 상태 · 저장 사용량 · 저장소 수 보기
@@ -340,14 +348,14 @@
 - 설정: `app.ini` ConfigMap
 - DB 연결: PostgreSQL Claim의 소비자 Secret · CA를 엔진에 넣어야 한다 → **C-4**(Keycloak과 같은 공통 계약). 그 전에는 Gitea를 원형으로 낼 수 없다
 - 저장: 데이터 PVC 1(저장소 · LFS), 프리셋별 10Gi · 50Gi
-- SSH: 열지 않는다(https만). 필요하면 결정 필요
+- SSH: 열지 않는다(https만, D-98)
 
 ### 8.8 Claim
 - 종류 `repository-org`(안), scheme `https`
 - 소비자 키: `url` · `org` · `token` · `ca.crt`
 - 발급: 조직 생성(없으면) + 그 조직 범위 토큰 발급 → verify: 토큰으로 TLS 로그인 + 저장소 생성 · 읽기(`connected`)
 - 회수: 토큰 삭제 → verify: 같은 토큰이 **401**(`auth_rejected`). 조직 · 저장소는 남긴다(정리 대기 아님, 소유자 결정 §8.11)
-- 용량: 지금 공통 한도는 인스턴스당 Claim 10개다. 50(안)이 필요하면 **C-6**
+- 용량: 공통 한도 인스턴스당 Claim 10개(D-98)
 
 ### 8.9 합격 시험
 - 격리: PostgreSQL Claim 소비 → 인스턴스 Ready · CA → 조직 Claim 발급 · push · clone → 회수 · 401 → 다른 조직 토큰으로 접근 거절 → 실행부 재시작 이음 → 인스턴스 삭제
@@ -357,11 +365,13 @@
 - 이름 목록(`nativeInstanceSlugs` · `actionProfiles`)에 더할 필요 없음(계약 v1 부록 B).
 - 선행: **C-4**. Workspace에 두면 **C-7**도.
 
-### 8.11 결정 필요
-1. 레이어: Workspace(사용자 도구) 또는 Fabric(공용 서비스). Workspace면 C-7이 먼저다
-2. 회수 때 조직 · 저장소를 남길지 지울지
-3. SSH 포트를 열지
-4. 조직 목록 같은 "엔진 안 읽기"를 낼지. 지금 package-job은 변경 전용이고 자격을 받지 않는다. 내려면 C-5(읽기 Job 경로)가 필요하고, 합격 시험에 조회 전용 주체의 조직 가시 범위를 넣는다
+### 8.11 결정(D-98)
+1. 레이어 Fabric › 배포 묶음(C-7 안 함)
+2. 회수 때 조직 · 저장소를 남긴다
+3. SSH는 열지 않는다
+4. 조직 목록은 내지 않는다(C-5 안 함)
+- C-4 승인. 용량은 공통 한도 10(C-6 안 함)
+
 
 ## 9. Valkey(새 설계)
 
@@ -369,7 +379,7 @@
 - id `provider.valkey`, class provider, 레이어 Fabric, 원형 `stateful-engine/1`, 의존 없음
 - **P1 증명 대상:** Backbone 재빌드 · 이행 · RBAC 변경 없이 설치 · Claim 발급 · 회수 · 갱신이 되는지 보인다.
 
-### 9.2 제공 기능(승인 대상)
+### 9.2 제공 기능(승인됨)
 1. 키-값 인스턴스 만들기 · 지우기(프리셋 small · medium, 단일 노드)
 2. **키 범위 Claim:** 소비자는 자기 접두사(`<claim>:*`) 키만 읽고 쓰는 ACL 사용자를 받는다
 3. 상태 · 메모리 사용량 · 연결 수 보기
@@ -410,7 +420,7 @@
 - 소비자 키: `url` · `username` · `password` · `keyPrefix` · `ca.crt`
 - 발급: `ACL SETUSER <user> on >pw ~<prefix>:* -@all +@read +@write -@dangerous` + 영속(§9.11-1) → verify: TLS 로그인 + 범위 안 SET/GET(`connected`) + 범위 밖 키 거절
 - 회수: `ACL DELUSER <user>`(Valkey는 그 사용자로 인증된 **기존 연결도 끊는다**) → verify: 같은 자격 `WRONGPASS`(`auth_rejected`)
-- 용량: 지금 공통 한도 인스턴스당 10개로 시작한다. 64(안)가 필요하면 **C-6**
+- 용량: 공통 한도 인스턴스당 Claim 10개(D-98)
 
 ### 9.9 합격 시험
 - 격리: 설치 → 인스턴스 Ready · CA → Claim A · B 발급 → A가 B 접두사 키에 접근하면 거절 → A 회수 · 기존 연결 끊김 · `WRONGPASS` → 인스턴스 재시작 뒤 B 자격 · 데이터 유지, A는 여전히 거절 → 실행부 재시작 이음 → 0.1→0.2 갱신에 인스턴스 유지 → 삭제
@@ -421,9 +431,8 @@
 - 선행: **C-1**(또는 이미지의 HTTPS 준비 응답). P1을 Valkey로 증명하려면 이것을 먼저 정해야 한다.
 - 계약 v1 부록 B의 이름 목록 없이 설치 · Claim이 되는지가 P1의 핵심 확인이다.
 
-### 9.11 결정 필요
-1. **ACL 영속:** 재시작 뒤 Claim 사용자를 무엇으로 되살리나.
-   - (a) `aclfile`을 데이터 PVC에 두고 Job이 `ACL SAVE` — 엔진이 스스로 복원
-   - (b) 실행부가 기동 뒤 원장의 활성 Claim을 다시 발급 — 호스트 동작이 늘어남
-   - 권장 (a): 데이터 PVC의 쓰기 가능한 aclfile + Job이 엔진 명령으로 `ACL SAVE`(Job은 PVC 없음). 원형 init에 ACL 준비는 없지만, 승인된 이미지의 기동 코드가 첫 파일만 만들고 기존 파일은 덮지 않으면 호스트 변경이 필요 없다(Codex 확인)
-2. 퇴출 정책 기본값(`noeviction` 권장: 캐시가 아닌 저장소로 쓸 때 데이터가 조용히 사라지지 않게)
+### 9.11 결정(D-98)
+1. ACL 영속은 (a) 데이터 PVC의 aclfile + `ACL SAVE`
+2. 퇴출 정책 `noeviction`
+- C-1 승인. 용량은 공통 한도 10(C-6 안 함)
+

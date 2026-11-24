@@ -14,7 +14,7 @@
 | `development-source` | `os-backbone-development`, PVC 8Gi | Backbone 소스의 정본(main = 개발 main). 소스 러너(`os-backbone-source-ci`)는 이 주소로만 접속. PR · 보호 main · 게시 dispatch · 검사 영수증이 여기에 묶인다. D95-8에서 "제품 범위 밖" |
 | `backbone-gitea` | `os-backbone-system`, PVC 20Gi | Backbone 내장. `backbone-operator/OpenSphere-Backbone`의 main이 **`894b329`**(Setup `connect-git-read`가 고정한 커밋, 11-16 적용 영수증과 일치). Setup은 최초 등록 · 같은 등록 재개만 하고 한시 seed 쓰기 토큰은 반입 뒤 회수, Console에는 읽기 토큰만. D95-8에서 스토어 패키지로 바꾸고 걷어 내기로 했던 것 |
 
-- **확인된 어긋남(Codex #100):** 운영 Console은 `GITEA_URL=http://backbone-gitea:3000`이지만 `GITEA_OWNER=reference`로 되어 있어 `/repos/reference/OpenSphere-Backbone`을 찾는다(`features.rs`). 실제 사본은 `backbone-operator` 아래에 있다. 그래서 "Console이 내장 Gitea를 향한다"는 맞지만 "설치된 판의 소스를 정상으로 읽는다"는 확인되지 않았다. Core Deployment에는 Gitea 주소 환경 항목이 없다.
+- **Console 연결(2026-11-24 확인):** 운영 Console은 `GITEA_URL=http://backbone-gitea:3000`, `GITEA_OWNER`는 Secret 참조이고 **실제 값은 `backbone-operator`**(Setup 기본값과 같음)다. 내장 Gitea에는 사용자 `backbone-operator` · 저장소 `backbone-operator/opensphere-backbone` · 그 사용자의 읽기 토큰 하나가 있다. (Codex #100의 "`GITEA_OWNER=reference` 어긋남"은 관측 스크립트가 Secret 참조를 값으로 잘못 적은 것으로 정정했다.) 실제 화면에서 저장소 · main이 보이는지는 SS2의 소스 바인딩 검증으로 확인한다. Core Deployment에는 Gitea 주소 환경 항목이 없다.
 - 그대로 가면 고객 설치본에는 R2D2가 자체 업데이트에 쓸 소스가 없다. 원칙이 개발 현장에서만 성립한다.
 
 ## 1. 결정(D-101)
@@ -80,13 +80,13 @@
 | # | 단위 | 내용 |
 |---|---|---|
 | SS1 | 자체 소스 정체 · 서명된 반입 계약 | 설치본 · 역할에 릴리스 / BOM digest와 **구성요소별** sourceRevision을 고정한다(A-2에서도 Core API · Console과 이벤트 컨테이너의 판이 다르다. main SHA 하나가 모든 바이너리를 대표한다고 쓰지 않는다). Git bundle의 tag · ref · tree, 전체 · 증분 범위, 잠금 파일 · 외부 입력, 크기 · 형식 검증. `packages/<공급자>/<이름>`은 논리 정체이고 실제 owner/repo 바인딩을 명시 |
-| SS2 | 설치본 관리 Gitea와 반입 · 재개 | 기존 Gitea 객체 유지. 새 Setup 설치는 처음부터 정확한 소스 인벤토리. 기존 사본은 독립 ref로 새 반입을 실증한 뒤 기본 조회를 옮긴다. **먼저 읽기 전용 설치본 모드로 소스 SHA · 서명 · Console Git/CI 연결(위 `reference` 어긋남 포함)을 증명** |
+| SS2 | 설치본 관리 Gitea와 반입 · 재개 | 기존 Gitea 객체 유지. 새 Setup 설치는 처음부터 정확한 소스 인벤토리. 기존 사본은 독립 ref로 새 반입을 실증한 뒤 기본 조회를 옮긴다. **먼저 읽기 전용 설치본 모드로 소스 SHA · 서명 · Console Git/CI 연결을 증명** |
 | SS3 | 브랜치 · PR 제안과 G1 분리 | Console reader · 반입자 · 브랜치/PR writer · 보호 정책 관리자 · runner · signer를 나눈다. 보호 ref 쓰기 · merge · 관리 API · 범위 밖 저장소 호출 거절 시험. R2D2 쓰기는 D-102 순서(위임 → 제안)를 따른다. 소스가 있다는 사실로 쓰기를 열지 않는다 |
 | SS4 | 현장 빌드 · 출판 · Backbone 승인 | 기본 꺼짐을 먼저 입증. 켤 때는 HISS 격리 빌드, 외부 코드는 품질 표준 격리 기준. PR 코드가 CI 검사 · 게시 경로 · 운영자 정책을 바꾸지 못하게. 허용 빌더(GitHub · Gitea) 정의. 패키지와 Backbone 갱신의 승인 · 서명을 따로 실증 |
 | SS5 | 보존 · 장애 격리 | 관리 Gitea나 R2D2가 멈춰도 승인된 이미지 · 정의 · 복구 지침으로 관리 기능을 되살리는 시험. 사용자용 `delivery.gitea`와 관리 자체 소스가 계정 · PVC · 빌드 자격 · 망 · 원장 · 복구에서 분리되고, 한쪽 회수가 다른 쪽을 막지 않음 |
 
 ### 7.1 다른 단위와의 순서
-- **SS1 · SS2(읽기 전용)는 MS3a 다음에 바로 한다.** 지금 운영 Console이 내장 Gitea의 다른 소유자(`reference`)를 찾는 어긋남을 SS2에서 바로잡는다.
+- **SS1 · SS2(읽기 전용)는 MS3a 다음에 바로 한다.** SS2에서 Console Git/CI · Nexus adapter · 지식 수집 · source webhook이 같은 설치본 소스 좌표를 실제로 읽는지 검증한다.
 - SS3은 G1(사용자용 Gitea 패키지)보다 먼저 한다(G1이 관리 Gitea를 걷어 내지 않도록 경계를 먼저 세운다). R2D2의 쓰기는 D-102 순서(P1 뒤 위임 → 제안)를 따른다.
 - SS4는 MS7(로컬 스토어를 포함한 다중 스토어 게시 실증) 뒤다.
 - SS5는 P2(운영 전환) 전에 한다.

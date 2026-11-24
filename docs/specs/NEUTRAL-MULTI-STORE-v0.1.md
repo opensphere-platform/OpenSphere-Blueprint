@@ -2,6 +2,7 @@
 
 **상태:** 초안(2026-11-24). 소유자 "권장안으로 작성"에 따라 권장안으로 썼다. Codex 검토 뒤 소유자 승인을 받아 결정 대장에 올린다(D-99 예정).
 **작성:** Claude. 구현 관점 검토는 Codex.
+**짝 문서:** [패키지 작성 · 품질 표준 v0.1](PACKAGE-AUTHORING-QUALITY-v0.1.md)(가이드라인 · 품질 등급 · SDK · MCP · GitHub 구성)
 **관련:** D-95(OS 통합, 재빌드 0회), D-96(데이터 보존 없음), D-98([OS 통합 계약 v1](OS-INTEGRATION-CONTRACT-v1.md) · [모듈 통합 명세](MODULE-INTEGRATION-SPECS-v0.1.md))
 **기준 코드:** Backbone main `de81f3a`(운영 반영, 2026-11-24)
 

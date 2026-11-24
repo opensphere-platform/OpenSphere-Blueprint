@@ -286,6 +286,8 @@
 - DB · 디렉터리 Claim의 소비자 Secret · CA를 엔진에 넣는 길이 지금 없다 → **C-4**(패키지 간 Claim 소비, E7)
 - 두 단계를 구분한다
   - E5b-2: 지금 Keycloak의 DB 연결을 새 DB Claim의 JDBC `verify-full`로 옮겨 검증한다(지금은 `sslmode=require`)
+    - 격리 JDBC 검증 통과(2026-11-24, 기준 eb3658b): 실제 발급 Claim으로 Ready, 잘못된 호스트 · 다른 CA는 TLS 거절
+    - **그룹 결합(#85):** 이미 Ready인 PostgreSQL을 쓰는 3단계 그룹만 연다. 접수 때 CA 지문 · 인스턴스 UID · Claim 입력을 계획 digest에 고정하고 승인 웹훅이 실행 때 대조한다. 그룹 안에서 PostgreSQL을 새로 만드는 4단계는 열지 않는다(승인 뒤에 생기는 값을 실행 중에 확정하지 않는다). Ready PostgreSQL이 없으면 서버가 거절하고 사유를 보인다
   - E7: 원형 Keycloak이 Claim을 소비하는 공통 결합
 - 준비 판정: Keycloak은 HTTPS 관리 포트가 있어 지금 원형으로 된다(포트 · 경로 확인)
 

@@ -377,7 +377,8 @@
 
 
 ### 8.12 알림 · 로그(v1.1 초안)
-- 선언 이벤트: `delivery.gitea.not-ready`(critical, `instance.notReady` 300초), `delivery.gitea.disk-pressure`(warning, `k8s.event` reason과 대상 kind는 구현 때 확정)
+- 선언 이벤트: `<정체>.not-ready`(critical, `instance.notReady` 300초). id 접두사는 G1 때의 정본 패키지 정체로 정한다(#95 B).
+- Kubernetes Event 기반 이벤트는 인스턴스가 소유한 객체에서 증명할 수 있는 reason이 정해질 때 더한다(노드 DiskPressure는 쓰지 않는다).
 - 로그: `json`, 필드 이름은 고른 Gitea 판의 로그 형식으로 확정
 
 ## 9. Valkey(새 설계)
@@ -444,5 +445,6 @@
 - C-1 승인. 용량은 공통 한도 10(C-6 안 함)
 
 ### 9.12 알림 · 로그(v1.1 초안)
-- 선언 이벤트: `provider.valkey.not-ready`(critical, `instance.notReady` 120초), `provider.valkey.memory-full`(warning, `k8s.event` 또는 `startup.problem` 중 구현 때 확정)
+- 선언 이벤트: `provider.valkey.not-ready`(critical, `instance.notReady` 120초). P1은 이 Ready 전이로 시험한다.
+- 메모리 부족(`noeviction`이 돌려주는 오류)은 Kubernetes Event나 `startup.problem`이 자동으로 관측하는 사실이 아니다. 관측 원천이 정해진 뒤 더한다(#95 B).
 - 로그: `text`(Valkey 기본 로그 형식), 수준 거름 없음

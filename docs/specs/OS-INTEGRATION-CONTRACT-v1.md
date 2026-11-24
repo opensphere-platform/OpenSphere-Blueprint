@@ -183,7 +183,7 @@
 
 - **원형이 고정하는 것(문서로 바꿀 수 없음):** 객체 이름 · 순서 · 라벨, 보안 컨텍스트(non-root · seccomp · capabilities 전부 drop · 토큰 없음), 준비 · 삭제 완료 판정, namespace(`os-backbone-mod-<module>`)
 - **`stateful-engine/1`의 고정 제약(새 엔진이 먼저 부딪히는 곳)**
-  - 준비 판정은 엔진 **단일 포트에 HTTPS GET**이다. RESP(Valkey) · LDAP(Samba AD)처럼 HTTP가 아닌 TLS 포트는 판정할 수 없다 → 부록 C-1
+  - 준비 판정은 엔진 **단일 포트에 HTTPS GET**이다(renderer /1). RESP(Valkey) · LDAP(Samba AD)처럼 HTTP가 아닌 TLS 포트는 C1의 `readiness {mode:"tls"}`(renderer /2)를 쓴다: kubelet tcpSocket으로 포트 개방을 보고, 실행부가 Service DNS · 사슬 · CA 지문을 확인한 뒤 Ready로 기록한다. 앱 프로토콜 바이트는 보내지 않고 클라이언트 인증서도 내지 않는다(#86)
   - StatefulSet마다 데이터 PVC 템플릿을 늘 만들고, TLS 초기화도 데이터 경로를 쓴다. 데이터 PVC 없는 엔진은 지금 없다 → 부록 C-3
   - `envFrom`은 인스턴스 자신의 자격에만 쓴다. 다른 패키지 Claim의 소비자 Secret을 엔진에 넣는 길은 없다 → 부록 C-4
   - 고정 init 단계는 TLS 준비뿐이다. 엔진이 PVC에 첫 파일을 만들어야 하면 승인된 이미지의 기동 코드가 해야 한다(기존 파일은 덮지 않음)
@@ -236,6 +236,8 @@
   - StackGres는 발급마다 참조 두 개를 쓰는 것을 감안해 참조 공간(127쌍) 예산도 확인한다.
   - 모듈별로 다른 한도가 필요하면 프로필 · 원장 · 화면이 같은 값을 집행하는 공통 계약이 먼저다 → 부록 C-6
 - **회수된 패키지:** 패키지 코드 없이 소비자 Secret 삭제 · 망 차단 · 원장 종료로 끊는다. 엔진 안 정리는 "정리 대기"다. 멈춘 설치본이어도 원래 발급 기록만으로 끊는다.
+- **패키지 간 소비(E7a, C-4, #86):** 소비 패키지는 자기 설치 namespace의 불변 소비자 Secret만 받는다(키는 secretKeyRef, CA는 읽기 전용 파일). 이미 Ready인 상류와 발급 → 소비 생성을 MFA 한 번의 그룹으로 고정한다. 사용 중인 Claim 단독 회수와 상류 인스턴스 삭제는 `osr_claim_in_use`로 거절한다.
+  - **남는 위험(수용):** 상류 패키지가 회수돼도 소비 Pod를 자동으로 멈추지 않는다(자동 쓰기 권한을 만들지 않음). 새 발급 · 소비 생성 · 재연결은 바로 거절되지만, 이미 맺은 연결과 재기동은 소유자가 MFA로 정지 · 차단을 승인할 때까지 남을 수 있다.
 
 ### 7.5 TLS · CA
 - **stateful-engine:** Claim이나 인스턴스 망을 쓰는 명령에 CA 기준이 필요할 때, 최초 생성 준비 또는 교체 복구 뒤 실행부가 엔진이 내보낸 사슬(leaf + 자기서명 CA)을 받아 Service DNS로 검증하고 사슬 · 지문을 원장에 기록한다. `<name>-ca` ConfigMap은 write-once다. 채택할 때는 기존 자격 · CA를 그대로 둔다. 이후 지문이 바뀌면 거절한다.

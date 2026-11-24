@@ -5,6 +5,7 @@
 **잇는 문서:** [OS 통합 재작성 v0.1](OS-INTEGRATION-REWRITE-v0.1.md)(D-95 · D-96) §3.5 · §6
 **기준:** A2UI 사양 v1.0(https://a2ui.org/specification/v1.0-a2ui/, 2026-06), Apache-2.0
 **역할:** 정의 · 검수 · 반영은 Claude, 구현은 Codex, 결정은 소유자다.
+**관련 검토:** [A2UI 도입 정책 제안서와의 비교 v0.1](../reviews/A2UI-PROPOSAL-COMPARISON-v0.1.md)(2026-11-24). 이 표준은 바뀌지 않는다. 다음 판 후보로 데이터 모델 증분 갱신 · 카탈로그 확장 후보를, Governance · Workspace 층 과제로 역할별 화면 정책을 남겼다.
 
 ## 1. 결정
 

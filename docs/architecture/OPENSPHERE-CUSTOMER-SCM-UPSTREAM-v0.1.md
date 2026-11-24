@@ -174,11 +174,11 @@ SCM 코어에 필요한 것은 **사원이 쓰는 후방 공급망 업무 전체
 | 헤드리스 API | REST/JSON-RPC | REST·GraphQL(헤드리스 API) | GraphQL / REST (헤드리스 전용) |
 | 라이선스 | LGPL-3.0 | LGPL-2.1 (DXP 상용 별도) | BSD-3 / MIT |
 | 운영 부담 | 중간 | **큼**(Java·OSGi, 메모리·검색 엔진 의존, 학습 곡선) | 작음 |
-| 화면 정책(Angular·Clarity) 정합 | 별도 UI | 별도 UI(Clay) | 자체 포털 UI라 정책 준수 쉬움 |
+| 화면 정책(Angular·Carbon) 정합 | 별도 UI | 별도 UI(Clay) | 자체 포털 UI라 정책 준수 쉬움 |
 
 **의미:**
 - **Liferay는 고객 영역에서 세 가지를 한 번에 대체할 수 있는 후보다.** 헤드리스 커머스 계층(Saleor/Medusa), 고객·협력사 포털 UI(자체 개발), CMS(재선정)가 그것이다. B2B 계정·주문 승인·사이트·콘텐츠가 이미 있어 **개발량이 크게 줄어든다.**
-- 대신 운영이 무겁다. 화면이 OpenSphere UI 정책(Angular·Clarity)과 다른 Liferay UI라는 점도 걸린다. 이미 정한 "헤드리스 커머스 + 자체 포털"(D-71)과는 방향이 다르다.
+- 대신 운영이 무겁다. 화면이 OpenSphere UI 정책(Angular·Carbon)과 다른 Liferay UI라는 점도 걸린다. 이미 정한 "헤드리스 커머스 + 자체 포털"(D-71)과는 방향이 다르다.
 - **후방 SCM 코어로는 여전히 Odoo(또는 ERPNext·OFBiz)가 필요하다.** Liferay와 Odoo는 경쟁이 아니라 **조합**이다(Liferay 고객 영역 ↔ API·이벤트 ↔ Odoo 코어).
 
 ### 8.4 결정 선택지

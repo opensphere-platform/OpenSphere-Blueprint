@@ -82,7 +82,7 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 
 ## 6. SDK · CLI
 
-- **배포처: 소유자 결정 대기(Q-7).** GitHub Packages의 npm은 공개 패키지도 설치에 인증을 요구하고, scope가 계정 이름과 같아야 한다(`@triangles-store/...`). 근거: [GitHub Packages npm](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry)
+- **배포처: 소유자 결정(Q-7, 2026-11-24): npmjs.org 공개 scope + npm provenance.** npm 조직 계정(이름 사용 가능 여부 확인 포함)은 소유자가 만든다. GitHub Packages의 npm은 공개 패키지도 설치에 인증을 요구하고, scope가 계정 이름과 같아야 한다(`@triangles-store/...`). 근거: [GitHub Packages npm](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry)
   - (가) npmjs.org 공개 scope(예: `@triangles`) + npm provenance — 인증 없이 설치, 표준 경로. npm 조직 계정이 필요하다(권장)
   - (나) GitHub Release의 검증 가능한 tarball + 빌드 증명 — 계정 추가 없음, 설치가 불편하다
   - (다) GitHub Packages npm — 설치마다 토큰이 필요하다
@@ -161,7 +161,7 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 | Q-4 | 외부 코드는 호스티드 러너 일회용 클러스터에서만. 운영 RKE2 러너는 쓰지 않는다 |
 | Q-5 | 빌드 증명은 GitHub Artifact Attestations, 허용 워크플로 정체성으로 `trustedBuilders`를 대신한다 |
 | Q-6 | Store SDK MCP는 로컬 stdio · 읽기 전용 · 키 없음 · 파일 쓰기 · 제출 없음. 원격 호스팅 없음 |
-| Q-7 | **SDK 배포처: 소유자 결정 대기.** 권장 (가) npmjs.org 공개 scope + npm provenance(§6) |
+| Q-7 | **SDK 배포처: npmjs.org 공개 scope + npm provenance**(소유자 결정 2026-11-24) |
 
 ## 11. 구현 순서(다중 스토어 MS 단위와 함께)
 
@@ -183,7 +183,7 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 4. **품질 보고서:** 공개 보고서에는 digest · 도구/정책판 · 시험 요약 · 예외 만료만 넣고, 지원 중인 판과 폐기 뒤 정한 기간(예: 1년) 보존한다. 보안 신고 · 세부 빌드 로그 · 내부 주소 · 계정 자료는 제한된 저장소에 짧게 따로 보존한다. 회수 · 대체된 판도 공개 영수증으로 추적한다.
 5. **다른 제품의 검사:** 제품별 **별도 check**로 한다. 중립 판정과 독립된 제품 check 이름과 고정 OCI를 운영자 데이터로 등록한다. 제출자가 Universe 봇 프로세스 안에 검증 플러그인을 넣을 수 없다. 다른 제품이 선언하지 않은 항목을 그 제품에 강요하지 않는다.
 
-## 13. 소유자 결정 대기
+## 13. 소유자 결정
 
-- **Q-7 SDK 배포처**(§6): (가) npmjs.org 공개 scope + provenance(권장) / (나) GitHub Release tarball / (다) GitHub Packages npm
-- Q-1~Q-6은 권장안대로 썼다. 승인되면 다중 스토어와 함께 D-99로 올린다
+- **Q-7(2026-11-24):** SDK는 npmjs.org 공개 scope + npm provenance로 낸다(권장안). npm 조직 계정은 소유자가 만든다.
+- Q-1~Q-6은 권장안대로 썼다. 소유자 승인 뒤 다중 스토어와 함께 D-99로 올린다.

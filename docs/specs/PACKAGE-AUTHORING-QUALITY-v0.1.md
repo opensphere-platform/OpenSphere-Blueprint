@@ -82,8 +82,8 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 
 ## 6. SDK · CLI
 
-- **배포처: 소유자 결정(Q-7, 2026-11-24): npmjs.org 공개 scope + npm provenance.** npm 조직 계정(이름 사용 가능 여부 확인 포함)은 소유자가 만든다. GitHub Packages의 npm은 공개 패키지도 설치에 인증을 요구하고, scope가 계정 이름과 같아야 한다(`@triangles-store/...`). 근거: [GitHub Packages npm](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry)
-  - (가) npmjs.org 공개 scope(예: `@triangles`) + npm provenance — 인증 없이 설치, 표준 경로. npm 조직 계정이 필요하다(권장)
+- **배포처: 소유자 결정(Q-7, 2026-11-24): npmjs.org 공개 scope + npm provenance, 패키지 이름 `@triangles-store/store-sdk`.** npm 조직 `triangles-store`는 소유자 계정 `triangles-devops`가 owner다(2026-11-24 확인). npm 조직 `triangles`는 Triangles와 관계없다(소유자 확인). 게시는 npm Trusted Publishing(GitHub Actions OIDC)으로 하고 오래 가는 게시 토큰을 두지 않는다. GitHub Packages의 npm은 공개 패키지도 설치에 인증을 요구하고, scope가 계정 이름과 같아야 한다(`@triangles-store/...`). 근거: [GitHub Packages npm](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry)
+  - (가) npmjs.org 공개 scope(`@triangles-store`) + npm provenance — 인증 없이 설치, 표준 경로. npm 조직 계정이 필요하다(권장)
   - (나) GitHub Release의 검증 가능한 tarball + 빌드 증명 — 계정 추가 없음, 설치가 불편하다
   - (다) GitHub Packages npm — 설치마다 토큰이 필요하다
 - CLI `tstore`, `gh` 확장 `gh store`(CLI를 감쌈)
@@ -161,7 +161,7 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 | Q-4 | 외부 코드는 호스티드 러너 일회용 클러스터에서만. 운영 RKE2 러너는 쓰지 않는다 |
 | Q-5 | 빌드 증명은 GitHub Artifact Attestations, 허용 워크플로 정체성으로 `trustedBuilders`를 대신한다 |
 | Q-6 | Store SDK MCP는 로컬 stdio · 읽기 전용 · 키 없음 · 파일 쓰기 · 제출 없음. 원격 호스팅 없음 |
-| Q-7 | **SDK 배포처: npmjs.org 공개 scope + npm provenance**(소유자 결정 2026-11-24) |
+| Q-7 | **SDK 배포처: npmjs.org `@triangles-store/store-sdk` + npm provenance, 게시는 Trusted Publishing**(소유자 결정 2026-11-24) |
 
 ## 11. 구현 순서(다중 스토어 MS 단위와 함께)
 

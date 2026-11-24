@@ -1,6 +1,6 @@
 # 모듈 통합 명세 v0.1
 
-**상태:** 초안(2026-11-24). 모듈마다 **제공 기능(§x.2)은 소유자 승인 대상**이다. 나머지는 [OS 통합 패키지 계약 v1](OS-INTEGRATION-CONTRACT-v1.md)을 이 모듈에 적용한 결과다.
+**상태:** 초안 2판(2026-11-24, Codex 검토 #82 반영). 모듈마다 **제공 기능(§x.2)은 소유자 승인 대상**이다. 나머지는 [OS 통합 패키지 계약 v1](OS-INTEGRATION-CONTRACT-v1.md)을 이 모듈에 적용한 결과다.
 **작성:** Claude. 구현 관점 검토는 Codex.
 **기준 코드:** Backbone main `5ea0c0a`(운영 반영), PR 194(검수 중)는 밝혀 적는다.
 
@@ -27,6 +27,10 @@
 | x.9 합격 시험 | 격리에서 무엇을 보이면 합격인가 |
 | x.10 지금과 차이 | 운영 판과 목표의 차이, 그 차이를 메울 단위 |
 | x.11 결정 필요 | 소유자에게 묻는 것 |
+
+**`status` · `inspect`:** 모든 모듈에 공통인 archetype 읽기다. 출력은 원장 사실의 투영(설치본 · 번들 digest · 판 · 활성 상태 · 인스턴스 이름, inspect는 namespace)이고, 엔진 상태는 화면 원천 `instance.*`로 본다(계약 v1 §5).
+
+**호스트 변경 후보:** "C-n"은 계약 v1 부록 C의 항목이다. 그 항목이 Backbone에 들어가기 전에는 해당 기능을 낼 수 없다.
 
 **effect 표기:** `none` 읽기 · `read-cost` 비용 있는 읽기 · `mutation` 변경(MFA) · `destructive` 파괴(MFA, 승인자 명단이 있으면 P3 독립 승인).
 
@@ -100,8 +104,9 @@
 ### 3.10 지금과 차이
 - 운영은 레거시 판(계약 1.1 고정 틀, 실행 문서 없음, 프로필 `provider.stackgres-pg` 0.5.0)이다.
 - PR 194가 새 판을 낸다. 검수에서 확인할 것:
-  - **세부 화면에서 Claim 발급 · 회수 · 인스턴스 삭제를 할 수 없다.** `actions[]`에 `instance.create`만 있고 `CommandButton`도 없다 → `claim.issue` · `claim.release` · `instance.delete`를 넣는다
-  - 프로필 `provider.stackgres-operator`가 프로필 디렉터리에 없고 시험 벡터에만 있다 → 프로필 판 계획(#80)
+  - 세부 화면의 `claim.issue` · `claim.release` · `instance.delete`를 서명된 `actions[]`와 CommandButton으로 넣었다(da7e099).
+  - 프로필 원천 `infra/contracts/osr/profiles/provider.stackgres-operator.json`을 더했다. 운영 Claim Job digest는 별도 승인이 남아 `jobImages`가 비어 있다. 그 전에는 Job을 선언한 운영 번들이 판정을 통과하지 않는다.
+  - 격리 RKE2(번들 `sha256:003648d2…`): TLS Secret 응답 유실 복구 뒤 Ready, `verify-full` 읽기 · 쓰기, 실행부 재시작 뒤 같은 Job UID, 일반 · 복구 뒤 회수 `auth_rejected`, 기존 세션 종료, 삭제 · 정리 통과
 - E5b-2 나머지: Keycloak의 그룹 의존을 새 DB Claim(`verify-full`)으로 옮긴 뒤 Rust · CLI `cluster.create` 영수증 분기를 지운다.
 
 ### 3.11 결정 필요
@@ -224,10 +229,13 @@
 - 지금 없다(extension 없음) → A2UI 1.3 개요 · 세부(overview · connection(LDAPS 주소 · CA) · storage · events · claims · documentation)
 
 ### 6.7 실행
-- **#79 결정:** non-root를 먼저 시도한다. 안 되면 운영자 프로필에 capability 허용 목록을 두고 원형이 그 범위만 허용한다(privileged · hostPath · hostNetwork는 계속 금지). 후자는 원형 변경 = 호스트 변경
+- 지금 이미지의 capability 7개(CHOWN · DAC_OVERRIDE · FOWNER · SETUID · SETGID · NET_BIND_SERVICE · KILL)는 원형에서 전부 drop된다.
+- **#79 결정:** non-root를 먼저 격리에서 시험한다. 실제로 필요할 때만 **C-8**(서명 프로필의 닫힌 capability 선택 + 원형 변경)을 검토한다. privileged · hostPath · hostNetwork는 계속 금지다.
+- 준비 판정: LDAP는 HTTPS가 아니다 → **C-1** 또는 C-2의 LDAP 준비 판정
+- 지금 Claim 보조 프로세스(`claims.py`)는 Kubernetes API로 Secret을 읽는다. 토큰 없는 원형에서는 그대로 못 쓴다 → issue · release Job이 LDAPS 또는 관리 인터페이스로 발급하도록 다시 설계한다
 
 ### 6.8 Claim
-- 종류 `directory-bind`, scheme: **목록에 `ldaps`가 없다** → scheme 추가 = 호스트 변경
+- 종류 `directory-bind`, scheme: 목록에 `ldaps`가 없다. 636은 포트 하한(1024) 밖이다 → **C-2**(scheme · LDAP 준비 판정 · 승인된 상위 포트)
 - 소비자 키(안): `url` · `bindDN` · `password` · `baseDN` · `ca.crt`
 - 발급 → verify: LDAPS 바인드 + 기준 DN 검색(`connected`)
 - 회수 → verify: 같은 자격의 `invalidCredentials`(49)만 `auth_rejected`
@@ -236,7 +244,7 @@
 - 발급 · 회수 · 재시작 뒤 도메인 유지 · Keycloak 연동
 
 ### 6.10 지금과 차이
-- 실행 문서 · 화면이 없다. 원형으로 옮기려면 §6.7 · §6.8의 호스트 변경 두 가지가 먼저다.
+- 실행 문서 · 화면이 없다. 원형으로 옮기려면 C-1 · C-2가 먼저이고, non-root가 안 되면 C-8도 필요하다. Claim Job을 새로 설계한다.
 
 ### 6.11 결정 필요
 1. 실행: non-root 시험 결과를 보고 정한다(Codex가 격리에서 먼저 확인)
@@ -269,9 +277,12 @@
 - 지금 없다 → A2UI 1.3 개요 · 세부(overview · connection(발급자 주소 · CA) · dependencies(DB · 디렉터리 Claim 상태) · events · claims · documentation)
 
 ### 7.7 실행
-- 원형 `stateful-engine/1`(안). Keycloak은 데이터 PVC가 필요 없다 → 원형이 "데이터 PVC 없음"을 허용하는지 확인(아니면 호스트 변경)
-- DB 연결: 새 DB Claim의 `ca.crt`로 JDBC `verify-full`(지금은 `sslmode=require`)
-- 디렉터리: Samba AD Claim의 LDAPS + CA
+- 원형 `stateful-engine/1`(안). 지금 원형은 데이터 PVC를 늘 만든다. 쓰지 않는 PVC를 감수하거나 **C-3**(데이터 PVC 없는 선택)을 연다
+- DB · 디렉터리 Claim의 소비자 Secret · CA를 엔진에 넣는 길이 지금 없다 → **C-4**(패키지 간 Claim 소비, E7)
+- 두 단계를 구분한다
+  - E5b-2: 지금 Keycloak의 DB 연결을 새 DB Claim의 JDBC `verify-full`로 옮겨 검증한다(지금은 `sslmode=require`)
+  - E7: 원형 Keycloak이 Claim을 소비하는 공통 결합
+- 준비 판정: Keycloak은 HTTPS 관리 포트가 있어 지금 원형으로 된다(포트 · 경로 확인)
 
 ### 7.8 Claim
 - 종류 `oidc-client`(안), scheme `https`
@@ -284,6 +295,7 @@
 
 ### 7.10 지금과 차이
 - 실행 문서 · 화면 · OIDC Claim이 없다. E5b-2에서 DB 의존을 새 Claim으로 옮기는 것이 먼저다(§3.10).
+- 원형으로 옮기려면 C-4가 필요하고, PVC 없이 돌리려면 C-3이 필요하다.
 
 ### 7.11 결정 필요
 1. OIDC 클라이언트를 Claim으로 낼지(권장: 그렇다. 앱마다 회수가 된다)
@@ -292,7 +304,8 @@
 ## 8. Gitea(새 설계)
 
 ### 8.1 정체
-- id `delivery.gitea`(안), class provider, 원형 `stateful-engine/1`
+- id `delivery.gitea`(안), class `provider`, 원형 `stateful-engine/1`
+  - id의 `delivery` 접두사와 class는 별개 필드다. class를 `delivery`로 정하면 지금 스토어 설치가 거절된다(접수 클래스는 ui · provider).
 - 의존: PostgreSQL Claim(종류 `database`) 하나
 - **Backbone 자신의 Gitea(개발 원천 · CI)와 다른 것이다.** Backbone Gitea는 OS 구성요소이고 스토어로 설치하지 않는다. 이 패키지는 사용자 · 작업 공간이 쓰는 Git 저장소를 낸다.
 
@@ -314,10 +327,9 @@
 
 | id | effect | 경로 | 내용 |
 |---|---|---|---|
-| `delivery.gitea.status` | none | archetype | Ready · 판 · 재시작 |
-| `delivery.gitea.inspect` | none | archetype | 프리셋 · 저장 · TLS 지문 |
+| `delivery.gitea.status` · `.inspect` | none | archetype | 원장 사실 투영(§0) |
 
-인스턴스 · Claim 변경은 호스트 동작으로만 한다. 조직 목록 같은 엔진 안 읽기는 §8.11-4.
+인스턴스 · Claim 변경은 호스트 동작으로만 한다. 조직 목록 같은 엔진 안 읽기는 지금 낼 수 없다(§8.11-4, C-5).
 
 ### 8.6 화면(A2UI 1.3)
 - 개요: kpis(인스턴스 수 · Ready) · 인스턴스 표(동작 `claim.issue` · `instance.delete`) · Claim 표(`claim.release`) · `instance.create`
@@ -325,7 +337,8 @@
 
 ### 8.7 실행
 - 엔진: Gitea 공식 rootless 이미지(프로필 digest), uid 1000, 포트 3000(https, 자기서명 사슬 · 실행부 CA 수집)
-- 설정: `app.ini` ConfigMap, DB 연결은 PostgreSQL Claim 소비자 Secret을 env로(`verify-full`)
+- 설정: `app.ini` ConfigMap
+- DB 연결: PostgreSQL Claim의 소비자 Secret · CA를 엔진에 넣어야 한다 → **C-4**(Keycloak과 같은 공통 계약). 그 전에는 Gitea를 원형으로 낼 수 없다
 - 저장: 데이터 PVC 1(저장소 · LFS), 프리셋별 10Gi · 50Gi
 - SSH: 열지 않는다(https만). 필요하면 결정 필요
 
@@ -334,20 +347,21 @@
 - 소비자 키: `url` · `org` · `token` · `ca.crt`
 - 발급: 조직 생성(없으면) + 그 조직 범위 토큰 발급 → verify: 토큰으로 TLS 로그인 + 저장소 생성 · 읽기(`connected`)
 - 회수: 토큰 삭제 → verify: 같은 토큰이 **401**(`auth_rejected`). 조직 · 저장소는 남긴다(정리 대기 아님, 소유자 결정 §8.11)
-- 용량: 인스턴스당 조직 50(안), 계획 때 확인
+- 용량: 지금 공통 한도는 인스턴스당 Claim 10개다. 50(안)이 필요하면 **C-6**
 
 ### 8.9 합격 시험
 - 격리: PostgreSQL Claim 소비 → 인스턴스 Ready · CA → 조직 Claim 발급 · push · clone → 회수 · 401 → 다른 조직 토큰으로 접근 거절 → 실행부 재시작 이음 → 인스턴스 삭제
 
 ### 8.10 지금과 차이
-- 패키지 없음. G1 단위로 만든다. 원형 · scheme `https`는 이미 있다.
-- 호스트 계약의 `nativeInstanceSlugs` · `actionProfiles`에 이름을 더해야 하는지 확인한다(계약 v1 부록 B). 더해야 한다면 호스트 변경이다.
+- 패키지 없음. G1 단위로 만든다. 원형 · scheme `https` · 준비 판정(HTTPS)은 이미 된다.
+- 이름 목록(`nativeInstanceSlugs` · `actionProfiles`)에 더할 필요 없음(계약 v1 부록 B).
+- 선행: **C-4**. Workspace에 두면 **C-7**도.
 
 ### 8.11 결정 필요
-1. 레이어: Workspace(사용자 도구) 또는 Fabric(공용 서비스)
+1. 레이어: Workspace(사용자 도구) 또는 Fabric(공용 서비스). Workspace면 C-7이 먼저다
 2. 회수 때 조직 · 저장소를 남길지 지울지
 3. SSH 포트를 열지
-4. 조직 목록 같은 "엔진 안 읽기"를 Shell 명령으로 낼지. 지금 계약은 읽기 package-job을 허용하지 않는다(효과 없는 읽기도 Job 이미지가 엔진 자격을 받기 때문). 내려면 계약 v1에 "읽기 Job" 종류를 따로 정해야 한다 = 호스트 변경
+4. 조직 목록 같은 "엔진 안 읽기"를 낼지. 지금 package-job은 변경 전용이고 자격을 받지 않는다. 내려면 C-5(읽기 Job 경로)가 필요하고, 합격 시험에 조회 전용 주체의 조직 가시 범위를 넣는다
 
 ## 9. Valkey(새 설계)
 
@@ -383,8 +397,11 @@
 - 세부 탭: overview · connection(`rediss` 주소 · CA 지문) · storage · monitoring(메모리 · 연결 · 명령률) · events · claims · documentation
 
 ### 9.7 실행
-- 엔진: Valkey 공식 이미지(프로필 digest). 이미지 기본 uid 999는 원형 하한(1000) 밖이라 uid 1000으로 실행한다(데이터 디렉터리 권한 확인 필요). 평문 포트는 끄고(`port 0`) TLS 포트 6380만 연다
-- 설정: `valkey.conf` ConfigMap(`tls-port`, `port 0`, `appendonly yes`, `maxmemory` 프리셋, `aclfile`은 쓰지 않고 실행 중 ACL)
+- 엔진: Valkey 공식 이미지(프로필 digest). 이미지 기본 uid 999는 원형 하한(1000) 밖이라 uid 1000으로 실행한다.
+  - upstream 진입점은 임의 non-root를 허용하지만 디렉터리 권한을 고쳐 주지 않는다. 고른 digest · 실제 PVC로 uid 1000 기동 · 저장 · 재기동을 검증한다.
+- 평문 포트는 끄고(`port 0`) TLS 포트 6380만 연다
+- **준비 판정:** 원형은 엔진 포트에 HTTPS GET을 하는데 Valkey TLS 포트는 RESP다 → **C-1**(공통 TLS/TCP 준비 판정)이 먼저이거나, 이미지가 계약에 맞는 HTTPS 준비 응답을 따로 내야 한다. `rediss` scheme만으로는 해결되지 않는다
+- 설정: `valkey.conf` ConfigMap(`tls-port`, `port 0`, `appendonly yes`, `maxmemory` 프리셋, `aclfile`은 데이터 PVC — §9.11-1 (a))
 - 기본 사용자 `default`는 끈다(`ACL SETUSER default off`). 관리 사용자는 `engine-auth`의 자격
 - 저장: 데이터 PVC 1(AOF), 프리셋별 2Gi · 10Gi
 
@@ -393,7 +410,7 @@
 - 소비자 키: `url` · `username` · `password` · `keyPrefix` · `ca.crt`
 - 발급: `ACL SETUSER <user> on >pw ~<prefix>:* -@all +@read +@write -@dangerous` + 영속(§9.11-1) → verify: TLS 로그인 + 범위 안 SET/GET(`connected`) + 범위 밖 키 거절
 - 회수: `ACL DELUSER <user>`(Valkey는 그 사용자로 인증된 **기존 연결도 끊는다**) → verify: 같은 자격 `WRONGPASS`(`auth_rejected`)
-- 용량: 인스턴스당 Claim 64(안), 계획 때 확인
+- 용량: 지금 공통 한도 인스턴스당 10개로 시작한다. 64(안)가 필요하면 **C-6**
 
 ### 9.9 합격 시험
 - 격리: 설치 → 인스턴스 Ready · CA → Claim A · B 발급 → A가 B 접두사 키에 접근하면 거절 → A 회수 · 기존 연결 끊김 · `WRONGPASS` → 인스턴스 재시작 뒤 B 자격 · 데이터 유지, A는 여전히 거절 → 실행부 재시작 이음 → 0.1→0.2 갱신에 인스턴스 유지 → 삭제
@@ -401,11 +418,12 @@
 
 ### 9.10 지금과 차이
 - 격리 fixture(`e3b-fixture-keyspace`)만 있다. 운영 패키지는 없다. `rediss` scheme은 이미 있다.
+- 선행: **C-1**(또는 이미지의 HTTPS 준비 응답). P1을 Valkey로 증명하려면 이것을 먼저 정해야 한다.
 - 계약 v1 부록 B의 이름 목록 없이 설치 · Claim이 되는지가 P1의 핵심 확인이다.
 
 ### 9.11 결정 필요
 1. **ACL 영속:** 재시작 뒤 Claim 사용자를 무엇으로 되살리나.
    - (a) `aclfile`을 데이터 PVC에 두고 Job이 `ACL SAVE` — 엔진이 스스로 복원
    - (b) 실행부가 기동 뒤 원장의 활성 Claim을 다시 발급 — 호스트 동작이 늘어남
-   - 권장 (a): 데이터 PVC는 엔진만 마운트하므로 Job은 명령으로만 저장한다. 다만 첫 기동 때 쓰기 가능한 aclfile(관리 사용자 포함)을 PVC에 만드는 단계가 원형에 없으면 호스트 변경이다 → Codex 확인
+   - 권장 (a): 데이터 PVC의 쓰기 가능한 aclfile + Job이 엔진 명령으로 `ACL SAVE`(Job은 PVC 없음). 원형 init에 ACL 준비는 없지만, 승인된 이미지의 기동 코드가 첫 파일만 만들고 기존 파일은 덮지 않으면 호스트 변경이 필요 없다(Codex 확인)
 2. 퇴출 정책 기본값(`noeviction` 권장: 캐시가 아닌 저장소로 쓸 때 데이터가 조용히 사라지지 않게)

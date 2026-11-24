@@ -1,7 +1,7 @@
 # OS 통합 패키지 계약 v1
 
 **상태:** 승인(2026-11-24, D-98). Codex 검토(#82)를 반영했다.
-**v1.1 초안 2판(2026-11-24):** §10 이벤트 · 메시지, §11 로그, 부록 C의 C-9 · C-10을 더했다. 소유자 "권장안으로 작성", Codex 검토(#95, `reply-095.txt`) 반영. 소유자 승인 전에는 v1 범위만 유효하다.
+**v1.1 승인(2026-11-24, D-100):** §10 이벤트 · 메시지, §11 로그, 부록 C의 C-9 · C-10. Codex 검토(#95, `reply-095.txt`) 반영.
 **작성:** Claude. 구현 관점 검토는 Codex.
 **목적:** 패키지가 OS에 합류하는 방식(OS 통합)을 통합 지점마다 **한 문서로** 정한다. 패키지를 만드는 사람과 검수하는 사람이 보는 기준서다.
 **모은 출처:**
@@ -54,7 +54,7 @@
 | `listing` · `listing-media` | `…listing.v1+json` · 불투명 묶음 | 스토어 설명(§2) | 권장 |
 | `execution` | `application/vnd.opensphere.execution.v1+json` | 실행 문서(§7) | 실행이 있으면 |
 | `static` · `static-index` | 불투명 묶음 · 색인 | UI 모듈(§6.4) | 선택 |
-| `events` (v1.1 초안) | `application/vnd.opensphere.events.v1+json` | 이벤트 선언(§10) | 선택 |
+| `events` (v1.1) | `application/vnd.opensphere.events.v1+json` | 이벤트 선언(§10) | 선택 |
 
 - **판정:** Node · Rust 두 판정기와 Setup 봉인 사본이 같은 공유 사례 · 계약 벡터로 같게 판정한다(거절 **이유**까지).
   - 새 형식은 반드시 세 곳과 공유 사례 · 벡터에 함께 들어간다.
@@ -267,9 +267,9 @@
 - **격리 영수증:** 시험한 **git head · 바이너리 digest · 번들 digest**를 남긴다. 실제 실행부 SA로 돌린다.
 - **화면:** 브라우저 회귀 시험을 저장소에 둔다(CI에 Chromium이 없으면 격리 영수증).
 - **실행:** 발급 · 회수(인증 거절) · 재시작 이음 · 응답 유실 복구 · 용량 경계를 시험한다.
-- **로그(v1.1 초안):** Job 이미지 · 엔진 설정이 자격을 stdout · stderr에 쓰지 않는다. 격리 시험에서 발급 · 회수 동안의 로그에 자격 값이 없는지 확인한다.
+- **로그(v1.1):** Job 이미지 · 엔진 설정이 자격을 stdout · stderr에 쓰지 않는다. 격리 시험에서 발급 · 회수 동안의 로그에 자격 값이 없는지 확인한다.
 
-## 10. 이벤트 · 메시지(v1.1 초안)
+## 10. 이벤트 · 메시지(v1.1)
 
 **배경:** 초기 설계(OSR v0.2 §7.5)는 모듈 기여로 "이벤트(선택): 발행 · 구독 계약, Swallow 고정 구독자 원칙"을 두었다. v1에는 빠졌다.
 
@@ -330,7 +330,7 @@
 - 스토어 상세 "권한과 자원"에 "이 패키지가 보내는 알림"(id · 심각도 · 조건)을 보인다.
 - 세부 화면의 "이벤트" 탭(`instance.events`, Kubernetes Event)과는 별개다. 알림 기록은 사용자 수신함에 있다.
 
-## 11. 로그(v1.1 초안)
+## 11. 로그(v1.1)
 
 **배경:** 운영에는 OTel gateway → 개인정보 변환 → OpenObserve가 있다(`os-backbone-observability`). gateway는 OTLP HTTP 입력, 제한된 속성과 문자열 Bearer 치환, 고정 stream `backbone_events`다(`infra/step2/otel.yaml`). 들어가는 것은 Backbone 구성요소가 직접 보낸 로그뿐이다. 노드 수준 수집기가 없어 **패키지 Pod · Job의 stdout · stderr는 지금 수집되지 않는다.**
 
@@ -446,5 +446,5 @@
 | C-6 | 모듈별 Claim 한도 | Valkey(64 안) | 프로필 · 원장 · 화면이 같은 한도를 집행 | 하지 않음(공통 10) |
 | C-7 | 원형 화면의 섹션 범위 일반화 | Gitea를 Workspace에 둘 때 | 지금 1.3의 실행 원천 · 세부 · 호스트 동작은 Fabric 범위다. 인스턴스 소속 · 승인 대조를 유지한 채 섹션 범위를 넓힌다 | 하지 않음(Gitea는 Fabric) |
 | C-8 | capability 닫힌 선택 | Samba AD(non-root 실패 시) | 서명 프로필의 닫힌 옵션 + 원형 변경. privileged · hostPath · hostNetwork는 계속 금지 | P1 뒤, non-root 실패 시만 |
-| C-9 (v1.1) | 패키지 이벤트 선언 · Swallow 전달 | 모든 모듈 | `events` part, 관측 기반 선언 이벤트, 공통 생명주기 이벤트, 원장 수신자, Core 감사 → Swallow 고정 구독자(§10) | 초안, 소유자 결정 대기 |
-| C-10 (v1.1) | 노드 로그 수집 · `instance.logs` | 모든 모듈 | HISS 클래스 filelog 수집기, 설치본별 저장 · 한도 · 보존, A2UI 원천 · `os logs`(§11) | 초안, 소유자 결정 대기. HISS H3에 기댐 |
+| C-9 (v1.1) | 패키지 이벤트 선언 · Swallow 전달 | 모든 모듈 | `events` part, 관측 기반 선언 이벤트, 공통 생명주기 이벤트, 원장 수신자, Core 감사 → Swallow 고정 구독자(§10) | **승인(D-100)** |
+| C-10 (v1.1) | 노드 로그 수집 · `instance.logs` | 모든 모듈 | HISS 클래스 filelog 수집기, 설치본별 저장 · 한도 · 보존, A2UI 원천 · `os logs`(§11) | **승인(D-100).** HISS H3에 기댐 |

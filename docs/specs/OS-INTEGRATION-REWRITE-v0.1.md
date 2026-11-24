@@ -61,7 +61,7 @@
 | D95-5 | 설치 후: 선언형 틀(세부 탭 틀 추가)을 쓰고, 틀에 맞지 않는 화면은 **서명된 패키지 UI 모듈**로 가져온다. UI 모듈은 격리 프레임에서 돌고, 정해진 다리로만 호스트와 말한다(새로 허용) |
 | D95-6 | 패키지 실행 코드(연결 발급 · 회수 Job, 운영 명령 Job, 필요하면 컨트롤러)를 **D-92 §3.3 조건 아래 허용한다**(D-92 Q2 개정). 조건은 별도 승인 · 최소 권한 · 데이터 PVC 금지 · 소비자 Secret은 호스트가 씀 · 호스트가 효과 확인 · 회수된 패키지의 Claim을 패키지 코드 없이 끊음이다 |
 | D95-7 | Samba AD · Keycloak도 패키지로 옮긴다(D-92 Q3 개정). 운영 디렉터리 · 그룹 연동 보존이 합격 기준이다 |
-| D95-8 | Backbone 내장 Gitea(`os-backbone-system/backbone-gitea`)를 Backbone 설치본에서 빼고, **Fabric › 배포 묶음의 스토어 패키지**(Git 저장소)로 만든다. Console의 고정 Gitea 어댑터는 걷어 낸다. 옛 사본(커밋 274, 2026-11-15)은 보관 기록 후 정리한다. 개발 저장소(`os-backbone-development/development-source`)는 제품 범위 밖이고 그대로 둔다 |
+| D95-8 | **(D-101로 개정, 2026-11-24: `backbone-gitea`는 걷어 내지 않고 Backbone 자체 소스로 다시 정의한다. 사용자용 Git 저장소만 패키지로 간다. [Backbone 자체 소스 v0.1](BACKBONE-SELF-SOURCE-v0.1.md))** Backbone 내장 Gitea(`os-backbone-system/backbone-gitea`)를 Backbone 설치본에서 빼고, **Fabric › 배포 묶음의 스토어 패키지**(Git 저장소)로 만든다. Console의 고정 Gitea 어댑터는 걷어 낸다. 옛 사본(커밋 274, 2026-11-15)은 보관 기록 후 정리한다. 개발 저장소(`os-backbone-development/development-source`)는 제품 범위 밖이고 그대로 둔다 |
 | D95-9 | 다음 차례의 범위는 **코드 + 격리 설치본 전체 검증**이다. 운영 전환은 그 뒤 Backbone 마지막 갱신 1회 + 서비스별 소유자 승인으로 한다 |
 
 > **D95-10(2026-11-23 소유자 결정, 원문):** "운영 중에 발생한 data 없다. 기존 데이터를 유지 (백업, 복구 등) 를 위해서 비용을 낭비 하지 말것!"
@@ -220,7 +220,7 @@
   - Actions 실행기는 이번 범위가 아니다. 특권 컨테이너가 필요해서 금지이고, 따로 정한다.
 - **화면:** 저장소 목록 · 조직 · 사용자 · 백업이다. 선언형 + 세부 탭, 필요하면 UI 모듈로 그린다.
 - **Shell 명령:** `delivery.gitea.repo.list` 등
-- **Backbone에서 걷어 낼 것**
+- **Backbone에서 걷어 낼 것**(D-101 개정: 아래 중 Setup의 `backbone-gitea` 객체 · Core의 Gitea 주소 · Console Git/CI 화면은 걷어 내지 않고 자체 소스를 가리키게 고친다. 사용자 저장소 화면만 패키지로 간다)
   - Setup `runtime-templates.json`의 `backbone-gitea` 객체들
   - Core 환경변수의 Gitea 주소
   - `adapters.rs` GiteaRead와 `/console-api/adapters/gitea`

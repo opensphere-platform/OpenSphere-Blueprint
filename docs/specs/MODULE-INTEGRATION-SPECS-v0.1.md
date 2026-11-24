@@ -28,6 +28,7 @@
 | x.10 지금과 차이 | 운영 판과 목표의 차이, 그 차이를 메울 단위 |
 | x.11 결정 | 소유자 결정(D-98) |
 | x.12 알림 · 로그(v1.1) | 선언 이벤트(id · 심각도 · 조건), 로그 형식(`json` · `text`와 필드 이름). 계약 v1 §10 · §11 |
+| x.13 원천 · 빌드(D-101 뒤 보강) | 소스 저장소(정본 모드 자체 소스의 위치), 보호 워크플로, 빌더 정체, R2D2가 고칠 수 있는 범위 |
 
 **`status` · `inspect`:** 모든 모듈에 공통인 archetype 읽기다. 출력은 원장 사실의 투영(설치본 · 번들 digest · 판 · 활성 상태 · 인스턴스 이름, inspect는 namespace)이고, 엔진 상태는 화면 원천 `instance.*`로 본다(계약 v1 §5).
 
@@ -317,7 +318,7 @@
 - id `delivery.gitea`(안), class `provider`, 원형 `stateful-engine/1`
   - id의 `delivery` 접두사와 class는 별개 필드다. D95-8 안의 class `delivery`는 지금 스토어 접수 클래스(ui · provider)에 없어 설치가 거절된다 → class `provider`, plane `fabric-delivery`(Fabric › 배포 묶음)로 한다.
 - 의존: PostgreSQL Claim(종류 `database`) 하나
-- **Backbone 내장 Gitea(`os-backbone-system/backbone-gitea`)를 대신한다(D95-8).** G1에서 내장 Gitea와 Console의 고정 Gitea 어댑터를 걷어 내고 이 패키지로 바꾼다. 옛 사본은 보존하지 않는다(D-96).
+- **사용자 · 작업 공간용 Git 저장소를 낸다.** D-101(2026-11-24)로 D95-8을 개정했다: Backbone 내장 `backbone-gitea`는 걷어 내지 않고 **Backbone 자체 소스**(R2D2 자체 업데이트용, 관리 영역, 스토어 밖)로 다시 정의한다. 이 패키지는 Backbone 소스를 담지 않는다.
 - 개발 저장소(`os-backbone-development/development-source`, 개발 Mac 60103 포워딩 · CI)는 제품 범위 밖이고 그대로 둔다.
 
 ### 8.2 제공 기능(승인됨)

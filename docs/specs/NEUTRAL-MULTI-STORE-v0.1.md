@@ -1,6 +1,6 @@
 # 중립 다중 스토어 v0.1
 
-**상태:** 초안 2판(2026-11-24). 소유자 "권장안으로 작성"에 따라 권장안으로 썼고, Codex 검토(#87, `reply-087.txt`)를 반영했다. 소유자 승인 뒤 결정 대장에 올린다(D-99 예정).
+**상태:** 승인(2026-11-24, D-99). Codex 검토(#87, `reply-087.txt`)를 반영했다.
 **작성:** Claude. 구현 관점 검토는 Codex.
 **짝 문서:** [패키지 작성 · 품질 표준 v0.1](PACKAGE-AUTHORING-QUALITY-v0.1.md)(가이드라인 · 품질 등급 · SDK · MCP · GitHub 구성)
 **관련:** D-95(OS 통합, 재빌드 0회), D-96(데이터 보존 없음), D-98([OS 통합 계약 v1](OS-INTEGRATION-CONTRACT-v1.md) · [모듈 통합 명세](MODULE-INTEGRATION-SPECS-v0.1.md))
@@ -237,4 +237,4 @@ reviews/<package>/<version>.md  심사 기록
 ## 13. 소유자 결정
 
 - **S99-6(2026-11-24):** B단계(OpenSearch · RustFS 새 판)는 MS 뒤에 Universe로 낸다(권장안).
-- S99-1~5는 권장안대로 썼다. 소유자 승인 뒤 D-99로 올린다.
+- S99-1~5: 권장안대로 승인(D-99, 2026-11-24).

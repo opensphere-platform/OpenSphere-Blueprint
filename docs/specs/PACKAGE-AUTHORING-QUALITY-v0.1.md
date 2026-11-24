@@ -1,6 +1,6 @@
 # 패키지 작성 · 품질 표준 v0.1
 
-**상태:** 초안 2판(2026-11-24). 소유자 "권장안으로 작성"에 따라 권장안으로 썼고, Codex 검토(#88, `reply-088.txt`)를 반영했다. 소유자 승인을 받는다([중립 다중 스토어 v0.1](NEUTRAL-MULTI-STORE-v0.1.md)과 함께 D-99 예정).
+**상태:** 승인(2026-11-24, D-99). Codex 검토(#88, `reply-088.txt`)를 반영했다([중립 다중 스토어 v0.1](NEUTRAL-MULTI-STORE-v0.1.md)과 함께 D-99 예정).
 **작성:** Claude. 구현 관점 검토는 Codex.
 **짝 문서:** [중립 다중 스토어 v0.1](NEUTRAL-MULTI-STORE-v0.1.md)(스토어 · 신뢰 · 형식), [OS 통합 패키지 계약 v1](OS-INTEGRATION-CONTRACT-v1.md)(OpenSphere 제품 부분의 규칙)
 
@@ -186,4 +186,4 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 ## 13. 소유자 결정
 
 - **Q-7(2026-11-24):** SDK는 npmjs.org 공개 scope + npm provenance로 낸다(권장안). npm 조직 계정은 소유자가 만든다.
-- Q-1~Q-6은 권장안대로 썼다. 소유자 승인 뒤 다중 스토어와 함께 D-99로 올린다.
+- Q-1~Q-6: 권장안대로 승인(D-99, 2026-11-24).

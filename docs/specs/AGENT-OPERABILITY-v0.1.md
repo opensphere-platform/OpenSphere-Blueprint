@@ -1,6 +1,6 @@
 # 에이전트 운용 적합성 v0.1
 
-**상태:** 초안 2판(2026-11-24). 소유자 지시로 청사진에 올렸다. Codex 검토(#98 · #99)를 반영했다. 결정 대장 등록(D-102 예정)은 소유자 승인 뒤다. 승인 전에는 구현하지 않는다.
+**상태:** 승인(2026-11-24, D-102). Codex 검토(#98 · #99)를 반영했다.
 **작성:** Claude. 구현 관점 검토는 Codex.
 **짝 문서:** [OS 통합 패키지 계약 v1 · v1.1](OS-INTEGRATION-CONTRACT-v1.md), [모듈 통합 명세](MODULE-INTEGRATION-SPECS-v0.1.md), [중립 다중 스토어](NEUTRAL-MULTI-STORE-v0.1.md), [패키지 작성 · 품질 표준](PACKAGE-AUTHORING-QUALITY-v0.1.md), [Backbone 자체 소스](BACKBONE-SELF-SOURCE-v0.1.md)
 **관련 결정 · 규칙:** D-12(직원 에이전트와 R2D2 분리), D-16(에이전트는 제안, 사람 검토), D-45~D-48(에이전트 위임), D-100(이벤트 · 로그), G-INV-2(에이전트는 승인자 불가, [Governance 최소 설계](../architecture/OPENSPHERE-GOVERNANCE-MIN-DESIGN-v0.1.md)), OSR v0.2 §7.4(지식은 근거), [Backbone 설계](../backbone/DESIGN.md) §4(Nexus 요청 흐름) · §8(R2D2 흐름), [Nexus 감사 후속](../backbone/AUDIT-FOLLOWUP.md)

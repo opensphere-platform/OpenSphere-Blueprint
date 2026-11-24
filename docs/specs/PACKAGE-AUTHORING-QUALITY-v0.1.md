@@ -162,6 +162,7 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 | Q-5 | 빌드 증명은 GitHub Artifact Attestations, 허용 워크플로 정체성으로 `trustedBuilders`를 대신한다 |
 | Q-6 | Store SDK MCP는 로컬 stdio · 읽기 전용 · 키 없음 · 파일 쓰기 · 제출 없음. 원격 호스팅 없음 |
 | Q-7 | **SDK 배포처: npmjs.org `@triangles-store/store-sdk` + npm provenance, 게시는 Trusted Publishing**(소유자 결정 2026-11-24) |
+| Q-8 | **SDK 라이선스: Apache-2.0**(소유자 결정 2026-11-24). SDK 패키지에만 적용한다. Backbone 본체 소스는 지금처럼 비공개다. SDK에 들어가는 생성물(스키마 · 판정기 · 공유 사례 · 카탈로그)은 SDK 배포판 안에서 Apache-2.0으로 낸다. 상류 A2UI 카탈로그 등 제3자 부분은 원래 라이선스 고지를 함께 넣는다 |
 
 ## 11. 구현 순서(다중 스토어 MS 단위와 함께)
 
@@ -186,4 +187,5 @@ Universe 문서 사이트(GitHub Pages, `triangles-store.github.io/universe` 가
 ## 13. 소유자 결정
 
 - **Q-7(2026-11-24):** SDK는 npmjs.org 공개 scope + npm provenance로 낸다(권장안). npm 조직 계정은 소유자가 만든다.
+- **Q-8(2026-11-24):** SDK 라이선스는 Apache-2.0.
 - Q-1~Q-6: 권장안대로 승인(D-99, 2026-11-24).

@@ -225,7 +225,7 @@
 - 권한과 자원: 실행 방식 결정 뒤 채운다(§6.11-1)
 
 ### 6.4 매뉴얼 · 지식
-- overview · install · operations(인스턴스를 지워도 PVC · PV는 남는다 → D-96에 맞춰 바꿀지 결정) · troubleshooting(`provisioning failed:`) · commands
+- overview · install · operations(인스턴스를 지우면 데이터 PVC도 지운다 — §6.11-4, D-98) · troubleshooting(`provisioning failed:`) · commands
 
 ### 6.5 Shell 명령
 - `provider.samba-ad.status` · `.inspect`(none, archetype)
@@ -256,7 +256,7 @@
 2. 레이어 Governance
 3. 직원 계정 · 그룹 관리는 거버넌스 제품에 둔다(이 패키지 화면 아님)
 4. 인스턴스 삭제 때 PVC도 지운다
-- C-1 · C-2는 P1 뒤
+- Samba AD에 C-1 · C-2를 적용하는 것은 P1 뒤(C-1 자체는 P1 전에 들어갔다)
 
 
 ## 7. Keycloak

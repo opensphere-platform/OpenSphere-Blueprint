@@ -6,6 +6,7 @@
 **범위:**
 - 이 폴더는 Blueprint 안의 **계약 단위 fixture**다. Backbone 구현 · 원장 · API가 아니고, 실제 설치 검사도 아니다.
 - 동결 해제 후 Backbone `infra/contracts/osr/`로 옮긴다(계획서 §2).
+- **대체됨(2026-11-26 표시):** 정본은 이미 Backbone `infra/contracts/osr/`(스키마 · 판정기 · 공유 벡터)로 옮겨졌다. 이 폴더는 v1 시점(`class.slug`, `owner-commands/v4` 등)의 기록 · 회귀 자료다. 새 규칙은 여기서 찾지 않는다.
 - 참조 검증기는 판정 규칙을 실행 가능한 형태로 고정하려는 것이다. 운영에 쓰지 않는다.
 
 ## 1. 구성

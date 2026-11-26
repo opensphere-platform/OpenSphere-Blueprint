@@ -53,9 +53,12 @@
 |---|---|---|
 | **S3a Fabric 공급** | Samba · PG 인스턴스(플랫폼 운영자) | 정체 · 설치 ID · 번들 · 프로필 · fence |
 | **S3b 신원 구성** | Keycloak 인스턴스가 PG `database` · Samba `directory-bind` 두 Claim을 소비(X2b) + realm | S3a에서 **관측된** 두 CA 지문 · 인스턴스 UID |
-| **S3c 인도** | 테넌트 발급자 등록, `tenant-portal` 설치 · 노출(G5 · G6), 인도 코드 · 실명 소유자 재로그인 | S3b에서 **관측된** realm · JWKS · issuer URL |
+| **S3c1 인도 준비** | 테넌트 발급자 등록, `tenant-portal` 설치(G5) | S3b에서 **관측된** realm · JWKS · issuer URL |
+| **S3c2 인도** | `tenant-portal` 노출(G6, X7), 인도 코드 · 실명 소유자 재로그인 | S3c1에서 **관측된** `tenant-portal` Service UID · 발급자 등록 |
 
-S3 "회사 인도 완료"는 S3c의 issuer 등록 · 실명 소유자 재로그인 뒤에 기록하고, S5는 그 뒤 시작한다. 단계 사이 관측값이 임의로 바뀌면 다음 계획을 시작하지 않는다. "Genesis MFA 한 번 + 앞 단계 관찰 영수증만 후속 참조로 인정"하는 계약은 **X8b로 PoC-A 뒤**에 따로 승인받는다(새 공급자 생성 단계의 UID · SAN · 허용 공개키 정책을 승인 전 고정).
+S3 "회사 인도 완료"는 S3c2의 issuer 등록 · 실명 소유자 재로그인 뒤에 기록하고, S5는 그 뒤 시작한다. 단계 사이 관측값이 임의로 바뀌면 다음 계획을 시작하지 않는다. "Genesis MFA 한 번 + 앞 단계 관찰 영수증만 후속 참조로 인정"하는 계약은 **X8b로 PoC-A 뒤**에 따로 승인받는다(새 공급자 생성 단계의 UID · SAN · 허용 공개키 정책을 승인 전 고정).
+
+> **명확화(2026-11-26, X8 구현 중):** X7 노출은 접수 때 이미 Ready인 Service의 UID를 잠근다. 같은 계획에서 새로 만드는 `tenant-portal` Service의 UID를 단계 영수증으로 나중에 참조하는 것은 X8b(PoC-A 뒤)에 해당한다. 따라서 §2.1 규칙(승인 시점에 이미 관측된 값만 잠근다)대로 S3c를 S3c1 · S3c2로 나눈다. 플랫폼 관리자 MFA는 S3 전체에서 세 번이 아니라 네 번이다. P-5의 취지(Genesis MFA 한 번은 X8b로 PoC-A 뒤)는 그대로다. (Codex 질의 #187 → Claude 판단)
 
 ### 2.2 S9 닫힌 해체 계획
 

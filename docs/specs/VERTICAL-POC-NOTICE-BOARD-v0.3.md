@@ -53,12 +53,15 @@
 |---|---|---|
 | **S3a Fabric 공급** | Samba · PG 인스턴스(플랫폼 운영자) | 정체 · 설치 ID · 번들 · 프로필 · fence |
 | **S3b 신원 구성** | Keycloak 인스턴스가 PG `database` · Samba `directory-bind` 두 Claim을 소비(X2b) + realm | S3a에서 **관측된** 두 CA 지문 · 인스턴스 UID |
-| **S3c1 인도 준비** | 테넌트 발급자 등록, `tenant-portal` 설치(G5) | S3b에서 **관측된** realm · JWKS · issuer URL |
+| **S3b2 발급자 노출** | Keycloak 공개 경로 `poc-a-id` 노출(X7) | S3b에서 **관측된** Keycloak Service UID · 포트 |
+| **S3c1 인도 준비** | 테넌트 발급자 등록, `tenant-portal` 설치(G5) | S3b2 노출 뒤 X9가 HTTPS로 **관측한** realm · JWKS · issuer URL |
 | **S3c2 인도** | `tenant-portal` 노출(G6, X7), 인도 코드 · 실명 소유자 재로그인 | S3c1에서 **관측된** `tenant-portal` Service UID · 발급자 등록 |
 
 S3 "회사 인도 완료"는 S3c2의 issuer 등록 · 실명 소유자 재로그인 뒤에 기록하고, S5는 그 뒤 시작한다. 단계 사이 관측값이 임의로 바뀌면 다음 계획을 시작하지 않는다. "Genesis MFA 한 번 + 앞 단계 관찰 영수증만 후속 참조로 인정"하는 계약은 **X8b로 PoC-A 뒤**에 따로 승인받는다(새 공급자 생성 단계의 UID · SAN · 허용 공개키 정책을 승인 전 고정).
 
 > **명확화(2026-11-26, X8 구현 중):** X7 노출은 접수 때 이미 Ready인 Service의 UID를 잠근다. 같은 계획에서 새로 만드는 `tenant-portal` Service의 UID를 단계 영수증으로 나중에 참조하는 것은 X8b(PoC-A 뒤)에 해당한다. 따라서 §2.1 규칙(승인 시점에 이미 관측된 값만 잠근다)대로 S3c를 S3c1 · S3c2로 나눈다. 플랫폼 관리자 MFA는 S3 전체에서 세 번이 아니라 네 번이다. P-5의 취지(Genesis MFA 한 번은 X8b로 PoC-A 뒤)는 그대로다. (Codex 질의 #187 → Claude 판단)
+
+> **명확화(2026-11-27, PoC-A 1차 실행 계획 검토):** S3c1이 잠그는 issuer · JWKS는 X9가 공개 HTTPS로 읽어야 관측된다. X7은 접수 때 Ready Service UID를 잠그므로 S3b가 새로 만든 Keycloak을 같은 계획에서 노출할 수 없다. 그래서 S3b와 S3c1 사이에 **S3b2(발급자 노출)** 계획을 둔다. 플랫폼 관리자 MFA는 S3 전체에서 다섯 번이다. 같은 규칙으로 두 가지를 정한다. **S5 노출**은 S3c1에서 이미 관측된 게이트웨이 Service(소유 tenant · 설치 ID · UID · 공개 host)를 S5b 테넌트 계획에 사전 고정한다(어셈블리 노출 자식이 앞 어셈블리의 기존 Service를 가리키는 결합, X8c). **S9 해체**는 §2.2의 순서를 테넌트 MFA 한 번의 닫힌 계획으로 묶는다(라우트 UID 제거 · 소비자 정지 · Claim 회수 · 보존 원장, X8d). Keycloak의 C-3은 §4 표대로 **PoC-A 격리 범위**에 넣는다(C-2와 같은 격리 예외, 운영 사용은 계약 순서대로 P1 뒤). (Codex PoC-A 1차 계획 → Claude 판단)
 
 ### 2.2 S9 닫힌 해체 계획
 
@@ -77,6 +80,8 @@ S3 "회사 인도 완료"는 S3c2의 issuer 등록 · 실명 소유자 재로그
 | **X7 노출 · 로그인 연동** | 호스트 소유 라우트를 **공개 백엔드 Service와 같은 namespace**에: 기본은 호스트 정책이 고른 IngressClass의 namespaced Ingress, Traefik 고유 기능(예: Keycloak 공개 경로 허용 목록)이 필요할 때만 고정 어댑터의 한정 IngressRoute. 전용 SA · 별도 admission이 승인된 hostname · Service · 포트 · entrypoint · owner UID만 대조, 패키지와 일반 원형 실행부는 Ingress 쓰기 없음. `kube-system`은 Traefik 운영 권한만, TLSStore · ACME 자격은 HISS 소유. `board.` 대상은 게이트웨이 namespace의 게이트웨이 Service, 게시판 Service는 게이트웨이에서 오는 포트만 허용. **OIDC 클라이언트는 Keycloak 발급 Claim `oidc-client`**: 소비자별 client · 정확한 redirect URI · audience, 공개 URL이나 패키지 선언으로 redirect 범위 확장 거절, confidential client 자격은 그 소비자 Secret에만 투영, 회수 시 토큰 발급 · 게이트웨이 접근이 각각 막히는지 시험 | 빈칸 5종 중 "외부 노출 · 로그인 연동"(검토 리포트 §2.1-1) |
 | **X2b 복수 소비 슬롯** | Keycloak의 `database` + `directory-bind` 동시 소비: 닫힌 복수 슬롯, 공급자별 정체 · Secret · CA · 망, 쌍별 회수 순서를 함께 승인. 실패 사례: 한쪽 Claim이 틀리거나 회수되면 Keycloak 시작 안 됨, 타 설치본 Secret 투영 안 됨. X8과 별도 PR | 지금 `consumes` maxItems 1(main 573c558 확인), 서버는 첫 슬롯만 선택 |
 | **X8 어셈블리 계획 단위** | AF-I6 `opensphere.osr-assembly-plan/v1`을 Core가 내는 상위 불변 계획으로. `assembly-definition/v1` 바이트 · 검사는 보존, 전체 패키지 정체를 받는 새 판에서 `requires` · 공급 자리 · 버전 범위 · 용량 · 노출 · 적합성 · 인계 선언. PoC는 순서 고정 짧은 DAG. 해석기는 모호한 공급자 · 순환 · 용량 부족을 계획 단계에서 거절하고 정체 · 설치 ID · 출처 · 번들 · 프로필 · 렌더러 · fence · 기존 UID · 예정 객체 · Claim/Binding/Link ID · (기존 공급자의) CA 지문을 잠금. X2 예약 · 순서 · MFA 결합 · 중단 · 복구와 MS5b 독립 검사 재사용, 하위 계획 단독 실행 불가, 마지막 검증 · 영수증 뒤에만 Active · 인계, 타임아웃 뒤 unknown은 점유 유지 · 명시 복구. X2 그룹 digest와 v1 · v2 경로 유지. Genesis와 업무 어셈블리가 엔진 공유(Genesis는 플랫폼 승인, 업무 어셈블리는 테넌트 발급자 승인) | 지금 X2는 정확히 두 단계 · 한 `consume` |
+| **X8c 기존 Service 노출 결합** | 어셈블리 노출 자식이 앞서 Active가 된 같은 tenant 어셈블리의 Ready Service(게이트웨이)를 승인 전 관측값으로 고정. 승인 뒤 채우기 없음 | §2.1 명확화(S5) |
+| **X8d 닫힌 해체 계획** | §2.2 순서를 한 부모 계획으로: 새 배정 · 공개 접근 차단 → 소비자 정지 확인 → Claim · Secret · 망 회수 → 라우트 UID 제거 → 보존 원장 | §2.2 |
 | **X8b 단계 영수증 참조**(PoC-A 뒤) | §2.1의 Genesis MFA 한 번 계약 | §2.1 |
 | **X9 테넌트 발급자** | 승인 입구를 기존 `/otp`와 분리하고 Core p7 재확인 · 예약 · 감사 체계 재사용. Genesis가 tenant UID · issuer URL · 허용 JWKS 출처 · 알고리즘 · 세대를 등록. 주체 = 서버가 검증한 `(tenant UID, issuer, sub)`, audience · 클라이언트 · 역할 · `acr` · `auth_time` · 만료 · 발급자 상태 확인. Core 일회 챌린지를 주체 · 세션 · tenant UID · 계획 digest · 만료에 묶어 승인 트랜잭션에서 소비. 원문 토큰은 원장 · 감사에서 제외. Nexus 테넌트 전용 판정 plane · 고정 typed action. 테넌트는 승인된 공급 범위 안의 조립만, Fabric · 스토어 정책은 플랫폼 역할. **D-102 위임 계정은 Genesis · 승인 불가**. 차단 사례: 다른 issuer의 같은 `sub`, 다른 audience · 계획, 승격 · 회수된 역할, 관리 토큰의 테넌트 승인, 테넌트 토큰의 Fabric 승인 | 지금 Core는 Backbone Auth 한 곳의 HS256 · `authenticated`만, Nexus는 Console 관리자 세션 기준(B-1) |
 

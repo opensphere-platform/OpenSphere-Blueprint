@@ -1,6 +1,6 @@
 # 공지 게시판 수직 PoC 명세 v0.3 — 패키지 시대, 격리 먼저
 
-- **상태:** Claude · Codex 합의안(2026-11-26), 소유자 결정 대기(§7 P-1~P-5). 소유자 결정: **"격리부터"**(PoC-A를 먼저). 협의 기록: Codex 메모 #153(코드 · 운영 대조, 파일:줄 근거) → Claude 검토 #155(보완 다섯 가지, 근거 셋 직접 확인: `consumes` maxItems 1 · 와일드카드 DNS · 운영 Keycloak `sslmode=require`) → Codex 동의(3번에 Traefik 우선순위 1100 보탬).
+- **상태:** **소유자 결정 D-105**(2026-11-26, "권고대로 승인" — §7 P-1~P-5). Claude · Codex 합의안. 소유자 결정: **"격리부터"**(PoC-A를 먼저). 협의 기록: Codex 메모 #153(코드 · 운영 대조, 파일:줄 근거) → Claude 검토 #155(보완 다섯 가지, 근거 셋 직접 확인: `consumes` maxItems 1 · 와일드카드 DNS · 운영 Keycloak `sslmode=require`) → Codex 동의(3번에 Traefik 우선순위 1100 보탬).
 - **v0.2와 다른 점:** v0.2(2026-11-21)의 계층 · 완료 기준 · 주소 · 입구 · 신원 원칙(정공법, Samba AD → Keycloak, 회사 관리 콘솔 · Workspace 분리, 게이트웨이 뒤 앱)은 그대로다. 바뀐 것은 **"무엇으로 만드는가"**다. 그 뒤 결정(D-92 · 94 · 95 실행 원형 · 패키지만으로 확장, D-97 A2UI, D-98 계약 v1 · 모듈 명세, D-99 다중 스토어, D-100 이벤트 · 로그, D-102 에이전트 운용, D-104 연속성)에 따라 Fabric 서비스 · 앱 · 테넌트 면 엔진을 모두 **서명된 스토어 패키지**로 만들고, 어셈블리 · Genesis는 Core의 여러 패키지 계획으로 만든다.
 - **규범:** v0.2의 규범 + [OS 통합 계약 v1](OS-INTEGRATION-CONTRACT-v1.md) · [모듈 명세](MODULE-INTEGRATION-SPECS-v0.1.md) · [중립 다중 스토어](NEUTRAL-MULTI-STORE-v0.1.md) · [어셈블리 · Fabric 공급 v0.8](ASSEMBLY-FABRIC-SUPPLY-v0.8.md) · [모듈 연속성](MODULE-CONTINUITY-v0.1.md).
 - **기준 시점:** Backbone main `573c558`, 운영 A-5(`2691afa`, Core `358d10e0…` · Console `1cea616e…`), 2026-11-26 운영 읽기 전용 조회.
@@ -27,7 +27,7 @@
 
 **재빌드 0회 합격 조건.** 시작 전에 Core · Console · 실행부 · 웹훅 · Setup · 계약 · 승인 정책 · 이행 표지, 허용 DNS 이름, 노출 어댑터와 공급 범위를 고정한다(이미지 digest · 정책 지문). S1~S9 동안 바뀌는 것은 서명된 패키지와 승인된 원장 데이터, 그리고 그 계획이 만든 어셈블리별 리소스 · 라우트 · 원장 행(효과 영수증)뿐이어야 한다. 합격에 필요한 호스트 수정이 드러나면 멈추고 X 단위에서 고친 뒤 **고정 기준선부터 다시** 돌린다. 인도 코드 · Claim 자격 · 토큰은 캡처와 로그에 남기지 않는다.
 
-**PoC-A 주소(합의, 소유자 확인 §7 P-4).** 같은 깊이 이름 `poc-a-id` · `poc-a-admin` · `poc-a-workspace` · `poc-a-board`.dev.opensphere.co.kr. 기존 와일드카드 A(`*.dev.opensphere.co.kr` → 175.45.161.138)로 이미 응답하므로 DNS 요청이 필요 없다(2026-11-26 확인). 인증서는 **운영 `dev-opensphere-tls` · `PIN.hosts` · TLSStore를 바꾸지 않고** 격리 namespace의 별도 HTTP-01 작업 · Secret으로 받는다(스테이징 CA 먼저 → 운영 CA, 80의 확인 경로도 격리 객체). 확인 경로는 격리 namespace의 `IngressRoute`(`web`)로, 규칙을 네 호스트의 `/.well-known/acme-challenge/`로 한정하고 우선순위 **1100**을 명시한다. 운영 `acme-http01`(1000) · `http-to-https`(1)는 그대로 공존한다(Codex 대조, Traefik v3.7 우선순위 규칙). 다단계 이름(`id.poc-a.dev…`)은 현재 HTTP-01 규칙 · SAN 목록이 보장하지 않아 쓰지 않는다. 사용자가 보는 결과는 v0.2와 같이 **플랫폼이 낸 HTTPS 주소**로 브라우저에서 연다(port-forward 금지).
+**PoC-A 주소(D-105 P-4).** 같은 깊이 이름 `poc-a-id` · `poc-a-admin` · `poc-a-workspace` · `poc-a-board`.dev.opensphere.co.kr. 기존 와일드카드 A(`*.dev.opensphere.co.kr` → 175.45.161.138)로 이미 응답하므로 DNS 요청이 필요 없다(2026-11-26 확인). 인증서는 **운영 `dev-opensphere-tls` · `PIN.hosts` · TLSStore를 바꾸지 않고** 격리 namespace의 별도 HTTP-01 작업 · Secret으로 받는다(스테이징 CA 먼저 → 운영 CA, 80의 확인 경로도 격리 객체). 확인 경로는 격리 namespace의 `IngressRoute`(`web`)로, 규칙을 네 호스트의 `/.well-known/acme-challenge/`로 한정하고 우선순위 **1100**을 명시한다. 운영 `acme-http01`(1000) · `http-to-https`(1)는 그대로 공존한다(Codex 대조, Traefik v3.7 우선순위 규칙). 다단계 이름(`id.poc-a.dev…`)은 현재 HTTP-01 규칙 · SAN 목록이 보장하지 않아 쓰지 않는다. 사용자가 보는 결과는 v0.2와 같이 **플랫폼이 낸 HTTPS 주소**로 브라우저에서 연다(port-forward 금지).
 
 ## 2. 시나리오와 상태(2026-11-26, 코드 · 운영 대조)
 
@@ -101,7 +101,7 @@ S3 "회사 인도 완료"는 S3c의 issuer 등록 · 실명 소유자 재로그�
 
 §1 완료 기준(사람이 하는 일 1~9), §2.2 주소 이름(PoC-B), §3의 Samba · Keycloak 최소판 원칙(Administrator 비밀번호를 내보내지 않음, Keycloak Operator 안 씀, 관리 콘솔 차단), §4 Genesis 단계 G1~G7 · 부트스트랩 계정 · 인도 코드는 소유자 터미널에서만, §6.3 게이트웨이 확인 셋, §7 두 모드 · 권한 분리, §8 승인, §9 인계 · 배정, §10 최소판 한계.
 
-## 7. 결정 항목(Claude · Codex 합의 권고)
+## 7. 결정 항목(D-105, 권고대로 승인)
 
 | # | 질문 | 합의 권고 |
 |---|---|---|

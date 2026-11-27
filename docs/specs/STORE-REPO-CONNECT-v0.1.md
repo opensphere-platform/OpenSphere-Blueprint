@@ -133,6 +133,28 @@
 
 R-I4의 서명은 운영 신뢰 앵커로 하는 것이라 소유자 터미널 절차가 필요하다(시험은 시험 키로 한다).
 
+### 10.4 구현 결과(2026-11-27, Backbone PR 257 · main `757e2e2`)
+
+- **R-I1 구현됨.** 서명 원장 수용부(`osr_store_carrier`)에 레포 reader용 범위를 더했다. 레포 carrier의 토큰과 스토어 정체 하나로 들어오고, 그 정체가 지금 읽히는 레포 스토어(활성 · 토큰 있음)이며 원장 행에 레지스트리 자격이 없을 때만 받는다. **한 스토어에 전송 수단 하나**: 주소로 연결된 스토어는 레지스트리 reader에게 작업을 주지 않는다(읽기를 중단한 동안에도 레지스트리로 넘어가지 않는다). reader(`osr_repo_reader`)는 받아 둔 트리를 status → metadata(-presentation) → wanted → bundles 순서로 넘기고, 파일은 서명된 문서가 묶은 digest로 찾는다. 수용부의 판정은 바꾸지 않았다.
+- **R-I3 구현됨.** 스토어 조회가 배치된 패키지마다 서명 원장을 읽어 판정한다(쓰기 없음). 그 스토어가 서명 원장에서 활성이고, 채널의 머리가 관측된 것이며, 그 머리가 지금 이 번들을 내놓을 때만 `available` · 설치 가능. 아니면 `store_not_qualified`(목록만 연결) 또는 `store_offer_not_ready`. 화면은 서버가 준 네 값(`storeIdentity` · `channel` · `snapshotDigest` · `bundleDigest`)을 그대로 기존 계획 경로에 낸다. 설치된 패키지는 어느 스토어도 내놓지 않게 돼도 보이고 내릴 수 있다.
+- **확인한 범위.** 격리 PostgreSQL(Services 이행 51개 전부)에서 레포 트리의 번들이 제품 판정을 통과해 qualified 증거로 기록되는 것(`tests/osr/repo-store-signed-native.py`), 화면의 목록 → 제공 → 설치 → 내리기(가짜 응답 브라우저 시험). **R-I2(격리에서 실제 Valkey 설치)는 Codex의 V1 실증 도구에 레포 원천을 붙여 진행 중이다.**
+
+### 10.5 R-I4 구체화: 운영에서 설치를 여는 데 필요한 것
+
+운영 원장(2026-11-27 읽기): 서명 원장의 스토어 0, 맥락의 프로필에 `provider.valkey` 없음, Core 증거 연결 없음(`osr.qualified_activation_key` 0행).
+
+| 준비물 | 내용 | 누가 |
+|---|---|---|
+| Valkey 프로필 | `provider.valkey` 1.0.0 프로필을 맥락이 읽는 자리(`infra/contracts/osr/profiles`)에 넣고 정책 판을 올린다 | PR(Claude 검수) |
+| 맥락 서명 | 새 정책 판의 맥락을 운영 신뢰 앵커(`osr-anchor-2026a`)로 서명 | Claude가 준비, 소유자 확인 뒤 서명 |
+| 스토어 신뢰 변경 | Default Store `add`(형식 2, 범위: 공급자 `triangles` · 종류 `provider` · 레이어 `fabric`), 공급자 키 증명, 지금의 목록 · 등록부, 제품 권한(앵커 서명) | Claude가 준비, 소유자 확인 뒤 서명 |
+| 적재 | Setup `apply-osr-trust`에 맥락과 신뢰 변경을 한 번에. 설치본의 첫 소유자 계정 비밀번호 + MFA | **소유자 터미널** |
+| Core 증거 연결 | Services DB의 전용 읽기 역할, Core API에만 붙는 Secret(`OSR_QUALIFIED_EVIDENCE_DATABASE_URL` · `OSR_QUALIFIED_ACTIVATION_KEY`) | 운영 반영(소유자 승인) |
+| 이미지 | Valkey 번들이 쓰는 이미지가 노드에 있어야 한다(pull 자격 없음) | 노드 적재 |
+| 읽기 | Default Store의 읽기 토큰에 Contents 권한 | 소유자 |
+
+순서: R-I2 격리 실증 통과 → 위 준비물 → 소유자 적재 → 운영에서 Valkey 설치. 격리 실증이 통과하기 전에는 운영의 설치를 열지 않는다.
+
 ## 11. D-112: 패키지 배치와 화면(2026-11-27)
 
 소유자: "스토어 추가 작업은 우측 서랍 페이지로 처리 하자", "등록이 완료된 스토어에 대한 페이지 내에서의 개별 영역을 좀더 강화", "추가된 스토어에서 받은 패키지를 … 스토어 배치 시켜 줘야 하지 않나?"

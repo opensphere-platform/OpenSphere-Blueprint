@@ -56,14 +56,15 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 
 | 문서 | 내용 |
 |---|---|
-| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-117**, 미결 O-1~O-13 |
+| [계층 구조 기준선 v0.2](docs/architecture/OPENSPHERE-LAYER-BASELINE-v0.2.md) | 영역·계층 정의, 경계 불변식 B-1~B-8, **결정 대장 D-1~D-119**, 미결 O-1~O-13 |
 | [계층 지도](docs/architecture/OPENSPHERE-LAYER-MAP.html) | 영역 × 계층 지도, 통신·통제 흐름, 제품 대장, 업무 코어 후보(화면) |
 | [계층 구조 검토 v0.1](docs/architecture/OPENSPHERE-LAYER-STRUCTURE-REVIEW-v0.1.md) | 기준선 이전의 아카이브 구조 검토 |
 | [O-2 PFSS 경계](docs/architecture/OPENSPHERE-PFSS-BOUNDARY-O2-v0.1.md) | Backbone과 Governance의 공유 서비스(구 PFSS) 제어 분리, Claim 확장, 서명 Grant |
 | [Governance 최소 설계](docs/architecture/OPENSPHERE-GOVERNANCE-MIN-DESIGN-v0.1.md) | 원장, 결재, 어댑터, 판단 엔진 비교, G0~G4 단계 |
 | [O-6 비상 진입](docs/architecture/OPENSPHERE-BREAKGLASS-O6-v0.1.md) | Backbone의 사원 영역 비상 진입, 보안 동결, 운영 정보 범위 |
 | [O-4·O-7 에이전트 신원](docs/architecture/OPENSPHERE-AGENT-IDENTITY-O4-O7-v0.1.md) | 에이전트 신원 정본, 상시 위임, 호출 사슬 |
-| [에이전트 구성 재검토](docs/architecture/OPENSPHERE-AGENT-RUNTIME-REVIEW-v0.1.md) | OpenBot 하네스, KubeVirt 자리 VM, 세 출구 |
+| [에이전트 구성 재검토](docs/architecture/OPENSPHERE-AGENT-RUNTIME-REVIEW-v0.1.md) | KubeVirt 자리 VM, 세 출구, 원칙 R-1~R-6(하네스는 D-119로 OpenClaw) |
+| [에이전트 전략 투영](docs/architecture/OPENSPHERE-AGENT-STRATEGY-OPENCLAW-v0.1.md) | OpenClaw 중심 전략(D-119)의 대조 · 레드팀 검토 RT-1~RT-16 · 투영 · 구현 영향 · 단계 · 소유자가 정할 것 Q-A1~Q-A10 |
 | [O-9 고객 영역](docs/architecture/OPENSPHERE-CUSTOMER-AREA-O9-v0.1.md) | 세 번째 영역, 고객 CIAM, B2C·B2B, 고객 AI |
 | [교류 계층](docs/architecture/OPENSPHERE-EXCHANGE-LAYER-v0.1.md) | 사원↔고객의 유일한 통과 지점, X-1~X-5 |
 | [업무 코어·SCM 후보](docs/architecture/OPENSPHERE-CUSTOMER-SCM-UPSTREAM-v0.1.md) | Odoo Community 선정 근거, Liferay 비교, 검증 조건 C1~C9 |

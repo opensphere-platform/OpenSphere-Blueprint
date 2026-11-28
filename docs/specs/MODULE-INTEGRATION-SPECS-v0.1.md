@@ -116,6 +116,11 @@
 2. 복제본 · 백업은 범위 밖
 
 
+### 3.12 알림 · 로그(v1.1, S6에서 더함)
+- 선언 이벤트: `<정체>.not-ready`(critical, `instance.notReady` 300초 — StackGres 재시작 · 전환 시간을 감안), `<정체>.startup-failed`(critical, `startup.problem` `image-pull-auth` · `crash-loop`), `<정체>.claim-failed`(warning, `job.result`의 실패 · `unknown` 코드 — 발급 · 회수 Job).
+- 로그: `text`(PostgreSQL · Patroni 기본). 수준 거름 없음. 판을 올릴 때 형식이 바뀌면 이 절을 고친다.
+- 공통(S6, 2026-11-28): 조건은 계약 §10.4의 닫힌 네 가지(`instance.notReady` · `k8s.event` · `job.result` · `startup.problem`)만 쓴다. 호스트가 관측으로 증명할 수 없는 엔진 내부 사실(용량 · 복제 지연 등)은 관측 원천이 정해진 뒤 더한다. `startup.problem` 코드마다 문제 코드 사전(에이전트 운용 M3) 항목을 함께 낸다.
+
 ## 4. OpenSearch
 
 ### 4.1 정체
@@ -163,6 +168,11 @@
 - B단계는 지금 고정 틀 화면 그대로, A2UI 전환은 다음 판
 
 
+### 4.12 알림 · 로그(v1.1, S6에서 더함)
+- 선언 이벤트: `<정체>.not-ready`(critical, `instance.notReady` 300초 — JVM 기동 시간을 감안), `<정체>.startup-failed`(critical, `startup.problem` `image-pull-auth` · `crash-loop`), `<정체>.claim-failed`(warning, `job.result` 실패 · `unknown`).
+- 로그: `text`(OpenSearch log4j 기본 패턴). 수준 거름 없음.
+- 공통(S6, 2026-11-28): 조건은 계약 §10.4의 닫힌 네 가지(`instance.notReady` · `k8s.event` · `job.result` · `startup.problem`)만 쓴다. 호스트가 관측으로 증명할 수 없는 엔진 내부 사실(용량 · 복제 지연 등)은 관측 원천이 정해진 뒤 더한다. `startup.problem` 코드마다 문제 코드 사전(에이전트 운용 M3) 항목을 함께 낸다.
+
 ## 5. RustFS
 
 ### 5.1 정체
@@ -207,6 +217,11 @@
 ### 5.11 결정(D-98)
 - §4.11과 같다
 
+
+### 5.12 알림 · 로그(v1.1, S6에서 더함)
+- 선언 이벤트: `<정체>.not-ready`(critical, `instance.notReady` 120초), `<정체>.startup-failed`(critical, `startup.problem` `image-pull-auth` · `crash-loop`), `<정체>.claim-failed`(warning, `job.result` 실패 · `unknown`).
+- 로그: 고정한 RustFS 판의 기본 형식으로 확정한다. 확정 전에는 `text`.
+- 공통(S6, 2026-11-28): 조건은 계약 §10.4의 닫힌 네 가지(`instance.notReady` · `k8s.event` · `job.result` · `startup.problem`)만 쓴다. 호스트가 관측으로 증명할 수 없는 엔진 내부 사실(용량 · 복제 지연 등)은 관측 원천이 정해진 뒤 더한다. `startup.problem` 코드마다 문제 코드 사전(에이전트 운용 M3) 항목을 함께 낸다.
 
 ## 6. Samba AD
 
@@ -258,6 +273,11 @@
 4. 인스턴스 삭제 때 PVC도 지운다
 - Samba AD에 C-1 · C-2를 적용하는 것은 P1 뒤(C-1 자체는 P1 전에 들어갔다)
 
+
+### 6.12 알림 · 로그(v1.1, S6에서 더함)
+- 선언 이벤트: `<정체>.not-ready`(critical, `instance.notReady` 300초 — 최초 프로비저닝 시간을 감안), `<정체>.startup-failed`(critical, `startup.problem` `image-pull-auth` · `crash-loop`), `<정체>.claim-failed`(warning, `job.result` 실패 · `unknown` — 디렉터리 바인드 발급 · 회수).
+- 로그: `text`(samba 기본). 수준 거름 없음. 인증 로그 원문은 내용이므로 열람 경로는 계약 §11의 권한 있는 조회만.
+- 공통(S6, 2026-11-28): 조건은 계약 §10.4의 닫힌 네 가지(`instance.notReady` · `k8s.event` · `job.result` · `startup.problem`)만 쓴다. 호스트가 관측으로 증명할 수 없는 엔진 내부 사실(용량 · 복제 지연 등)은 관측 원천이 정해진 뒤 더한다. `startup.problem` 코드마다 문제 코드 사전(에이전트 운용 M3) 항목을 함께 낸다.
 
 ## 7. Keycloak
 
@@ -311,6 +331,11 @@
 2. 레이어 Governance
 - C-4는 승인(P1), C-3은 P1 뒤
 
+
+### 7.12 알림 · 로그(v1.1, S6에서 더함)
+- 선언 이벤트: `<정체>.not-ready`(critical, `instance.notReady` 180초), `<정체>.startup-failed`(critical, `startup.problem` `image-pull-auth` · `crash-loop`), `<정체>.claim-failed`(warning, `job.result` 실패 · `unknown` — OIDC 클라이언트 발급 · 회수). 공급 Claim(DB · 디렉터리) 소비가 끊긴 상태는 그 공급자 패키지의 이벤트로 알린다(중복 알림을 만들지 않는다).
+- 로그: `json`(시작 스크립트가 콘솔 출력을 JSON으로 고정). 필드 이름 `level` · `message` · `timestamp`. 호스트는 `level`로 수준만 거른다.
+- 공통(S6, 2026-11-28): 조건은 계약 §10.4의 닫힌 네 가지(`instance.notReady` · `k8s.event` · `job.result` · `startup.problem`)만 쓴다. 호스트가 관측으로 증명할 수 없는 엔진 내부 사실(용량 · 복제 지연 등)은 관측 원천이 정해진 뒤 더한다. `startup.problem` 코드마다 문제 코드 사전(에이전트 운용 M3) 항목을 함께 낸다.
 
 ## 8. Gitea(새 설계)
 

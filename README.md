@@ -64,7 +64,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [O-6 비상 진입](docs/architecture/OPENSPHERE-BREAKGLASS-O6-v0.1.md) | Backbone의 사원 영역 비상 진입, 보안 동결, 운영 정보 범위 |
 | [O-4·O-7 에이전트 신원](docs/architecture/OPENSPHERE-AGENT-IDENTITY-O4-O7-v0.1.md) | 에이전트 신원 정본, 상시 위임, 호출 사슬 |
 | [에이전트 구성 재검토](docs/architecture/OPENSPHERE-AGENT-RUNTIME-REVIEW-v0.1.md) | KubeVirt 자리 VM, 세 출구, 원칙 R-1~R-6(하네스는 D-119로 OpenClaw) |
-| [에이전트 전략 투영](docs/architecture/OPENSPHERE-AGENT-STRATEGY-OPENCLAW-v0.1.md) | OpenClaw 중심 전략(D-119)의 대조 · 레드팀 검토 RT-1~RT-16 · 투영 · 구현 영향 · 단계 · 소유자가 정할 것 Q-A1~Q-A10 |
+| [에이전트 전략 투영](docs/architecture/OPENSPHERE-AGENT-STRATEGY-OPENCLAW-v0.1.md) | OpenClaw 중심 전략(D-119)의 대조 · 레드팀 검토 RT-1~RT-18 · 전략 작성 측 답변 검토 · 0단계 합격 기준 · 투영 · 구현 영향 · 단계 · 소유자가 정할 것 Q-A1~Q-A10 |
 | [O-9 고객 영역](docs/architecture/OPENSPHERE-CUSTOMER-AREA-O9-v0.1.md) | 세 번째 영역, 고객 CIAM, B2C·B2B, 고객 AI |
 | [교류 계층](docs/architecture/OPENSPHERE-EXCHANGE-LAYER-v0.1.md) | 사원↔고객의 유일한 통과 지점, X-1~X-5 |
 | [업무 코어·SCM 후보](docs/architecture/OPENSPHERE-CUSTOMER-SCM-UPSTREAM-v0.1.md) | Odoo Community 선정 근거, Liferay 비교, 검증 조건 C1~C9 |

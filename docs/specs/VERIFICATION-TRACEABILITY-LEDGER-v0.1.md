@@ -160,3 +160,12 @@
 Claude가 코드에서 직접 다시 확인한 것(2026-11-28): Valkey 조립 parts 목록에 `events` · `problems` 없음(`modules/provider.valkey/assemble.mjs` 71행), `min_quality`가 `enforced:false`(`osr_store_carrier.rs`), 빌더 정책은 중복 검사만(`store-neutral.mjs` 134행), 스토어 설치 가능 클래스는 `ui` · `provider`뿐(`osr_store.rs`), 알 수 없는 part는 digest · JSON 형식만 확인(`store-product.mjs`), Valkey `events.json`의 형식이 계약 §10.4와 다름, PoC v0.3이 C9 · C10을 "PoC 뒤"로 옮김.
 
 미병합 PR의 상태(PR 286~288의 Pg · Sb · Kc 화면 · 호환 선언, H1)는 병합 뒤 이 대장에서 고친다.
+
+## 6. 기한이 있는 항목
+
+만료 · 재확인 날짜가 있는 항목을 여기에 모은다. 날짜 전에 다시 확인하고 결과를 해당 행과 이 표에 적는다.
+
+| 항목 | 대장 | 기한 | 재확인 | 할 일 |
+|---|---|---|---|---|
+| StackGres `cluster-controller:1.19.5` Critical 6건 조건부 예외(CVE-2026-102268 · GHSA-6q48-6c7w-9gw2) | V-44 | 예외 기록 PR 병합 시점 + 30일(병합 전이면 약 2026-12-28) | 만료 7일 전(약 2026-12-21) | StackGres upstream 1.19.7 · 1.20을 다시 검사. 고쳐진 판이 있으면 HISS StackGres operator 판 올림 → PG 재게시 → 예외 삭제. 없으면 연장하지 않고 소유자에게 다시 묻는다(연장은 새 결정) |
+| 기본 스토어 주간 재서명 | — | 2026-12-05 06:01 UTC | 2026-12-04 | 새 sequence로 재게시 |

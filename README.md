@@ -64,6 +64,7 @@ OpenSphere의 계층 구조 설계, 구조 방향, 명세 초안을 모으는 �
 | [O-6 비상 진입](docs/architecture/OPENSPHERE-BREAKGLASS-O6-v0.1.md) | Backbone의 사원 영역 비상 진입, 보안 동결, 운영 정보 범위 |
 | [O-4·O-7 에이전트 신원](docs/architecture/OPENSPHERE-AGENT-IDENTITY-O4-O7-v0.1.md) | 에이전트 신원 정본, 상시 위임, 호출 사슬 |
 | [에이전트 구성 재검토](docs/architecture/OPENSPHERE-AGENT-RUNTIME-REVIEW-v0.1.md) | KubeVirt 자리 VM, 세 출구, 원칙 R-1~R-6(하네스는 D-119로 OpenClaw) |
+| [검증 추적 대장](docs/specs/VERIFICATION-TRACEABILITY-LEDGER-v0.1.md) | 승인된 요구가 심사 · 구현 · 패키지 · 운영까지 갔는지(V-01~V-60), 누락 경위, 처리 등급 A~F. 결정 · 게시 · 운영 반영 때마다 갱신 |
 | [에이전트 전략 투영](docs/architecture/OPENSPHERE-AGENT-STRATEGY-OPENCLAW-v0.1.md) | OpenClaw 중심 전략(D-119)의 대조 · 레드팀 검토 RT-1~RT-18 · 전략 작성 측 답변 검토 · 0단계 합격 기준 · 투영 · 구현 영향 · 단계 · 소유자가 정할 것 Q-A2~Q-A11(정책 정본은 OpenSphere 저장소 `policies/AI-AGENT-POLICY.md`) |
 | [O-9 고객 영역](docs/architecture/OPENSPHERE-CUSTOMER-AREA-O9-v0.1.md) | 세 번째 영역, 고객 CIAM, B2C·B2B, 고객 AI |
 | [교류 계층](docs/architecture/OPENSPHERE-EXCHANGE-LAYER-v0.1.md) | 사원↔고객의 유일한 통과 지점, X-1~X-5 |

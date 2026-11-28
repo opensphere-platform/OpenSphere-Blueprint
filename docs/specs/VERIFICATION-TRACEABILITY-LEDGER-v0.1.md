@@ -98,7 +98,7 @@
 | V-41 | **빌드 증명 대조**(공급자 등록부의 빌더 정책 ↔ 실제 provenance, 셀프 호스티드 금지) | ✕ 빌더 정책은 중복 여부만 검사. provenance는 자기 선언 | 키를 가진 누구나 빌더를 주장할 수 있다 |
 | V-42 | **SBOM이 실제 내용물을 담는다** | ✕ 패키지 이름 · 판과 part 목록뿐(`bundle.mjs`) | 이미지 안의 구성요소 목록이 아니다 |
 | V-43 | 라이선스 허용 목록 | ✕ | `LicenseRef-Proprietary`도 통과 |
-| V-44 | **취약점 기준**(Critical 차단, High 30일) | ◐ 발행 검사 PR 297 · 외부 빌드 수용 PR 304(병합 대기) | **2026-11-28 첫 검출:** PostgreSQL이 쓰는 StackGres `cluster-controller:1.19.5`에 수정 가능한 Critical 6건(PyJWT · certifi) → PG 게시 보류. 패치 판(= HISS StackGres operator 판 올림) 또는 영향 근거가 있는 30일 예외 중 소유자 결정 필요(Codex #310 근거 작성 중). OnGres 이미지 넷은 Critical 0 |
+| V-44 | **취약점 기준**(Critical 차단, High 30일) | ◐ 발행 검사 PR 297 · 외부 빌드 수용 PR 304(병합 대기) | **2026-11-28 첫 검출:** PostgreSQL이 쓰는 StackGres `cluster-controller:1.19.5`에 수정 가능한 Critical 6건(PyJWT · certifi) → PG 게시 보류. 패치 판(= HISS StackGres operator 판 올림) 또는 영향 근거가 있는 30일 예외 중 소유자 결정 필요(Codex #310 근거: 공개된 1.19.6에도 같은 6건이 남고 1.19.7 · 1.20은 아직 없음. 정적 분석으로는 PyJWT 검증 · certifi 사용 경로를 찾지 못했으나, PG Pod에 egress 제한이 없어 망을 완화 근거로 쓸 수 없음. 소유자 결정 대기). OnGres 이미지 넷은 Critical 0 |
 | V-45 | 품질 등급(검증됨 · 검토됨 · 인증됨)과 설치본 최소 등급 | ✕ `enforced:false`, 계산 없음 | |
 | V-46 | 설치 시험(일회용 kind) · SDK CLI · Rust 판정기 이미지 · 품질 보고서 | ✕ | "인증됨"을 받을 길이 없다 |
 | V-47 | 스토어 토큰의 과권한 경고 · 거절 | ✕ | 스토어 자격 명세 F-6 |
